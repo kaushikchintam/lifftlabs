@@ -1,0 +1,1 @@
+//clear session cookie to log out user

@@ -1,0 +1,1 @@
+//GET - list all coaches browsable by clients, with optional filters (e.g. specialty, rating)

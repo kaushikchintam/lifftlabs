@@ -1,0 +1,2 @@
+//GET - public availability slots for a coach (for clients browsing coaches and booking sessions)
+//PATCH - coach sets availability slots (e.g. recurring weekly schedule + exceptions for vacations, etc.)

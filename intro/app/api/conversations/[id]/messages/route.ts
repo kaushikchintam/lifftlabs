@@ -1,0 +1,2 @@
+//GET - load messages in chat with pagination (e.g. load more messages as user scrolls up) with appropriate access control (only participants in the conversation can load messages)
+//POST - send a new message in the conversation with appropriate access control (only participants in the conversation can send messages)

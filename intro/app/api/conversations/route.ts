@@ -1,0 +1,2 @@
+//GET - list my conversations (both as coach and client) with pagination and optional filters (e.g. unread only)
+//POST - start a new conversation (e.g. client initiates conversation with coach, or coach reaches out to client after session) with appropriate access control (e.g. only clients who have booked a session can message the coach, and coaches can only message clients they have sessions with)
