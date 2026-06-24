@@ -1,10 +1,7 @@
-// import '/globals.css'
+interface AuthLayoutProps {
+  children: React.ReactNode;
+}
 
-export default function RootLayout({ children }: { children: React.ReactNode}) {
-    return (
-        <div>
-            <h1>Welcome to the Auth Page</h1>
-            {children}
-        </div>
-    );
+export default function AuthLayout({ children }: AuthLayoutProps) {
+  return <>{children}</>;
 }
