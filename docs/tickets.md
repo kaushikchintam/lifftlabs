@@ -17,7 +17,7 @@
 
 ---
 
-## Phase 1.5 — Auth Switch (Better Auth)
+## Phase 1.5 — Auth Switch (Better Auth) ✅ Complete
 
 | ID | Title | Status |
 |---|---|---|
@@ -29,86 +29,104 @@
 | P1.5-06 | Wire `mentor-approved.tsx` into mentor approval API route via Resend | ✅ Done |
 | P1.5-07 | Wire `mentor-rejected.tsx` into mentor rejection API route via Resend | ✅ Done |
 | P1.5-08 | Configure Google OAuth provider in Better Auth | ✅ Done |
-| P1.5-09 | Configure Apple OAuth provider in Better Auth | 🔲 ⏭ Todo | need money to do this
-| P1.5-10 | Configure Facebook OAuth provider in Better Auth | 🔲 ⏭ Todo | need live domain for this
-| P1.5-11 | Remove `@supabase/ssr` package | ✅ Done  |
-| P1.5-12 | Write ADR for Better Auth decision | ✅ Done  |
+| P1.5-09 | Configure Apple OAuth provider in Better Auth | ⏭️ Deferred — needs paid Apple account |
+| P1.5-10 | Configure Facebook OAuth provider in Better Auth | ⏭️ Deferred — needs live domain |
+| P1.5-11 | Remove `@supabase/ssr` package | ✅ Done |
+| P1.5-12 | Write ADR for Better Auth decision | ✅ Done |
 
 ---
 
-## Phase 2 — Auth UI
+## Phase 2 — Auth UI ✅ Complete
 
 | ID | Title | Status |
 |---|---|---|
-| P2-00 | Build landing page — hero, value prop, learner/mentor CTA |  ✅ Done |
-| P2-01 | Build login page — email-first flow (step 1: email, step 2: password) + Google only | ✅ Done |
-| P2-02 | Build role picker modal — "I'm a learner" / "I'm a mentor" (triggered from landing page CTA) | ✅ Done |
+| P2-00 | Build landing page — hero, value prop, learner/mentor CTA | ✅ Done |
+| P2-01 | Build login page — email-first flow + Google | ✅ Done |
+| P2-02 | Build role picker modal — "I'm a learner" / "I'm a mentor" | ✅ Done |
 | P2-03 | Build learner signup form — name, email, password | ✅ Done |
-| P2-04 | Build OTP verification screen — enter 6-digit code (learner signup only, not on login) | 🔲 Todo |
-| P2-05 | Build learner onboarding Step 1 — "Where are you now?" (background) | 🔲 Todo |
-| P2-06 | Build learner onboarding Step 2 — "Where do you want to go?" (target role) | 🔲 Todo |
-| P2-07 | Build learner onboarding Step 3 — "What's on your mind?" (primary concern) | 🔲 Todo |
-| P2-08 | Wire learner onboarding submit → create `learner_profiles` row → redirect to dashboard | 🔲 Todo |
-| P2-09 | Build mentor application form — name, email, linkedin | 🔲 Todo |
-| P2-10 | Build mentor application confirmation screen — "We'll be in touch" | 🔲 Todo |
-| P2-11 | Build mentor onboarding Step 1 — "What leap did you make?" (specialty + one-liner) | 🔲 Todo |
-| P2-12 | Build mentor onboarding Step 2 — "When can you coach?" (availability days) | 🔲 Todo |
-| P2-13 | Build mentor onboarding Step 3 — "Set your hourly rate" (slider) | 🔲 Todo |
-| P2-14 | Wire mentor onboarding submit → create `mentor_profiles` row → redirect to dashboard | 🔲 Todo |
-| P2-15 | Build admin mentor application review flow (approve / reject) | 🔲 Todo |
-| P2-16 | Wire approval → send magic link via `mentor-approved.tsx` | 🔲 Todo |
-| P2-17 | Wire rejection → send email via `mentor-rejected.tsx` | 🔲 Todo |
-| P2-18 | Build forgot password flow | 🔲 Todo |
-| P2-19 | Update proxy route protection — redirect unauthenticated users, redirect incomplete onboarding | 🔲 Todo |
+| P2-04 | Build OTP verification screen — 6-digit code | ✅ Done |
+| P2-05 | Build learner onboarding Step 1 — "Where are you now?" | ✅ Done |
+| P2-06 | Build learner onboarding Step 2 — "Where do you want to go?" | ✅ Done |
+| P2-07 | Build learner onboarding Step 3 — "What's on your mind?" | ✅ Done |
+| P2-08 | Wire learner onboarding submit → create `learner_profiles` row → redirect | ✅ Done |
+| P2-09 | Build mentor application form — name, email, linkedin | ✅ Done |
+| P2-10 | Build mentor application confirmation screen | ✅ Done |
+| P2-11 | Build mentor onboarding Step 1 — specialty + one-liner | ✅ Done |
+| P2-12 | Build mentor onboarding Step 2 — availability days | ✅ Done |
+| P2-13 | Build mentor onboarding Step 3 — hourly rate | ✅ Done |
+| P2-14 | Build mentor onboarding Step 4 — set password | ✅ Done |
+| P2-15 | Wire mentor onboarding submit → create `mentor_profiles` row → redirect | ✅ Done |
+| P2-16 | Build admin mentor application review flow (approve / reject) | ✅ Done |
+| P2-17 | Wire approval → send magic link via `mentor-approved.tsx` | ✅ Done |
+| P2-18 | Wire rejection → send email via `mentor-rejected.tsx` | ✅ Done |
+| P2-19 | Build forgot password flow | ✅ Done |
+| P2-20 | Update proxy route protection | ✅ Done |
 
 ---
 
-## Phase 3 — Core Learner UI
+## Phase 3 — Session Booking & Calendar
 
 | ID | Title | Status |
 |---|---|---|
-| P3-01 | Build learner dashboard home — progress summary, upcoming sessions, continue pathway | 🔲 Todo |
-| P3-02 | Build pathway browser — list published pathways with filters | 🔲 Todo |
-| P3-03 | Build pathway detail page — milestones, modules, enroll CTA | 🔲 Todo |
-| P3-04 | Wire pathway enroll → create `user_pathway_progress` row | 🔲 Todo |
-| P3-05 | Build milestone detail — mark complete, upload evidence | 🔲 Todo |
-| P3-06 | Wire milestone complete → create `milestone_completions` row, update progress | 🔲 Todo |
-| P3-07 | Build microlearning module viewer — video, article, quiz, exercise | 🔲 Todo |
-| P3-08 | Build portfolio page — list completed milestones and evidence | 🔲 Todo |
-| P3-09 | Build mentor match page — "See my matches" based on learner profile | 🔲 Todo |
+| P3-01 | Rebuild dashboard home — upcoming sessions, quick book CTA (both learner + mentor views) | ✅ Done|
+| P3-02 | Update sidebar nav — replace pathway items with Sessions, Chat, Calendar | ✅ Done|
+| P3-03 | Google Calendar OAuth for mentors — redirect, callback, store tokens in `calendar_integrations` | ✅ Done |
+| P3-04 | Sync mentor availability from Google Calendar — fetch instances, cache in `google_calendar_blockers` | 🔲 Todo |
+| P3-05 | Set up Google Calendar webhook (Watch channel) — register on connect, store `channel_id` + `renew_at` | 🔲 Todo |
+| P3-06 | Build webhook renewal cron (Supabase Edge Function) — renew channels at 50% lifetime using `renew_at` | 🔲 Todo |
+| P3-07 | Build mentor availability page — set weekly working hours → `mentor_availability` table | 🔲 Todo |
+| P3-07b | Build mentor scheduling settings — buffer time, min notice, session caps → `mentor_profiles` | 🔲 Todo |
+| P3-08 | Build session booking UI — learner picks available slot from mentor's calendar | 🔲 Todo |
+| P3-09 | API route: create session — validate slot, insert `mentor_sessions`, hold with exclusion constraint | 🔲 Todo |
+| P3-10 | Build sessions list page — upcoming + past sessions (both roles) | 🔲 Todo |
+| P3-11 | Build session detail page — status, notes, join CTA | 🔲 Todo |
+| P3-12 | Send session confirmation email on booking | 🔲 Todo |
+| P3-13 | Send 24hr reminder email (Supabase Edge Function) | 🔲 Todo |
 
 ---
 
-## Phase 4 — Mentor UI
+## Phase 4 — Payments
 
 | ID | Title | Status |
 |---|---|---|
-| P4-01 | Build public mentor profile page | 🔲 Todo |
-| P4-02 | Build mentor dashboard home — upcoming sessions, cohorts, earnings summary | 🔲 Todo |
-| P4-03 | Build pathway creation flow — title, description, milestones, modules | 🔲 Todo |
-| P4-04 | Build program creation flow — wrap pathway with price, cohort size | 🔲 Todo |
-| P4-05 | Build cohort management page — enrolled learners, progress overview | 🔲 Todo |
-| P4-06 | Build mentor availability management — update available days and rate | 🔲 Todo |
-| P4-07 | Wire Stripe Connect onboarding — redirect mentor to Stripe, store `stripe_account_id` | 🔲 Todo |
+| P4-01 | Stripe Connect onboarding for mentor — redirect to Stripe, store `stripe_account_id` | 🔲 Todo |
+| P4-02 | Stripe Checkout session for learner — pay for session in GBP | 🔲 Todo |
+| P4-03 | Stripe webhook handler — signature verification, mark session payment complete | 🔲 Todo |
+| P4-04 | Build payment history page (learner) + earnings page (mentor) | 🔲 Todo |
+| P4-05 | Send payment receipt email | 🔲 Todo |
 
 ---
 
-## Phase 5 — Interactions
+## Phase 5 — Video
 
 | ID | Title | Status |
 |---|---|---|
-| P5-01 | Build conversations list page | 🔲 Todo |
-| P5-02 | Build conversation detail page — real-time messages via Supabase Realtime | 🔲 Todo |
-| P5-03 | Wire new conversation creation via service role API route | 🔲 Todo |
-| P5-04 | Build session booking flow — learner books a session with a mentor | 🔲 Todo |
-| P5-05 | Build session detail page — status, notes, join video call CTA | 🔲 Todo |
-| P5-06 | Build Agora token generation API route | 🔲 Todo |
-| P5-07 | Build video session UI — camera, mic controls, leave session | 🔲 Todo |
-| P5-08 | Build Stripe payment flow — learner pays for session or program | 🔲 Todo |
-| P5-09 | Build Stripe webhook handler — update `payments` table on success/failure | 🔲 Todo |
-| P5-10 | Build payment receipt page | 🔲 Todo |
-| P5-11 | Send session confirmation email via Resend on booking | 🔲 Todo |
-| P5-12 | Send session reminder email 24hrs before via Supabase Edge Function | 🔲 Todo |
+| P5-01 | Agora token generation API route — scoped to `sessionId` as channel name | 🔲 Todo |
+| P5-02 | Build video call UI — camera, mic controls, leave session | 🔲 Todo |
+| P5-03 | Pre-fetch Agora token on session detail page load (not on button click) | 🔲 Todo |
+| P5-04 | Mark session complete on call end | 🔲 Todo |
+
+---
+
+## Phase 6 — Chat
+
+| ID | Title | Status |
+|---|---|---|
+| P6-01 | Build chat UI — message list + input (Supabase Realtime) | 🔲 Todo |
+| P6-02 | Wire live messages via Supabase Realtime subscription | 🔲 Todo |
+| P6-03 | Create conversation automatically on first session booking | 🔲 Todo |
+| P6-04 | Implement cursor-based pagination for chat history | 🔲 Todo |
+| P6-05 | New message notification email | 🔲 Todo |
+
+---
+
+## Security
+
+| ID | Title | Status |
+|---|---|---|
+| SC-01 | Rate limit auth endpoints — `@upstash/ratelimit` on `/api/auth/*`, `/api/sessions`, `/api/chat/messages` | 🔲 Todo |
+| SC-02 | Stripe webhook signature verification | 🔲 Todo |
+| SC-03 | UK GDPR — privacy policy + cookie notice | 🔲 Todo |
 
 ---
 
@@ -116,11 +134,9 @@
 
 | ID | Title | Status |
 |---|---|---|
-| CX-01 | Set up Sentry error tracking — frontend and API routes | 🔲 Todo |
-| CX-02 | Set up PostHog product analytics | 🔲 Todo |
-| CX-03 | Build mentor-learner AI matching algorithm (Go service + Claude API) | 🔲 Todo |
+| CX-01 | Set up Sentry error tracking | 🔲 Todo |
+| CX-02 | Set up PostHog analytics | 🔲 Todo |
 | CX-04 | Configure Resend domain for production (`lifftlabs.com`) | 🔲 Todo |
-| CX-05 | Set up Cloudflare Stream or Mux for video module hosting | 🔲 Todo |
 | CX-06 | Push codebase to GitHub | 🔲 Todo |
 | CX-07 | Set up CI/CD pipeline (GitHub Actions + Vercel) | 🔲 Todo |
 
@@ -133,6 +149,6 @@
 | EM-01 | `verification.tsx` — learner OTP verification | ✅ Done |
 | EM-02 | `mentor-approved.tsx` — magic link for approved mentors | ✅ Done |
 | EM-03 | `mentor-rejected.tsx` — rejection notification | ✅ Done |
-| EM-04 | `session-confirmation.tsx` — session booking confirmation | 🔲 Todo |
+| EM-04 | `session-confirmation.tsx` — booking confirmation | 🔲 Todo |
 | EM-05 | `session-reminder.tsx` — 24hr session reminder | 🔲 Todo |
 | EM-06 | `payment-receipt.tsx` — payment confirmation | 🔲 Todo |

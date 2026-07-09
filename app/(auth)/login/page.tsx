@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { emailSchema, loginSchema } from "@/features/auth/schema";
+import { authClient } from "@/lib/auth/client";
 
 type Step = "email" | "password";
 
@@ -89,16 +90,27 @@ export default function LoginPage() {
                   className="font-dm-sans border border-border rounded-lg px-4 py-2.5 text-sm outline-none focus:border-[#2596BE] transition-colors"
                 />
                 {error && <p className="font-dm-sans text-xs text-[#E63946] mt-1">{error}</p>}
+                <Link href="/forgot-password" className="font-dm-sans text-xs text-[#2596BE] hover:underline self-end">
+                  Forgot password?
+                </Link>
               </div>
               <Button
                 className="h-auto w-full bg-[#2596BE] hover:bg-[#1A7A9E] text-white rounded-full py-3 font-dm-sans"
-                onClick={() => {
+                onClick={async () => {
                   const result = loginSchema.safeParse({ email, password });
                   if (!result.success) {
                     setError(result.error.issues[0].message);
                     return;
                   }
                   setError("");
+                  const { error: signInError } = await authClient.signIn.email({
+                    email,
+                    password,
+                    callbackURL: "/dashboard",
+                  });
+                  if (signInError) {
+                    setError(signInError.message ?? "Invalid email or password.");
+                  }
                 }}
               >
                 Sign in
@@ -123,6 +135,9 @@ export default function LoginPage() {
           <Button
             variant="outline"
             className="h-auto w-full rounded-full py-3 font-dm-sans text-sm gap-3"
+            onClick={async () => {
+              await authClient.signIn.social({ provider: "google", callbackURL: "/dashboard" });
+            }}
           >
             <svg width="18" height="18" viewBox="0 0 18 18">
               <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>

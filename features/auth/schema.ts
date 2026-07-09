@@ -19,3 +19,9 @@ export const signupSchema = z.object({
     email: z.email("Please enter a valid email"),
     password: z.string().min(8, "Password must be at least 8 characters"),
 });
+
+export const mentorApplicationSchema = z.object({
+    fullName: z.string().min(2, "Please enter your full name").trim(),
+    workEmail: z.email("Please enter your work email"),
+    linkedinOrPortfolio: z.string().min(5, "Please enter your LinkedIn or portfolio URL"),
+})

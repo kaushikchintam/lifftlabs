@@ -58,7 +58,7 @@
   --color-ink-faintest: #9A958A;
   --color-bg-card: #F2F4F6;
   --color-bg-panel: #F1ECE0;
-  --color-bg-page: #DDEBF3;
+  --color-bg-page: #F1ECE0;
   --color-success: #2A9D5C;
   --color-danger: #E63946;
   --color-warning: #F4A261;
@@ -66,6 +66,7 @@
   /* Fonts */
   --font-archivo-black: var(--font-archivo-black);
   --font-dm-sans: var(--font-dm-sans);
+  --font-dm-serif: var(--font-dm-serif);
 }
 
 :root {
@@ -135,6 +136,24 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.animate-slide-forward {
+  animation: slide-in-right 0.3s ease both;
+}
+
+.animate-slide-back {
+  animation: slide-in-left 0.3s ease both;
 }
 
 @layer base {

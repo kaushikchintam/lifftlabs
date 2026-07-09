@@ -3,28 +3,43 @@
 import { signupSchema } from "@/features/auth/schema";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth/client";
 
 export default function LearnerSignupPage() {
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-
+    const [otpError, setOtpError] = useState("");
+    const router = useRouter();
+    const [showOtp, setShowOtp] = useState(false);
+    const [otp, setOtp] = useState("");
 
 return (
     <div className="flex h-screen">
         {/* Left panel */}
         <div className="relative hidden md:flex w-1/2">
-          <img src="/images/learner-signup.jpg" className="absolute inset-0 w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-[#2596BE]/70" />
-          <div className="absolute inset-0 flex flex-col justify-between p-10">
-            <span className="font-archivo-black text-white text-sm tracking-widest uppercase">LIFFT LABS</span>
+          {/* Background image */}
+          <img src="/images/ok.jpg" className="absolute inset-0 w-full h-full object-cover" />
+          
+          {/* Dark gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/35 z-10" />
+          
+          {/* Text content */}
+          <div className="absolute inset-0 flex flex-col justify-between p-10 z-20">
+            <span className="font-archivo-black text-white text-sm tracking-widest uppercase drop-shadow-lg">LIFFT LABS</span>
             <div>
-              <h2 className="font-archivo-black text-white text-4xl leading-tight mb-4">You didn't train this hard to feel stuck.</h2>
-              <p className="font-dm-sans text-white/80 text-base italic">Someone who's been where you are is one match away.</p>
+              <h2 className="font-archivo-black text-white text-4xl leading-tight mb-4 drop-shadow-lg [text-shadow:0_2px_12px_rgba(0,0,0,0.8)]">
+                You didn't train this hard to feel stuck.
+              </h2>
+              <p className="font-dm-sans text-white/90 text-base italic drop-shadow-md">
+                Someone who's been where you are is one match away.
+              </p>
             </div>
-            <span className="font-dm-sans text-white/60 text-sm">The platform built for healthcare transition</span>
+            <span className="font-dm-sans text-white/70 text-sm drop-shadow-md">The platform built for healthcare transition</span>
           </div>
         </div>
 
@@ -85,13 +100,24 @@ return (
 
               <Button
                 className="h-auto w-full bg-[#2596BE] hover:bg-[#1A7A9E] text-white rounded-full py-3 font-dm-sans"
-                onClick={() => {
+                onClick={async () => {
                   const result = signupSchema.safeParse({ fullName, email, password });
                   if (!result.success) {
                     setError(result.error.issues[0].message);
                     return;
                   }
                   setError("");
+                  const { error: authError } = await authClient.signUp.email({
+                    name: fullName,
+                    email,
+                    password,
+                  });
+                  if (authError) {
+                    setError(authError.message ?? "Something went wrong. Please try again.");
+                    return;
+                  }
+                  await authClient.emailOtp.sendVerificationOtp({ email, type: "email-verification" });
+                  setShowOtp(true);
                 }}
               >
                 Create account
@@ -109,6 +135,9 @@ return (
             <Button
               variant="outline"
               className="h-auto w-full rounded-full py-3 font-dm-sans text-sm gap-3"
+              onClick={async () => {
+                await authClient.signIn.social({ provider: "google", callbackURL: "/onboarding/learner" });
+              }}
             >
               <svg width="18" height="18" viewBox="0 0 18 18">
                 <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
@@ -127,8 +156,51 @@ return (
 
           </div>
         </div>
-    </div>
 
-    
+        {/* OTP Dialog */}
+        <Dialog open={showOtp} onOpenChange={() => {}}>
+            <DialogContent className="sm:max-w-sm" onInteractOutside={(e) => e.preventDefault()}>
+                <DialogHeader>
+                    <DialogTitle className="font-archivo-black text-[#18150F] text-xl">Check your email</DialogTitle>
+                    <DialogDescription className="font-dm-sans text-[#6F6B60] text-sm">
+                        We sent a 6-digit code to <span className="font-medium text-[#18150F]">{email}</span>
+                    </DialogDescription>
+                </DialogHeader>
+
+                <div className="flex flex-col gap-3 mt-2">
+                    <input
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={6}
+                    placeholder="000000"
+                    value={otp}
+                    onChange={(e) => { setOtp(e.target.value.replace(/\D/g, "")); setOtpError(""); }}
+                    className="font-dm-sans border border-border rounded-lg px-4 py-3 text-sm outline-none focus:border-[#2596BE] transition-colors tracking-widest text-center text-lg"
+                    />
+                    {otpError && <p className="font-dm-sans text-xs text-[#E63946]">{otpError}</p>}
+                    <Button className="h-auto w-full bg-[#2596BE] hover:bg-[#1A7A9E] text-white rounded-full py-3 font-dm-sans"
+                    onClick={async () => {
+                        const { error: verifyError } = await authClient.emailOtp.verifyEmail({ email, otp });
+                        if (verifyError) {
+                            setOtpError(verifyError.message ?? "Invalid code. Please try again.");
+                            return;
+                        }
+                        router.push("/onboarding/learner");
+                    }}>
+                        Verify
+                    </Button>
+
+                    <button
+                     className="font-dm-sans text-sm text-[#6F6B60] hover:text-[#18150F] transition-colors text-center"
+                     onClick={async () => {
+                        await authClient.emailOtp.sendVerificationOtp({ email, type: "email-verification"});
+                     }}
+                    >
+                        Didn't get a code? <span className="text-[#2596BE] font-medium">Resend</span>
+                    </button>
+                </div>
+            </DialogContent>
+        </Dialog>
+    </div>    
 )
 }

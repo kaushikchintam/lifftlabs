@@ -1,10 +1,11 @@
-//POST handler, renders MentorRejectionEmail, sends via Resend
+//POST handler, renders MentorRejectionEmail, sends via Resend POST /api/mentors/reject — sends rejection email via Resend
 import { z } from "zod";
 import React from "react";
 import { render } from "@react-email/render";
 import { MentorRejectionEmail } from "@/emails/mentor-rejected";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { resend } from "@/lib/resend/client";
+import { supabaseAdmin } from "@/lib/supabase/admin";
 
 const schema = z.object({
     fullName: z.string().min(1),
@@ -12,7 +13,7 @@ const schema = z.object({
     reapplyLink: z.url().optional(),
 })
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
     const body = await request.json()
     const result = schema.safeParse(body);
 
@@ -29,12 +30,17 @@ if(!result.success) {
         React.createElement(MentorRejectionEmail, { fullName, reapplyLink })
     )
 
-    resend.emails.send({
-        from: "LIFFTLABS <no-reply@yourdomain.com>",
+    await resend.emails.send({
+        from: "LIFFT LABS <onboarding@resend.dev>",
         to: email,
         subject: 'Your mentor profile has been rejected',
-        html, 
+        html,
     })
+
+    await supabaseAdmin
+      .from("mentor_applications")
+      .update({ status: "rejected" })
+      .eq("email", email);
 
     return NextResponse.json({
         success: true

@@ -14,7 +14,7 @@ export default function HomePage() {
                 Powering tomorrow's healthcare workforce
             </span>
             <h1 className="font-archivo-black text-4xl md:text-5xl text-[#18150F] max-w-2xl leading-tight mb-6" >
-                The way into, through, and within healthcare.
+                Retraining made easier.
             </h1>
             <p className="font-dm-sans text-[#3A372F] text-lg max-w-xl leading-relaxed mb-10">
                 LIFFT is the platform for retraining into medicine and advance within it, personalized pathways, expert mentorship and structured learning.
