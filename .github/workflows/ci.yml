@@ -37,6 +37,8 @@ jobs:
           GOOGLE_CLIENT_ID: placeholder
           GOOGLE_CLIENT_SECRET: placeholder
           SUPABASE_URL: https://placeholder.supabase.co
+          # Added below to match the exact key used by your Supabase client
+          NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
           SUPABASE_SERVICE_ROLE_KEY: placeholder
           RESEND_API_KEY: re_placeholder
           AGORA_APP_ID: placeholder
