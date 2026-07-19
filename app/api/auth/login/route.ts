@@ -1,1 +1,0 @@
-//POST - {email, password, role} -> authenticate user and return JWT token
