@@ -447,7 +447,7 @@ On hold expiry (no checkout):
 | `session-reminder.tsx` | Cron 24h before session | Mentor + Learner |
 | `password-reset.tsx` | Forgot password | User |
 
-All sent via Resend from `LIFFT LABS <onboarding@resend.dev>`.
+All sent via Resend from `LIFFT <hello@mail.lifft-dev.co.uk>`.
 
 ---
 

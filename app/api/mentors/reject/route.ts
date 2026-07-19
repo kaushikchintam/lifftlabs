@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     )
 
     await resend.emails.send({
-        from: "LIFFT LABS <onboarding@resend.dev>",
+        from: "LIFFT <hello@mail.lifft-dev.co.uk>",
         to: email,
         subject: 'Your mentor profile has been rejected',
         html,

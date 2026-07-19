@@ -41,7 +41,7 @@ export const auth = betterAuth({
         })
       );
       await resend.emails.send({
-        from: "LIFFT LABS <onboarding@resend.dev>",
+        from: "LIFFT <hello@mail.lifft-dev.co.uk>",
         to: user.email,
         subject: "Reset your LIFFT Labs password",
         html,
@@ -60,7 +60,7 @@ export const auth = betterAuth({
         if (type === "email-verification") {
           const html = await render(React.createElement(VerificationEmail, { code: otp }));
           await resend.emails.send({
-            from: "LIFFT LABS <onboarding@resend.dev>",
+            from: "LIFFT <hello@mail.lifft-dev.co.uk>",
             to: email,
             subject: "Your LIFFT LABS verification code",
             html,
@@ -82,7 +82,7 @@ export const auth = betterAuth({
           })
         );
         await resend.emails.send({
-          from: "LIFFT LABS <onboarding@resend.dev>",
+          from: "LIFFT <hello@mail.lifft-dev.co.uk>",
           to: data.email,
           subject: "Your mentor application has been approved",
           html
