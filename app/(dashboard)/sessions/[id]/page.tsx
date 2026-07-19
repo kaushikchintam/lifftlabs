@@ -101,7 +101,7 @@ export default async function SessionDetailPage({
     row.status === "confirmed" && nowMs >= joinOpens && nowMs <= joinCloses;
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6 p-6">
+    <div className="mx-auto max-w-2xl space-y-6 p-4 md:p-6">
       <header>
         <h1 className="font-dm-serif text-2xl text-[#18150F]">
           Session with{" "}

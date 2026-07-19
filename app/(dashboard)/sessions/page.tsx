@@ -97,7 +97,7 @@ export default async function SessionsPage() {
   );
 
   return (
-    <div className="mx-auto max-w-2xl space-y-8 p-6">
+    <div className="mx-auto max-w-2xl space-y-8 p-4 md:p-6">
       <h1 className="font-archivo-black text-2xl text-[#18150F] tracking-widest uppercase">Sessions</h1>
 
       <section className="space-y-3">

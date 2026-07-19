@@ -58,7 +58,7 @@ export default function Sidebar({ userName, initials, role }: Props) {
 
   return (
     <aside
-      className={`flex-shrink-0 flex flex-col bg-[#FBF7EE] border-r border-[#E8E2D6] h-full transition-all duration-200 ${collapsed ? "w-[60px]" : "w-[220px]"}`}
+      className={`hidden md:flex flex-shrink-0 flex-col bg-[#FBF7EE] border-r border-[#E8E2D6] h-full transition-all duration-200 ${collapsed ? "w-[60px]" : "w-[220px]"}`}
     >
       <div
         className={`flex items-center py-6 ${collapsed ? "justify-center px-0" : "justify-between px-5"}`}

@@ -31,14 +31,14 @@ export default function HomePage() {
       <RolePicker open={open} onClose={() => setOpen(false)} />
 
       {/* Hero */}
-      <section className="font-archivo-black flex flex-col items-center justify-center text-center px-6 py-32 bg-[#DDEBF3] min-h-[calc(100vh-73px)]">
-        <span className="inline-block border border-[#2596BE] text-[#2596BE] text-sm px-4 py-1 rounded-full mb-8">
+      <section className="font-archivo-black flex flex-col items-center justify-center text-center px-6 py-20 md:py-32 bg-[#DDEBF3] min-h-[calc(100vh-73px)]">
+        <span className="inline-block border border-[#2596BE] text-[#2596BE] text-xs md:text-sm px-4 py-1 rounded-full mb-8">
           Powering tomorrow's healthcare workforce
         </span>
-        <h1 className="font-archivo-black text-4xl md:text-5xl text-[#18150F] max-w-2xl leading-tight mb-6">
+        <h1 className="font-archivo-black text-3xl md:text-5xl text-[#18150F] max-w-2xl leading-tight mb-6">
           Retraining made easier.
         </h1>
-        <p className="font-dm-sans text-[#3A372F] text-lg max-w-xl leading-relaxed mb-10">
+        <p className="font-dm-sans text-[#3A372F] text-base md:text-lg max-w-xl leading-relaxed mb-10">
           LIFFT is the platform for retraining into medicine and advancing
           within it — personalised pathways, expert mentorship and structured
           learning.
@@ -52,12 +52,12 @@ export default function HomePage() {
       </section>
 
       {/* How it works */}
-      <section id="how-it-works" className="bg-white px-6 py-24">
+      <section id="how-it-works" className="bg-white px-6 py-16 md:py-24">
         <div className="mx-auto max-w-5xl">
-          <h2 className="font-archivo-black text-3xl text-[#18150F] text-center mb-4">
+          <h2 className="font-archivo-black text-2xl md:text-3xl text-[#18150F] text-center mb-4">
             How it works
           </h2>
-          <p className="font-dm-sans text-[#6F6B60] text-center max-w-xl mx-auto mb-14">
+          <p className="font-dm-sans text-[#6F6B60] text-center max-w-xl mx-auto mb-10 md:mb-14">
             One-to-one sessions with people who've already walked your path —
             booked in minutes.
           </p>
@@ -65,7 +65,7 @@ export default function HomePage() {
             {STEPS.map(({ icon: Icon, title, body }, i) => (
               <div
                 key={title}
-                className="border border-[#E8E2D6] rounded-xl p-8 bg-[#FBF7EE]"
+                className="border border-[#E8E2D6] rounded-xl p-6 md:p-8 bg-[#FBF7EE]"
               >
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-9 h-9 rounded-full bg-[#18150F] flex items-center justify-center">
@@ -88,9 +88,9 @@ export default function HomePage() {
       </section>
 
       {/* Mentors */}
-      <section id="mentors" className="bg-[#FBF7EE] px-6 py-24">
+      <section id="mentors" className="bg-[#FBF7EE] px-6 py-16 md:py-24">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="font-archivo-black text-3xl text-[#18150F] mb-4">
+          <h2 className="font-archivo-black text-2xl md:text-3xl text-[#18150F] mb-4">
             Working in healthcare? Mentor the next generation.
           </h2>
           <p className="font-dm-sans text-[#3A372F] max-w-xl mx-auto leading-relaxed mb-8">
