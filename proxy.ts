@@ -15,7 +15,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-    //clear state role cookie if session is gone
+  //clear state role cookie if session is gone
   if(!session && role) {
     const res = NextResponse.next();
     res.cookies.delete("role");
@@ -103,6 +103,7 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'
+    // Added api| here to prevent middleware from processing backend API routes
+    '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'
   ],
 };
