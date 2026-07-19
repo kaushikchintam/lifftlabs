@@ -44,7 +44,7 @@ export default function HomePage() {
           learning.
         </p>
         <Button
-          className="h-auto bg-[#2596BE] hover:bg-[#1A7A9E] text-white rounded-full px-8 py-3 text-base"
+          className="h-auto bg-[#2596BE] hover:bg-[#1A7A9E] text-white rounded-full px-8 py-3 text-base font-dm-sans font-semibold"
           onClick={() => setOpen(true)}
         >
           I'm a professional
@@ -99,7 +99,7 @@ export default function HomePage() {
             you once made.
           </p>
           <Button
-            className="h-auto bg-[#18150F] hover:bg-[#2d2a22] text-white rounded-full px-8 py-3 text-base"
+            className="h-auto bg-[#18150F] hover:bg-[#2d2a22] text-white rounded-full px-8 py-3 text-base font-dm-sans font-semibold"
             onClick={() => setOpen(true)}
           >
             Become a mentor
