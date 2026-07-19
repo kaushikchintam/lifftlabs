@@ -71,13 +71,13 @@
 | P3-01 | Rebuild dashboard home — upcoming sessions, quick book CTA (both learner + mentor views) | ✅ Done|
 | P3-02 | Update sidebar nav — replace pathway items with Sessions, Chat, Calendar | ✅ Done|
 | P3-03 | Google Calendar OAuth for mentors — redirect, callback, store tokens in `calendar_integrations` | ✅ Done |
-| P3-04 | Sync mentor availability from Google Calendar — fetch instances, cache in `google_calendar_blockers` | 🔲 Todo |
-| P3-05 | Set up Google Calendar webhook (Watch channel) — register on connect, store `channel_id` + `renew_at` | 🔲 Todo |
-| P3-06 | Build webhook renewal cron (Supabase Edge Function) — renew channels at 50% lifetime using `renew_at` | 🔲 Todo |
+| P3-04 | Sync mentor availability from Google Calendar — fetch instances, cache in `google_calendar_blockers` | ✅ Done |
+| P3-05 | Set up Google Calendar webhook (Watch channel) — register on connect, store `channel_id` + `renew_at` | ✅ Done |
+| P3-06 | Build webhook renewal cron (Supabase Edge Function) — renew channels at 50% lifetime using `renew_at` | ✅ Done |
 | P3-07 | Build mentor availability page — set weekly working hours → `mentor_availability` table | 🔲 Todo |
 | P3-07b | Build mentor scheduling settings — buffer time, min notice, session caps → `mentor_profiles` | 🔲 Todo |
 | P3-08 | Build session booking UI — learner picks available slot from mentor's calendar | 🔲 Todo |
-| P3-09 | API route: create session — validate slot, insert `mentor_sessions`, hold with exclusion constraint | 🔲 Todo |
+| P3-09 | API route: create session — validate slot, insert `mentor_sessions`, hold with exclusion constraint | ✅ Done |
 | P3-10 | Build sessions list page — upcoming + past sessions (both roles) | 🔲 Todo |
 | P3-11 | Build session detail page — status, notes, join CTA | 🔲 Todo |
 | P3-12 | Send session confirmation email on booking | 🔲 Todo |

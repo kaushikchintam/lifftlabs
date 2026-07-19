@@ -10,16 +10,32 @@ export async function POST(req: NextRequest) {
 
   // "£80/hr" → 8000 pence
   const hourly_rate_pence = parseInt(hourly_rate.replace(/[^0-9]/g, ""), 10) * 100;
-  
+
   try {
-  await auth.api.setPassword({
-    body: {newPassword: password},
-    headers: req.headers,
-  });
-} catch {
-  //magic-link accounts may not have a password credentials yet, non-fatal. 
-}
-  
+    await auth.api.setPassword({
+      body: { newPassword: password },
+      headers: req.headers,
+    });
+  } catch {
+    //magic-link accounts may not have a password credentials yet, non-fatal.
+  }
+
+  // Magic-link accounts were created from an email alone — Better Auth's
+  // user row has no name, which blanks the mentor everywhere it renders
+  // (browse cards, chat, sessions). Persist it from their application.
+  const { data: application } = await supabaseAdmin
+    .from("mentor_applications")
+    .select("full_name")
+    .eq("email", session.user.email)
+    .maybeSingle();
+
+  if (application?.full_name && !session.user.name) {
+    await supabaseAdmin
+      .from("user")
+      .update({ name: application.full_name })
+      .eq("id", session.user.id);
+  }
+
   const { error } = await supabaseAdmin.from("mentor_profiles").insert({
     user_id: session.user.id,
     specialty: [specialty],

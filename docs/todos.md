@@ -7,22 +7,22 @@ Companion to `tickets.md` — this captures review findings + decisions, not jus
 
 ## 0 — Today / this week (protects everything else)
 
-- [ ] **Push codebase to GitHub (CX-06).** Before pushing: confirm `.env*` gitignored,
+- [done] **Push codebase to GitHub (CX-06).** Before pushing: confirm `.env*` gitignored,
       scan full git history for committed secrets. If ANY key was ever committed, rotate it
       (Google client secret, Supabase service role, Stripe keys, Resend).
-- [ ] **Verify RLS state** — ADR 010 says "enabled, no policies"; db-schema.md says "disabled".
+- [done] **Verify RLS state** — ADR 010 says "enabled, no policies"; db-schema.md says "disabled".
       Run: `select tablename, rowsecurity from pg_tables where schemaname='public';`
       Enable RLS (no policies) on anything false. `calendar_integrations` holds plaintext
       refresh tokens — if RLS is off, the anon key can read them from the browser.
-- [ ] **Delete `lib/supabase/client.ts`** (browser client) — serves no purpose under ADR 010,
+- [done] **Delete `lib/supabase/client.ts`** (browser client) — serves no purpose under ADR 010,
       pure footgun.
-- [ ] **Audit role-cookie trust.** Cookie is client-controlled → UX hint only. Every privileged
+- [done] **Audit role-cookie trust.** Cookie is client-controlled → UX hint only. Every privileged
       route must re-derive: session via `auth.api.getSession()`, admin via `ADMIN_EMAILS`,
       mentor/learner via profile-row existence. Audit `/api/mentors/approve|reject|applications`
       first. Write **ADR 011**: "role cookie is advisory; authorization always server-derived."
-- [ ] **CX-04: Resend production domain** — SPF/DKIM/DMARC on `lifftlabs.com`, send from
+- [pushedforlater] **CX-04: Resend production domain** — SPF/DKIM/DMARC on `lifftlabs.com`, send from
       subdomain (e.g. `mail.`), test deliverability to Gmail, Outlook, and an **nhs.net** address.
-- [ ] **CX-07: CI/CD** — GitHub Actions (typecheck/lint/build) + Vercel previews.
+- [] **CX-07: CI/CD** — GitHub Actions (typecheck/lint/build) + Vercel previews.
       Separate dev/prod Supabase projects. All schema changes via CLI migration files
       from now on — no dashboard hand-edits to prod.
 
@@ -32,30 +32,30 @@ Companion to `tickets.md` — this captures review findings + decisions, not jus
 
 One migration file covering:
 
-- [ ] Drop legacy FKs to `profiles`; convert to `text`: `mentor_sessions.mentor_id/learner_id`,
+- [done] Drop legacy FKs to `profiles`; convert to `text`: `mentor_sessions.mentor_id/learner_id`,
       `payments.user_id`, `conversation_participants.user_id`, `messages.sender_id`.
-- [ ] Add **real FKs to `"user"(id)`** across app tables. On-delete: `cascade` for profiles,
+- [done] Add **real FKs to `"user"(id)`** across app tables. On-delete: `cascade` for profiles,
       `restrict` for `mentor_sessions`/`payments` (GDPR deletion = anonymize, not cascade).
-- [ ] Drop `profiles` table. Redistribute: `linkedin_url` → learner_profiles,
+- [done] Drop `profiles` table. Redistribute: `linkedin_url` → learner_profiles,
       `stripe_customer_id` → learner_profiles. Null/re-point `mentor_applications.reviewed_by`.
-- [ ] **Fix exclusion constraint bug**: add `WHERE (status IN ('pending','confirmed'))` —
+- [done] **Fix exclusion constraint bug**: add `WHERE (status IN ('pending','confirmed'))` —
       currently a cancelled session blocks its slot forever.
-- [ ] Add `expired` to `session_status` enum; document `pending` = pending payment.
-- [ ] Fold in the new-code migration (delivered file `20260708_calendar_booking.sql`),
+- [done] Add `expired` to `session_status` enum; document `pending` = pending payment.
+- [done] Fold in the new-code migration (delivered file `20260708_calendar_booking.sql`),
       **adjusted**: all `p_mentor_id`/`p_learner_id` params and `mentor_open_slots.mentor_id`
       are **text** not uuid; `hold_slot` inserts `scheduled_at`/`ends_at` (booking_range is
       GENERATED — cannot write it); constraint rides existing `booking_range`.
       Includes: `mentor_open_slots`, `stripe_events`, `lifft_session_id` on blockers,
       `status` on `calendar_integrations`, `google_event_id`/`slot_id`/`expires_at`/
       `stripe_checkout_id` on `mentor_sessions`.
-- [ ] Drop & recreate `messages` cleanly (currently has Realtime-internal columns:
+- [done] Drop & recreate `messages` cleanly (currently has Realtime-internal columns:
       topic/extension/event/payload/private).
 
 ---
 
 ## 2 — Calendar sync + booking integration (adopt delivered code)
 
-- [ ] `npm i stripe date-fns-tz`. Env: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`.
+- [done] `npm i stripe date-fns-tz`. Env: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`.
 - [ ] Adopt files, reconciled to real schema: `mentor_profiles` keyed on `user_id` (not `id`);
       price column is `hourly_rate_pence` (not `session_price_pence`).
 - [ ] **Truncate `google_calendar_blockers`** (old rows have malformed range strings),

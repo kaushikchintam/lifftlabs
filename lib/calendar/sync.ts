@@ -1,64 +1,87 @@
 import { google } from "googleapis";
+import { calendar_v3 } from "googleapis";
 import { supabaseAdmin } from "@/lib/supabase/admin";
+import { fromZonedTime } from "date-fns-tz";
+import {
+    getCalendarClientForMentor, 
+    markIntegrationRevoked, 
+    isInvalidGrantError, 
+    CalendarNotConnectedError, 
+    CalendarRevokedError, 
+} from "./client";
 
-export async function syncMentorCalendar(mentorId: string): Promise<void> {
-    const { data: integration, error } = await supabaseAdmin
-        .from("calendar_integrations")
-        .select("access_token, refresh_token, token_expiry, sync_token")
-        .eq("mentor_id", mentorId)
-        .eq("provider", "google")
-        .single();
+/** Blockers are only synced within this horizon. Must be >= your booking
+ * horizon plus slack. The sync token freezes the window it was created with, 
+ * so forceFullSync() must run periodically (piggyback on the channel-renewal
+ * cron) to roll the window forward 
+ */
+const SYNC_HORIZON_DAYS = 60;
+const DEFAULT_TZ = "Europe/London";
 
-    if (error || !integration) return;
+//Discriminated union type 
+export type SyncResult = 
+  | { mode: "full" | "incremental"; upserted: number; deleted: number; slotsWithdrawn: number }
+  | { mode: "skipped"; reason: "not_connected" | "revoked" };
 
-    const oauth2Client = new google.auth.OAuth2(
-        process.env.GOOGLE_CLIENT_ID,
-        process.env.GOOGLE_CLIENT_SECRET,
-        `${process.env.BETTER_AUTH_URL}/api/auth/google-calendar/callback`
-    );
-
-    oauth2Client.setCredentials({
-        access_token: integration.access_token, 
-        refresh_token: integration.refresh_token, 
-        expiry_date: new Date(integration.token_expiry).getTime(),
-    });
-
-    //Save refreshed token if googleapis auto-refreshes it, (this is an event listener for automatic token refresh, it solves the problem of access tokens expiring)
-    oauth2Client.on("tokens", async (tokens) => {
-        if (tokens.access_token) {
-            await supabaseAdmin
-              .from("calendar_integrations")
-              .update({
-                access_token: tokens.access_token,
-                ...(tokens.refresh_token && { refresh_token: tokens.refresh_token }),
-                token_expiry: tokens.expiry_date
-                    ? new Date(tokens.expiry_date).toISOString()
-                    : undefined,
-                updated_at: new Date().toISOString(),
-              })
-              .eq("mentor_id", mentorId)
-              .eq("provider", "google");
-        }
-    });
-
-    const calendar = google.calendar({ version: "v3", auth: oauth2Client });
-
-    await fetchAndStore(mentorId, calendar, integration.sync_token ?? undefined);
+interface BlockerRow {
+    google_event_id: string;
+    blocker_range: string;
+    lifft_session_id: string | null;
 }
 
+//ENTRY POINTS
+
+export async function syncMentorCalendar(mentorId: string): Promise<SyncResult> {
+    let ctx;
+    try {
+        ctx = await getCalendarClientForMentor(mentorId);
+    } catch(err) {
+        if (err instanceof CalendarNotConnectedError)
+            return { mode: "skipped", reason: "not_connected" };
+        if (err instanceof CalendarRevokedError)
+            return { mode: "skipped", reason: "revoked" };
+        throw err;
+    }
+
+    try { 
+        return await fetchAndStore(mentorId, ctx.calendar, ctx.syncToken);
+    } catch (err) {
+        if (isInvalidGrantError(err)) {
+            await markIntegrationRevoked(mentorId);
+            return { mode: "skipped", reason: "revoked" };
+        }
+        throw err;
+    }
+}
+
+/** Discard the sync token and re-establish a fresh bounded window.
+ * Call from the channel-renewal cron (P3-06) so the horizon rolls forward.
+ */
+export async function forceFullSync(mentorId: string): Promise<SyncResult> {
+    await supabaseAdmin
+      .from("calendar_integrations")
+      .update({ sync_token: null })
+      .eq("mentor_id", mentorId)
+      .eq("provider", "google");
+    return syncMentorCalendar(mentorId);
+}
+
+//Core
 async function fetchAndStore(
     mentorId: string,
     calendar: ReturnType<typeof google.calendar>, 
     syncToken?: string, 
     isRetry = false
-): Promise<void> {
+): Promise<SyncResult> {
     const now = new Date();
+    const mode: "full" | "incremental" = syncToken ? "incremental" : "full";
 
     let pageToken: string | undefined;
     let nextSyncToken: string | undefined;
+    let calendarTz = DEFAULT_TZ;
 
     const toDelete: string[] = [];
-    const toUpsert: { mentor_id: string; google_event_id: string; blocker_range: string; updated_at: string }[] = [];
+    const toUpsert: BlockerRow[] = [];
 
     do { 
         let res;
@@ -70,7 +93,9 @@ async function fetchAndStore(
                     ? { syncToken }
                     : {
                         timeMin: now.toISOString(),
-                        timeMax: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+                        timeMax: new Date(
+                            now.getTime() + SYNC_HORIZON_DAYS * 24 * 60 * 60 * 1000
+                        ).toISOString(),
                     }),
                 pageToken,
                 maxResults: 250, 
@@ -79,7 +104,8 @@ async function fetchAndStore(
         catch (err: unknown) {
             const status = (err as { code?: number }).code;
             if (status === 410 && !isRetry) {
-                // syncToken expired, clear it and do a full sync
+                // syncToken expired, the delta is unrepresentable, so the retry MUST
+                // be a full replace (handled below by mode === "full").
                 await supabaseAdmin
                   .from("calendar_integrations")
                   .update({ sync_token: null })
@@ -90,6 +116,8 @@ async function fetchAndStore(
             throw err;
         }
 
+        if (res.data.timeZone) calendarTz = res.data.timeZone;
+
         for (const event of res.data.items ?? []) {
             if (!event.id) continue;
 
@@ -97,51 +125,95 @@ async function fetchAndStore(
                 toDelete.push(event.id);
                 continue;
             }
-            let start: string;
-            let end: string;
 
-            if (event.start?.dateTime && event.end?.dateTime) {
-                start = event.start.dateTime;
-                end = event.end.dateTime;
-            } else if (event.start?.date && event.end?.date) {
-                //All-day event - block the full day in UTC
-                start = new Date(event.start.date).toISOString();
-                end = new Date(event.end.date).toISOString();
-            } else{
-                continue;
-            }
-
-            toUpsert.push({
-                mentor_id: mentorId, 
-                google_event_id: event.id, 
-                blocker_range: `[${start}, ${end})`,
-                updated_at: new Date().toISOString(),
-            });
+            const row = mapEventToBlocker(mentorId, event, calendarTz);
+            if (row) toUpsert.push(row);
         }
 
         nextSyncToken = res.data.nextSyncToken ?? undefined;
         pageToken = res.data.nextPageToken ?? undefined;
     } while (pageToken);
 
-    if (toDelete.length) {
-        await supabaseAdmin
-          .from("google_calendar_blockers")
-          .delete()
-          .eq("mentor_id", mentorId)
-          .in("google_event_id", toDelete);
+    // Writes go through RPCs: atomic, advisory-locked per mentor, and each one
+    // finishes by reconciling open slots against the new blocker state.
+
+    let slotsWithdrawn = 0;
+
+    if (mode === "full") {
+        const { data, error } = await supabaseAdmin.rpc("replace_mentor_blockers", {
+            p_mentor_id: mentorId,
+            p_blockers: toUpsert,
+        });
+        if (error) throw error;
+        slotsWithdrawn = data ?? 0;
+    } else {
+        const { data, error } = await supabaseAdmin.rpc("apply_blocker_delta", {
+            p_mentor_id: mentorId, 
+            p_upserts: toUpsert, 
+            p_delete_ids: toDelete,
+        });
+        if (error) throw error;
+        slotsWithdrawn = data ?? 0;
     }
 
-    if (toUpsert.length) {
-        await supabaseAdmin
-          .from("google_calendar_blockers")
-          .upsert(toUpsert, { onConflict: "mentor_id,google_event_id" });
-    }
-
+    // Bookmark AFTER the data writes: a crash between the two re-processes
+    // events (harmless, idempotent) rather than skipping them (data loss).
     if (nextSyncToken) {
         await supabaseAdmin
           .from("calendar_integrations")
-          .update({ sync_token: nextSyncToken, updated_at: new Date().toISOString() })
+          .update({
+             sync_token: nextSyncToken, 
+             updated_at: new Date().toISOString(),
+            })
           .eq("mentor_id", mentorId)
           .eq("provider", "google");
     }
+
+    return {
+        mode, 
+        upserted: toUpsert.length,
+        deleted: mode === "incremental" ? toDelete.length : 0,
+        slotsWithdrawn,
+    };
+}
+
+// ---------------------------------------------------------------------------
+// Pure mapping/filtering — the unit-testable core.
+// Returns null for events that should NOT block availability.
+// ---------------------------------------------------------------------------
+
+export function mapEventToBlocker(
+    menotrId: string, 
+    event: calendar_v3.Schema$Event, 
+    calendarTz: string
+): BlockerRow | null {
+    //Mentor market it "Free" (includes most all-day reminder-type events)
+    if (event.transparency === "transparent") return null;
+
+    //Mentor declined this invitation
+    const self = event.attendees?.find((a) => a.self);
+    if (self?.responseStatus === "declined") return null;
+
+    let start: string;
+    let end: string;
+
+    if (event.start?.dateTime && event.end?.dateTime) {
+        start = event.start.dateTime;
+        end = event.end.dateTime;
+    } else if (event.start?.date && event.end?.date) {
+        // All-day event: interpret midnight in the CALENDAR's timezone,
+        // not UTC — otherwise BST all-day blocks are offset by an hour.
+        start = fromZonedTime(`${event.start.date}T00:00:00`, calendarTz).toISOString();
+        end = fromZonedTime(`${event.end.date}T00:00:00`, calendarTz).toISOString();
+    } else {
+        return null;
+    }
+
+    return {
+        google_event_id: event.id!,
+        // [startm end) -end-exclusive so back-to-back events don't overlap
+        blocker_range: `[${start}, ${end}]`,
+        lifft_session_id:
+          event.extendedProperties?.private?.lifft_session_id ?? null,
+    };
 }

@@ -16,6 +16,10 @@ const database = new Pool({
 export const auth = betterAuth({
   database: database,
   baseURL: process.env.BETTER_AUTH_URL,
+  trustedOrigins: [
+    "http://localhost:3000",
+    "https://dingbat-payday-bogus.ngrok-free.dev",
+  ],
   account: {
 		accountLinking: {
 			enabled: true,

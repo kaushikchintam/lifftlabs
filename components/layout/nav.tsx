@@ -11,10 +11,10 @@ export default function Nav() {
   return (
     <>
       <nav className="flex items-center justify-between px-8 py-4 bg-white border-b border-border font-archivo-black">
-        <span>LIFFT LABS</span>
+        <Link href="/">LIFFT LABS</Link>
         <div className="flex gap-8">
-          <Link href="#">For users</Link>
-          <Link href="#">Mentors</Link>
+          <Link href="/#how-it-works">How it works</Link>
+          <Link href="/#mentors">Mentors</Link>
           <Link href="/about">About</Link>
         </div>
         <div className="flex items-center gap-3">

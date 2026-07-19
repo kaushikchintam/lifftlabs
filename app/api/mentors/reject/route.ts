@@ -6,6 +6,7 @@ import { MentorRejectionEmail } from "@/emails/mentor-rejected";
 import { NextRequest, NextResponse } from "next/server";
 import { resend } from "@/lib/resend/client";
 import { supabaseAdmin } from "@/lib/supabase/admin";
+import { requireAdmin } from "@/lib/auth/require-admin";
 
 const schema = z.object({
     fullName: z.string().min(1),
@@ -16,8 +17,15 @@ const schema = z.object({
 export async function POST(request: NextRequest) {
     const body = await request.json()
     const result = schema.safeParse(body);
-
-if(!result.success) {
+    const guard = await requireAdmin(request.headers);
+    if (!guard.ok) {
+        return NextResponse.json(
+            { error: guard.status === 401 ? "Unauthorized": "Forbidden" },
+            { status: guard.status }
+        );
+    }
+    
+    if(!result.success) {
         return NextResponse.json(
             { error: result.error.flatten() },
             { status: 400 },
