@@ -8,6 +8,7 @@ import { notFound, redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { SlotPicker } from "@/features/booking/components/slot-picker";
+import * as Sentry from "@sentry/nextjs";
 
 /** Book a session with a mentor (P3-08) */
 export default async function BookPage({
@@ -16,7 +17,9 @@ export default async function BookPage({
     params: Promise<{ mentorId: string }>;
 }) {
     const session = await auth.api.getSession({ headers: await headers() });
+    Sentry.metrics.count("users_redirected_login", 1);
     if (!session) redirect("/login");
+    
 
     const { mentorId } = await params;
 
@@ -34,15 +37,15 @@ export default async function BookPage({
     return (
         <div className="mx-auto max-w-2xl space-y-8 p-6">
             <header>
-                <h1 className="font-serif text-2xl">{mentorUser.name}</h1>
+                <h1 className="font-dm-sans text-2xl">{mentorUser.name}</h1>
                 {profile.current_position && (
-                    <p className="text-sm text-muted-foreground">{profile.current_position}</p> 
+                    <p className="font-dm-sans text-sm text-muted-foreground">{profile.current_position}</p> 
                 )}
-                {profile.one_liner && <p className="mt-2 text-sm">{profile.one_liner}</p>}
+                {profile.one_liner && <p className="font-dm-sans mt-2 text-sm">{profile.one_liner}</p>}
             </header>
 
             <section>
-                <h2 className="font-serif text-lg mb-4">Pick a time</h2>
+                <h2 className="font-dm-sans text-lg mb-4">Pick a time</h2>
                 <SlotPicker mentorId={mentorId} />
             </section>
         </div>

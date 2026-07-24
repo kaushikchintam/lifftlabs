@@ -117,7 +117,7 @@ export function SlotPicker({ mentorId }: {mentorId: string }) {
                 key={slot.id}
                 type="button"
                 onClick={() => setSelected(slot.id)}
-                className={`rounded-md border px-3 py-2 text-sm transition-colors ${
+                className={`font-archivo-black rounded-md border px-3 py-2 text-sm transition-colors ${
                   selected === slot.id
                     ? "border-primary bg-primary text-primary-foreground"
                     : "hover:border-primary/50"
@@ -130,7 +130,7 @@ export function SlotPicker({ mentorId }: {mentorId: string }) {
         </div>
       ))}
  
-      <div className="flex items-center gap-4 border-t pt-4">
+      <div className="font-archivo-black flex items-center gap-4 border-t pt-4">
         <Button onClick={book} disabled={!selected || booking}>
           {booking
             ? "Redirecting to payment…"
