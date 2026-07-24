@@ -17,8 +17,10 @@ export default async function BookPage({
     params: Promise<{ mentorId: string }>;
 }) {
     const session = await auth.api.getSession({ headers: await headers() });
-    Sentry.metrics.count("users_redirected_login", 1);
-    if (!session) redirect("/login");
+    if (!session) {
+        Sentry.metrics.count("users_redirected_login", 1);
+        redirect("/login");
+    }
     
 
     const { mentorId } = await params;

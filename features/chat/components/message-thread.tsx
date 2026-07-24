@@ -37,7 +37,7 @@ export function MessageThread({
   currentUserId: string;
   counterpartName?: string;
 }) {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);  //two parts, generic type <Message[]> and the initial value ([])
   const [draft, setDraft] = useState("");
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(false);
@@ -45,9 +45,9 @@ export function MessageThread({
   const stickToBottom = useRef(true);
 
   // Sync messages state to a ref to prevent polling interval teardowns
-  const messagesRef = useRef<Message[]>(messages);
+  const messagesRef = useRef<Message[]>(messages);  //create a ref to hold the live data
   useEffect(() => {
-    messagesRef.current = messages;
+    messagesRef.current = messages;   // keep the ref perfectly updated whenever state changes
   }, [messages]);
 
   const base = `/api/conversations/${conversationId}/messages`;
