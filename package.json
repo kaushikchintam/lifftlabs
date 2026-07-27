@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "vitest", 
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@better-auth/infra": "^0.2.14",
@@ -45,12 +47,15 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.0",
     "@react-email/ui": "^6.6.3",
     "@tailwindcss/postcss": "^4",
+    "@testcontainers/postgresql": "^12.0.4",
     "@types/node": "^20",
     "@types/pg": "^8.20.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitest/ui": "^4.1.10",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
     "next-devtools-mcp": "^0.3.10",
