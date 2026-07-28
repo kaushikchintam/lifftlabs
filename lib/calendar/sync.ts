@@ -30,7 +30,10 @@ interface BlockerRow {
 }
 
 //ENTRY POINTS
-
+//Gets Client: Attempts to authenticate and retrieve the mentor's Google Calendar client and sync token. 
+//Handles auth failures
+//Fetched data: Runs fetchAndStore to download and save new calendar events.
+//Auto-Revokes: If Google returns an invalid_grant error, (meaning the user revoked access), it marks the integration as broken in the database. 
 export async function syncMentorCalendar(mentorId: string): Promise<SyncResult> {
     let ctx;
     try {
@@ -57,6 +60,9 @@ export async function syncMentorCalendar(mentorId: string): Promise<SyncResult> 
 /** Discard the sync token and re-establish a fresh bounded window.
  * Call from the channel-renewal cron (P3-06) so the horizon rolls forward.
  */
+//forceFullSync:
+// Wipes Sync Toke: Sets sync_token to nnull in Supabase for that mentor. 
+// Triggers Re-sync: Forces Google to perform a full, fresh data fetch instead of a partial, incremental one. 
 export async function forceFullSync(mentorId: string): Promise<SyncResult> {
     await supabaseAdmin
       .from("calendar_integrations")
@@ -212,7 +218,7 @@ export function mapEventToBlocker(
     return {
         google_event_id: event.id!,
         // [startm end) -end-exclusive so back-to-back events don't overlap
-        blocker_range: `[${start}, ${end}]`,
+        blocker_range: `[${start}, ${end})`,
         lifft_session_id:
           event.extendedProperties?.private?.lifft_session_id ?? null,
     };
