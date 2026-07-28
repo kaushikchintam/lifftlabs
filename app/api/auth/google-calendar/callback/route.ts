@@ -46,6 +46,11 @@ export async function GET(request: NextRequest) {
     : new Date(Date.now() + 60 * 60 * 1000);
 
   //Fetch existing data to preserve refresh_token across re-auth.
+  //Purposefully not using upsert with onConflict here because we want to preserve the existing refresh_token if the new one is missing (Google only returns a refresh_token on first consent, or if the user explicitly revokes and reconsents). Upsert would overwrite it with null.
+  // The existing refresh_token is only used if the new one is missing, so we don't need to worry about race conditions
+  // between the upsert and the sync/watch registration, because the sync/watch registration will use the new access_token, which is always present.
+  // The refresh_token is only used for future token refreshes, which will be handled by the oauth2Client.on("tokens") listener below.
+  //PURPOSE: it retreives the old refresh_token so it is not lost or overwritten during a new authentication loop. 
   const { data: existing } = await supabaseAdmin
     .from("calendar_integrations")
     .select("refresh_token")

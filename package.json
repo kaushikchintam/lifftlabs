@@ -55,11 +55,15 @@
     "@types/pg": "^8.20.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^4.3.4",
     "@vitest/ui": "^4.1.10",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
     "next-devtools-mcp": "^0.3.10",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^4.1.10",
+    "jsdom": "^25.0.1"
   }
 }
