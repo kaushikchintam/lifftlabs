@@ -10,6 +10,7 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const session = await auth.api.getSession({ headers: await headers() });
+  const role = (session?.session as { role?: "mentor" | "learner"})?.role ?? "learner";
   const name = session?.user.name ?? "";
   const initials = name
     .split(" ")
@@ -17,18 +18,6 @@ export default async function DashboardLayout({
     .join("")
     .slice(0, 2)
     .toUpperCase();
-
-  // Nav variant only — every destination re-derives authorization
-  // server-side (ADR 011), so this check is UX, not security.
-  let role: "mentor" | "learner" = "learner";
-  if (session) {
-    const { data: mentorProfile } = await supabaseAdmin
-      .from("mentor_profiles")
-      .select("user_id")
-      .eq("user_id", session.user.id)
-      .maybeSingle();
-    if (mentorProfile) role = "mentor";
-  }
 
   return (
     <div className="flex h-screen bg-white">
