@@ -189,7 +189,7 @@ async function fetchAndStore(
 // ---------------------------------------------------------------------------
 
 export function mapEventToBlocker(
-    menotrId: string, 
+    mentorId: string, 
     event: calendar_v3.Schema$Event, 
     calendarTz: string
 ): BlockerRow | null {
