@@ -54,6 +54,41 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }
   },
+  //New-role based caching 
+  session: {
+    additionalFields: {
+      role : {
+        type: "string",
+        defaultValue: "learner",
+      },
+    },
+    cookieCache: {
+      enabled: true, 
+      maxAge: 5 * 60, //seconds - how long getSession() trusts the cookie before re-hitting Postgres. 
+    }
+  },
+  databaseHooks: {
+    session: {
+      create: {
+        before: async (session) => {
+          try {
+            //Re-use existing pg database pool to check for mentor profiles
+            const result = await database.query(
+              'SELECT user_id FROM mentor_profiles WHERE user_id = $1 LIMIT 1',
+              [session.userId]
+            ); 
+
+            // Assign role on the session object directly
+            session.role = result.rows.length > 0 ? "mentor" : "learner";
+          } catch (error) {
+            console.error("Failed to map role to session", error);
+            session.role = "learner";
+          }
+          return { data: session };
+        },
+      },
+    },
+  },
   plugins: [
     emailOTP({
       async sendVerificationOTP( { email, otp, type }) {
