@@ -1,13 +1,12 @@
-import { headers } from "next/headers";
+import { getServerSession } from "@/lib/auth/session";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { SettingsForm } from "@/features/settings/components/settings-form";
 
 /** Settings — /settings. Role-aware: mentors also get payout management. */
 
 export default async function SettingsPage() {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await getServerSession();
   if (!session) redirect("/login");
 
   const { data: mentor } = await supabaseAdmin

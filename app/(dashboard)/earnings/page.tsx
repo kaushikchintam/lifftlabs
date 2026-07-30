@@ -1,6 +1,5 @@
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { getServerSession } from "@/lib/auth/session";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 /**
  * Earnings — mentor side (P4-04). URL: /earnings
@@ -25,7 +24,7 @@ interface EarningRow {
 }
 
 export default async function EarningsPage() {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await getServerSession();
   if (!session) redirect("/login");
 
   const { data: mentor } = await supabaseAdmin

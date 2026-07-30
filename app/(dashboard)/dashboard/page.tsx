@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { getServerSession } from "@/lib/auth/session";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import {
   ChevronRight,
@@ -18,7 +17,7 @@ export default async function DashboardPage({
 }: {
   searchParams: Promise<{ payouts?: string }>;
 }) {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await getServerSession();
   if (!session) redirect("/login");
 
   const firstName = session.user.name?.split(" ")[0] ?? "there";
