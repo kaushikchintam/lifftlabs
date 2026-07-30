@@ -1,6 +1,5 @@
-import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { getServerSession } from "@/lib/auth/session";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { MessageThread } from "@/features/chat/components/message-thread";
 
@@ -10,7 +9,7 @@ export default async function ThreadPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await getServerSession();
   if (!session) redirect("/login");
 
   const { id } = await params;

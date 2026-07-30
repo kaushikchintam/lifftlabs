@@ -1,6 +1,4 @@
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
-import { supabaseAdmin } from "@/lib/supabase/admin";
+import { getServerSession } from "@/lib/auth/session";
 import Sidebar from "@/components/layout/sidebar";
 import { MobileNav } from "@/components/layout/mobile-nav";
 
@@ -9,7 +7,7 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await getServerSession();
   const role = (session?.session as { role?: "mentor" | "learner"})?.role ?? "learner";
   const name = session?.user.name ?? "";
   const initials = name

@@ -1,8 +1,7 @@
 //learner history — /payments
-import { headers } from "next/headers";
+import { getServerSession } from "@/lib/auth/session";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { auth } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 /** Payment history - learner side (P4-04). URL: /payments */
 
@@ -21,7 +20,7 @@ interface PaymentRow {
 }
 
 export default async function PaymentsPage() {
-    const session = await auth.api.getSession({ headers: await headers() });
+    const session = await getServerSession();
     if (!session) redirect("/login");
 
     const { data } = await supabaseAdmin 

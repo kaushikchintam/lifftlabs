@@ -3,9 +3,8 @@
  * 409 handled by refreshing the list, then hands the browser to
  * Stripe.
  */
-import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { getServerSession } from "@/lib/auth/session";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { SlotPicker } from "@/features/booking/components/slot-picker";
 import * as Sentry from "@sentry/nextjs";
@@ -16,7 +15,7 @@ export default async function BookPage({
 }: {
     params: Promise<{ mentorId: string }>;
 }) {
-    const session = await auth.api.getSession({ headers: await headers() });
+    const session = await getServerSession();
     if (!session) {
         Sentry.metrics.count("users_redirected_login", 1);
         redirect("/login");
