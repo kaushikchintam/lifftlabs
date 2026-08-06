@@ -16,6 +16,9 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
+  CalendarClock,
+  ListChecks,
+  PiggyBank,
 } from "lucide-react";
 
 /**
@@ -41,6 +44,9 @@ const learnerItems = [
   { label: "Sessions", href: "/sessions", icon: Video },
   { label: "Messages", href: "/messages", icon: MessageSquare },
   { label: "Payments", href: "/payments", icon: Receipt },
+  { label: "Key Dates", href: "/key-dates", icon: CalendarClock },
+  { label: "Checklist", href: "/checklist", icon: ListChecks },
+  { label: "Finances", href: "/finances", icon: PiggyBank }, 
 ];
 
 type Props = {
