@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutGrid, Video, MessageSquare, CalendarDays,
-  Wallet, Receipt, Users, CalendarClock, ListChecks, PiggyBank, 
+  Wallet, Receipt, Users, CalendarClock, ListChecks, PiggyBank, ClipboardCheck, BookOpen, Feather, 
 } from "lucide-react";
 
 const mentorItems = [
@@ -21,9 +21,12 @@ const learnerItems = [
   { label: "Sessions", href: "/sessions", icon: Video },
   { label: "Messages", href: "/messages", icon: MessageSquare },
   { label: "Payments", href: "/payments", icon: Receipt },
-  { label: "Key Dates", href: "/key-dates", icon: CalendarClock },
+  { label: "Key Dates", href: "/keydates", icon: CalendarClock },
   { label: "Checklist", href: "/checklist", icon: ListChecks },
   { label: "Finances", href: "/finances", icon: PiggyBank }, 
+  { label: "Experience Log", href: "/experience-log", icon: ClipboardCheck },
+  { label: "Resources", href: "/resources", icon: BookOpen }, 
+  { label: "Feather", href: "/reflection", icon: Feather }, 
 ];
 
 export function MobileNav({ role }: { role: "mentor" | "learner" }) {
