@@ -43,18 +43,18 @@ export default async function MentorsPage() {
   return (
     <div className="p-10 max-w-3xl">
       <div className="mb-8">
-        <h2 className="font-archivo-black text-5xl text-[#18150F] mb-2">
+        <h2 className="font-archivo-black text-5xl text-ink mb-2">
           Mentors
         </h2>
-        <p className="font-dm-sans text-lg text-[#6F6B60]">
+        <p className="font-dm-sans text-lg text-ink-muted">
           People who've walked the path you're on. Pick a mentor to see their
           available times.
         </p>
       </div>
 
       {mentors.length === 0 ? (
-        <div className="border border-[#E8E2D6] rounded-xl p-8">
-          <p className="font-dm-sans text-sm text-[#6F6B60]">
+        <div className="rounded-xl border border-[#ECE7DD] bg-white p-8 shadow-sm">
+          <p className="font-dm-sans text-sm text-ink-muted">
             No mentors are open for booking just yet — check back soon.
           </p>
         </div>
@@ -64,10 +64,10 @@ export default async function MentorsPage() {
             <Link
               key={m.user_id}
               href={`/book/${m.user_id}`}
-              className="border border-[#E8E2D6] rounded-xl p-6 hover:bg-[#FBF7EE] transition-colors flex items-start justify-between gap-4"
+              className="rounded-xl border border-[#ECE7DD] bg-white p-6 shadow-sm hover:bg-[#FAF8F3] transition-colors flex items-start justify-between gap-4"
             >
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-[#18150F] flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 rounded-full bg-ink flex items-center justify-center flex-shrink-0">
                   <span className="font-dm-sans text-white text-sm font-medium">
                     {(m.user?.name || "?")
                       .split(" ")
@@ -78,17 +78,17 @@ export default async function MentorsPage() {
                   </span>
                 </div>
                 <div>
-                  <p className="font-dm-sans text-base text-[#18150F] font-medium mb-0.5">
+                  <p className="font-dm-sans text-base text-ink font-medium mb-0.5">
                     {m.user?.name || "Mentor"}
                   </p>
                   {m.current_position && (
-                    <p className="font-dm-sans text-sm text-[#6F6B60] mb-1">
+                    <p className="font-dm-sans text-sm text-ink-muted mb-1">
                       {m.current_position}
                       {m.specialty ? ` · ${m.specialty}` : ""}
                     </p>
                   )}
                   {m.one_liner && (
-                    <p className="font-dm-sans text-sm text-[#18150F]">
+                    <p className="font-dm-sans text-sm text-ink">
                       {m.one_liner}
                     </p>
                   )}
@@ -96,11 +96,11 @@ export default async function MentorsPage() {
               </div>
               <div className="flex flex-col items-end gap-1 flex-shrink-0">
                 {m.hourly_rate_pence != null && (
-                  <span className="font-dm-sans text-sm text-[#18150F] font-medium">
+                  <span className="font-dm-sans text-sm text-ink font-medium">
                     £{(m.hourly_rate_pence / 100).toFixed(0)}/session
                   </span>
                 )}
-                <span className="font-dm-sans text-xs text-[#6F6B60] flex items-center gap-1">
+                <span className="font-dm-sans text-xs text-ink-muted flex items-center gap-1">
                   See times <ChevronRight size={12} />
                 </span>
               </div>

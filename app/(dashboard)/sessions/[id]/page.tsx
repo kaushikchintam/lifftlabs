@@ -12,9 +12,9 @@ import { PaymentStatusRefresher } from "@/features/sessions/components/payment-s
 const STATUS_STYLES: Record<string, string> = {
   pending:   "bg-[#FEF3C7] text-[#92400E]",
   confirmed: "bg-[#DDEBF3] text-[#1A7A9E]",
-  completed: "bg-[#F1ECE0] text-[#18150F]",
-  cancelled: "bg-[#F1ECE0] text-[#9A958A]",
-  expired:   "bg-[#F1ECE0] text-[#9A958A]",
+  completed: "bg-[#F1ECE0] text-ink",
+  cancelled: "bg-[#F1ECE0] text-ink-faintest",
+  expired:   "bg-[#F1ECE0] text-ink-faintest",
 };
 
 const STATUS_COPY: Record<string, { label: string; hint?: string }> = {
@@ -102,52 +102,52 @@ export default async function SessionDetailPage({
   return (
     <div className="mx-auto max-w-2xl space-y-6 p-4 md:p-6">
       <header>
-        <h1 className="font-dm-serif text-2xl text-[#18150F]">
+        <h1 className="font-dm-serif text-2xl text-ink">
           Session with{" "}
           {row.mentor_id === session.user.id
             ? row.learner?.name
             : row.mentor?.name}
         </h1>
-        <p className="font-dm-sans text-sm text-[#6F6B60] mt-1">
+        <p className="font-dm-sans text-sm text-ink-muted mt-1">
           {when} – {until}
         </p>
       </header>
 
       <PaymentStatusRefresher status={row.status} />
 
-      <div className="rounded-2xl border border-[#E8E2D6] bg-[#FBF7EE] space-y-5 p-6 shadow-sm">
+      <div className="rounded-2xl border border-[#ECE7DD] bg-white space-y-5 p-6 shadow-sm">
         <div>
-          <p className="font-dm-sans text-xs uppercase tracking-widest text-[#9A958A] mb-1.5">
+          <p className="font-dm-sans text-xs uppercase tracking-widest text-ink-faintest mb-1.5">
             Status
           </p>
-          <span className={`inline-block rounded-full px-3 py-1 font-dm-sans text-xs font-semibold ${STATUS_STYLES[row.status] ?? "bg-[#F1ECE0] text-[#9A958A]"}`}>
+          <span className={`inline-block rounded-full px-3 py-1 font-dm-sans text-xs font-semibold ${STATUS_STYLES[row.status] ?? "bg-[#F1ECE0] text-ink-faintest"}`}>
             {status.label}
           </span>
           {status.hint && (
-            <p className="mt-2 font-dm-sans text-sm text-[#6F6B60]">{status.hint}</p>
+            <p className="mt-2 font-dm-sans text-sm text-ink-muted">{status.hint}</p>
           )}
         </div>
 
         <div>
-          <p className="font-dm-sans text-xs uppercase tracking-widest text-[#9A958A] mb-1.5">
+          <p className="font-dm-sans text-xs uppercase tracking-widest text-ink-faintest mb-1.5">
             Participants
           </p>
-          <p className="font-dm-sans text-sm text-[#18150F]">
-            {row.mentor?.name} <span className="text-[#6F6B60]">(mentor)</span> · {row.learner?.name} <span className="text-[#6F6B60]">(learner)</span>
+          <p className="font-dm-sans text-sm text-ink">
+            {row.mentor?.name} <span className="text-ink-muted">(mentor)</span> · {row.learner?.name} <span className="text-ink-muted">(learner)</span>
           </p>
         </div>
 
         {row.notes && (
           <div>
-            <p className="font-dm-sans text-xs uppercase tracking-widest text-[#9A958A] mb-1.5">
+            <p className="font-dm-sans text-xs uppercase tracking-widest text-ink-faintest mb-1.5">
               Notes
             </p>
-            <p className="font-dm-sans text-sm text-[#18150F] whitespace-pre-wrap">{row.notes}</p>
+            <p className="font-dm-sans text-sm text-ink whitespace-pre-wrap">{row.notes}</p>
           </div>
         )}
 
         {row.status === "confirmed" && (
-          <div className="border-t border-[#E8E2D6] pt-5">
+          <div className="border-t border-[#ECE7DD] pt-5">
             {joinable ? (
               <Link
                 href={`/sessions/${row.id}/call`}

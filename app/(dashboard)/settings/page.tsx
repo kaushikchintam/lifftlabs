@@ -18,10 +18,10 @@ export default async function SettingsPage() {
   return (
     <div className="p-10 max-w-2xl">
       <div className="mb-8">
-        <h2 className="font-archivo-black text-5xl text-[#18150F] mb-2">
+        <h2 className="font-archivo-black text-5xl text-ink mb-2">
           Settings
         </h2>
-        <p className="font-dm-sans text-lg text-[#6F6B60]">
+        <p className="font-dm-sans text-lg text-ink-muted">
           Your profile{mentor ? " and payouts" : ""}.
         </p>
       </div>

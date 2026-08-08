@@ -90,31 +90,31 @@ export default function AdminMentorsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F1ECE0] px-10 py-12">
-      <h1 className="font-archivo-black text-2xl text-[#18150F] mb-2">Mentor Applications</h1>
-      <p className="font-dm-sans text-sm text-[#6F6B60] mb-10">
+    <div className="min-h-screen bg-[#FAF8F3] px-10 py-12">
+      <h1 className="font-archivo-black text-2xl text-ink mb-2">Mentor Applications</h1>
+      <p className="font-dm-sans text-sm text-ink-muted mb-10">
         {applications.length} pending application{applications.length !== 1 ? "s" : ""} waiting for review.
       </p>
 
       {!isLoading && applications.length === 0 && (
-        <p className="font-dm-sans text-sm text-[#6F6B60]">No pending applications.</p>
+        <p className="font-dm-sans text-sm text-ink-muted">No pending applications.</p>
       )}
 
       <div className="flex flex-col gap-4">
         {applications.map((app) => (
-          <div key={app.id} className="bg-white rounded-2xl p-6 flex items-center justify-between shadow-sm">
+          <div key={app.id} className="rounded-2xl border border-[#ECE7DD] bg-white p-6 flex items-center justify-between shadow-sm">
             <div className="flex flex-col gap-1">
-              <p className="font-dm-sans font-semibold text-[#18150F] text-sm">{app.full_name}</p>
-              <p className="font-dm-sans text-[#6F6B60] text-sm">{app.email}</p>
+              <p className="font-dm-sans font-semibold text-ink text-sm">{app.full_name}</p>
+              <p className="font-dm-sans text-ink-muted text-sm">{app.email}</p>
               <a
                 href={`https://${app.linkedin_url}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-dm-sans text-xs text-[#2596BE] hover:underline"
+                className="font-dm-sans text-xs text-brand hover:underline"
               >
                 {app.linkedin_url}
               </a>
-              <p className="font-dm-sans text-xs text-[#18150F]/40 mt-1">Applied {app.created_at}</p>
+              <p className="font-dm-sans text-xs text-ink/40 mt-1">Applied {app.created_at}</p>
             </div>
             <div className="flex gap-3">
               <button

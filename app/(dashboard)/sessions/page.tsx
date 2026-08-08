@@ -31,7 +31,7 @@ const STATUS_LABELS: Record<string, string> = {
 const STATUS_STYLES: Record<string, string> = {
   pending:   "bg-[#FEF3C7] text-[#92400E]",
   confirmed: "bg-[#DDEBF3] text-[#1A7A9E]",
-  completed: "bg-[#F1ECE0] text-[#18150F]",
+  completed: "bg-[#F1ECE0] text-ink",
   cancelled: "bg-[#F1ECE0] text-[#9A958A]",
   expired:   "bg-[#F1ECE0] text-[#9A958A]",
 };
@@ -52,13 +52,13 @@ function SessionCard({ s, userId }: { s: SessionRow; userId: string }) {
   const counterpart = isMentor ? s.learner?.name : s.mentor?.name;
   return (
     <Link href={`/sessions/${s.id}`}>
-      <div className="flex items-center justify-between rounded-2xl border border-[#E8E2D6] bg-[#FBF7EE] px-5 py-4 shadow-sm transition-colors hover:bg-[#F1ECE0]">
+      <div className="flex items-center justify-between rounded-2xl border border-[#ECE7DD] bg-white px-5 py-4 shadow-sm transition-colors hover:bg-[#FAF8F3]">
         <div>
-          <p className="font-dm-sans font-semibold text-[#18150F]">
+          <p className="font-dm-sans font-semibold text-ink">
             {isMentor ? "Session with " : "Mentoring session with "}
             {counterpart ?? "—"}
           </p>
-          <p className="font-dm-sans text-sm text-[#6F6B60] mt-0.5">
+          <p className="font-dm-sans text-sm text-ink-muted mt-0.5">
             {formatWhen(s.scheduled_at, s.timezone)}
           </p>
         </div>
@@ -97,12 +97,12 @@ export default async function SessionsPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-8 p-4 md:p-6">
-      <h1 className="font-archivo-black text-2xl text-[#18150F] tracking-widest uppercase">Sessions</h1>
+      <h1 className="font-archivo-black text-2xl text-ink tracking-widest uppercase">Sessions</h1>
 
       <section className="space-y-3">
-        <h2 className="font-dm-serif text-xl text-[#18150F]">Upcoming</h2>
+        <h2 className="font-dm-serif text-xl text-ink">Upcoming</h2>
         {upcoming.length === 0 ? (
-          <p className="font-dm-sans text-sm text-[#6F6B60]">
+          <p className="font-dm-sans text-sm text-ink-muted">
             Nothing booked yet. Browse mentors to schedule a session.
           </p>
         ) : (
@@ -111,9 +111,9 @@ export default async function SessionsPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="font-dm-serif text-xl text-[#18150F]">Past</h2>
+        <h2 className="font-dm-serif text-xl text-ink">Past</h2>
         {past.length === 0 ? (
-          <p className="font-dm-sans text-sm text-[#6F6B60]">No past sessions.</p>
+          <p className="font-dm-sans text-sm text-ink-muted">No past sessions.</p>
         ) : (
           past.map((s) => <SessionCard key={s.id} s={s} userId={userId} />)
         )}

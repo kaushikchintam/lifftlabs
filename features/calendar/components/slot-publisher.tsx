@@ -27,7 +27,7 @@ const SESSION_MINUTES = 60;
 const STATUS_STYLES: Record<Slot["status"], string> = {
   open: "bg-[#DDEBF3] text-[#1A7A9E]",
   held: "bg-[#FEF3C7] text-[#92400E]",
-  booked: "bg-[#F1ECE0] text-[#18150F]",
+  booked: "bg-[#F1ECE0] text-ink",
   withdrawn: "bg-[#F1ECE0] text-[#9A958A] line-through",
 };
 
@@ -124,15 +124,15 @@ export function SlotPublisher() {
 
   return (
     <div className="space-y-6">
-      <Card className="rounded-2xl border border-[#E8E2D6] bg-[#FBF7EE] p-6 shadow-sm">
-        <h2 className="font-dm-serif text-2xl text-[#18150F] mb-1">Publish a session slot</h2>
-        <p className="font-dm-sans text-sm text-[#6F6B60] mb-5">
+      <Card className="rounded-2xl border border-[#ECE7DD] bg-white p-6 shadow-sm">
+        <h2 className="font-dm-serif text-2xl text-ink mb-1">Publish a session slot</h2>
+        <p className="font-dm-sans text-sm text-ink-muted mb-5">
           Sessions are 60 minutes. Learners can book any open slot — times
           that clash with your Google Calendar are rejected automatically.
         </p>
 
         <div className="flex flex-wrap items-end gap-3">
-          <label className="grid gap-1 font-dm-sans text-sm font-semibold text-[#18150F]">
+          <label className="grid gap-1 font-dm-sans text-sm font-semibold text-ink">
             Date
             <Input
               type="date"
@@ -142,7 +142,7 @@ export function SlotPublisher() {
               className="rounded-xl bg-[#F1ECE0] border-[#E8E2D6] px-4 py-3 font-dm-sans text-[15px] font-semibold"
             />
           </label>
-          <label className="grid gap-1 font-dm-sans text-sm font-semibold text-[#18150F]">
+          <label className="grid gap-1 font-dm-sans text-sm font-semibold text-ink">
             Start time
             <Input
               type="time"
@@ -155,7 +155,7 @@ export function SlotPublisher() {
           <button
             onClick={publish}
             disabled={publishing}
-            className="rounded-full bg-[#18150F] text-[#FBF7EE] font-dm-sans font-semibold px-5 py-2.5 hover:bg-[#3A372F] disabled:opacity-40 transition-colors"
+            className="rounded-full bg-ink text-[#FBF7EE] font-dm-sans font-semibold px-5 py-2.5 hover:bg-[#3A372F] disabled:opacity-40 transition-colors"
           >
             {publishing ? "Publishing…" : "Publish slot"}
           </button>
@@ -164,21 +164,21 @@ export function SlotPublisher() {
         {error && <p className="mt-3 font-dm-sans text-sm text-[#E63946]">{error}</p>}
       </Card>
 
-      <Card className="rounded-2xl border border-[#E8E2D6] bg-[#FBF7EE] p-6 shadow-sm">
-        <h2 className="font-dm-serif text-2xl text-[#18150F] mb-4">Your published slots</h2>
+      <Card className="rounded-2xl border border-[#ECE7DD] bg-white p-6 shadow-sm">
+        <h2 className="font-dm-serif text-2xl text-ink mb-4">Your published slots</h2>
 
         {loading ? (
-          <p className="font-dm-sans text-sm text-[#6F6B60]">Loading…</p>
+          <p className="font-dm-sans text-sm text-ink-muted">Loading…</p>
         ) : upcoming.length === 0 ? (
-          <p className="font-dm-sans text-sm text-[#6F6B60]">
+          <p className="font-dm-sans text-sm text-ink-muted">
             No upcoming slots. Publish one above to open your calendar to
             learners.
           </p>
         ) : (
           <ul>
             {upcoming.map((slot, i) => (
-              <li key={slot.id} className={`flex items-center gap-3 py-3 font-dm-sans ${i ? "border-t border-[#E8E2D6]" : ""}`}>
-                <span className="flex-1 text-[15px] font-semibold text-[#18150F]">
+              <li key={slot.id} className={`flex items-center gap-3 py-3 font-dm-sans ${i ? "border-t border-[#ECE7DD]" : ""}`}>
+                <span className="flex-1 text-[15px] font-semibold text-ink">
                   {formatSlot(slot.slot_range)}
                 </span>
                 <span className={`rounded-full px-3 py-1 text-xs font-semibold ${STATUS_STYLES[slot.status]}`}>
@@ -187,7 +187,7 @@ export function SlotPublisher() {
                 {slot.status === "open" && (
                   <button
                     onClick={() => withdraw(slot.id)}
-                    className="font-dm-sans text-sm text-[#6F6B60] hover:text-[#18150F] transition-colors"
+                    className="font-dm-sans text-sm text-ink-muted hover:text-ink transition-colors"
                   >
                     Withdraw
                   </button>
