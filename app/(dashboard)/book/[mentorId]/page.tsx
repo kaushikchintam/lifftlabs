@@ -38,15 +38,15 @@ export default async function BookPage({
     return (
         <div className="mx-auto max-w-2xl space-y-8 p-6">
             <header>
-                <h1 className="font-dm-sans text-2xl">{mentorUser.name}</h1>
+                <h1 className="font-dm-serif text-3xl text-ink">{mentorUser.name}</h1>
                 {profile.current_position && (
-                    <p className="font-dm-sans text-sm text-muted-foreground">{profile.current_position}</p> 
+                    <p className="font-dm-sans text-sm text-ink-muted">{profile.current_position}</p>
                 )}
-                {profile.one_liner && <p className="font-dm-sans mt-2 text-sm">{profile.one_liner}</p>}
+                {profile.one_liner && <p className="font-dm-sans mt-2 text-sm text-ink">{profile.one_liner}</p>}
             </header>
 
             <section>
-                <h2 className="font-dm-sans text-lg mb-4">Pick a time</h2>
+                <h2 className="font-dm-serif text-xl text-ink mb-4">Pick a time</h2>
                 <SlotPicker mentorId={mentorId} />
             </section>
         </div>

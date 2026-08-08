@@ -60,46 +60,46 @@ export default async function EarningsPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6 p-4 md:p-6">
-      <h1 className="font-archivo-black text-2xl text-[#18150F] tracking-widest uppercase">Earnings</h1>
+      <h1 className="font-archivo-black text-2xl text-ink tracking-widest uppercase">Earnings</h1>
 
       <div className="grid grid-cols-2 gap-4">
-        <div className="rounded-2xl border border-[#E8E2D6] bg-[#FBF7EE] p-5 shadow-sm">
-          <p className="font-dm-sans text-xs uppercase tracking-widest text-[#9A958A]">
+        <div className="rounded-2xl border border-[#ECE7DD] bg-white p-5 shadow-sm">
+          <p className="font-dm-sans text-xs uppercase tracking-widest text-ink-faintest">
             Sessions paid
           </p>
-          <p className="font-dm-serif text-3xl text-[#18150F] mt-1">{earnings.length}</p>
+          <p className="font-dm-serif text-3xl text-ink mt-1">{earnings.length}</p>
         </div>
-        <div className="rounded-2xl border border-[#E8E2D6] bg-[#FBF7EE] p-5 shadow-sm">
-          <p className="font-dm-sans text-xs uppercase tracking-widest text-[#9A958A]">
+        <div className="rounded-2xl border border-[#ECE7DD] bg-white p-5 shadow-sm">
+          <p className="font-dm-sans text-xs uppercase tracking-widest text-ink-faintest">
             Your share (after {PLATFORM_FEE_PERCENT}% platform fee)
           </p>
-          <p className="font-dm-serif text-3xl text-[#18150F] mt-1">£{(netPence / 100).toFixed(2)}</p>
+          <p className="font-dm-serif text-3xl text-ink mt-1">£{(netPence / 100).toFixed(2)}</p>
         </div>
       </div>
 
-      <p className="font-dm-sans text-xs text-[#6F6B60]">
+      <p className="font-dm-sans text-xs text-ink-muted">
         Exact payout amounts and timing are in your Stripe dashboard — Stripe's
         processing fees are deducted there, and the first payout on a new
         account is typically held around 7 days.
       </p>
 
       {earnings.length === 0 ? (
-        <p className="font-dm-sans text-sm text-[#6F6B60]">
+        <p className="font-dm-sans text-sm text-ink-muted">
           No paid sessions yet. Once a learner books and pays, it appears here.
         </p>
       ) : (
         <div className="space-y-3">
           {earnings.map((e) => (
-            <div key={e.id} className="flex items-center justify-between rounded-2xl border border-[#E8E2D6] bg-[#FBF7EE] px-5 py-4 shadow-sm">
+            <div key={e.id} className="flex items-center justify-between rounded-2xl border border-[#ECE7DD] bg-white px-5 py-4 shadow-sm">
               <div>
-                <p className="font-dm-sans font-semibold text-[#18150F]">
+                <p className="font-dm-sans font-semibold text-ink">
                   Session with {e.session?.learner?.name ?? "—"}
                 </p>
-                <p className="font-dm-sans text-sm text-[#6F6B60] mt-0.5">
+                <p className="font-dm-sans text-sm text-ink-muted mt-0.5">
                   Paid {dateFmt.format(new Date(e.created_at))}
                 </p>
               </div>
-              <p className="font-dm-sans font-semibold text-[#2596BE]">
+              <p className="font-dm-sans font-semibold text-brand">
                 £{(e.amount_pence / 100).toFixed(2)}
               </p>
             </div>

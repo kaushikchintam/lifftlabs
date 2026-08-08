@@ -53,35 +53,36 @@ export default async function CalendarPage({
     return (
         <div className="mx-auto max-w-2xl space-y-6 p-6">
       <header>
-        <span className="mb-3 inline-flex rounded-full border border-[#E8E2D6] bg-[#FBF7EE] px-3 py-1 font-dm-sans text-xs font-semibold uppercase tracking-wide text-[#6F6B60]">
+        <span className="mb-2 inline-flex items-center gap-1.5 font-dm-sans text-xs font-bold uppercase tracking-wide text-[#2D6A4F]">
+          <span className="inline-block h-px w-4 bg-[#2D6A4F]" />
           Calendar
         </span>
-        <h1 className="font-dm-serif text-4xl font-normal tracking-tight text-[#18150F]">
+        <h1 className="font-dm-serif text-4xl font-normal tracking-tight text-ink">
           Calendar
         </h1>
-        <p className="mt-1 font-dm-sans text-[15px] leading-relaxed text-[#6F6B60]">
+        <p className="mt-1 font-dm-sans text-[15px] leading-relaxed text-ink-muted">
           Connect Google Calendar so LIFFT knows when you&apos;re busy, then
           publish the times you&apos;re open to mentoring.
         </p>
       </header>
 
       {callbackError && (
-        <p className="rounded-xl border border-[#E8E2D6] bg-[#F8E9E4] px-4 py-3 font-dm-sans text-sm text-[#8C3B22]">
+        <p className="rounded-xl border border-[#ECE7DD] bg-[#F8E9E4] px-4 py-3 font-dm-sans text-sm text-[#8C3B22]">
           {callbackError}
         </p>
       )}
 
       {!connected ? (
-        <div className="space-y-4 rounded-2xl border border-[#E8E2D6] bg-[#FBF7EE] p-6 shadow-sm">
+        <div className="space-y-4 rounded-2xl border border-[#ECE7DD] bg-white p-6 shadow-sm">
           <div className="flex items-start gap-4">
-            <span className="flex h-11 w-11 flex-none items-center justify-center rounded-xl border border-[#E8E2D6]">
+            <span className="flex h-11 w-11 flex-none items-center justify-center rounded-xl border border-[#ECE7DD]">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
             </span>
             <div>
-              <h2 className="font-dm-serif text-xl text-[#18150F]">
+              <h2 className="font-dm-serif text-xl text-ink">
                 {revoked ? "Reconnect your calendar" : "Connect Google Calendar"}
               </h2>
-              <p className="mt-1 font-dm-sans text-sm leading-relaxed text-[#6F6B60]">
+              <p className="mt-1 font-dm-sans text-sm leading-relaxed text-ink-muted">
                 {revoked
                   ? "Access was revoked or expired, so your availability has stopped updating. Reconnect to resume."
                   : "We only read when you're busy and add your confirmed LIFFT sessions — event details stay private."}
@@ -90,7 +91,7 @@ export default async function CalendarPage({
           </div>
           <Button
             asChild
-            className="rounded-full bg-[#18150F] px-5 font-dm-sans font-semibold text-[#FBF7EE] hover:bg-[#3A372F]"
+            className="rounded-full bg-ink px-5 font-dm-sans font-semibold text-[#FBF7EE] hover:bg-[#3A372F]"
           >
             <a href="/api/auth/google-calendar">
               {revoked ? "Reconnect calendar" : "Connect Google Calendar"}
@@ -99,14 +100,14 @@ export default async function CalendarPage({
         </div>
       ) : (
         <>
-          <div className="rounded-2xl border border-[#E8E2D6] bg-[#FBF7EE] p-6 shadow-sm">
+          <div className="rounded-2xl border border-[#ECE7DD] bg-white p-6 shadow-sm">
             <div className="mb-1 flex items-center justify-between gap-3">
-              <h2 className="font-dm-serif text-2xl text-[#18150F]">
+              <h2 className="font-dm-serif text-2xl text-ink">
                 Your busy times
               </h2>
               <SyncButton />
             </div>
-            <p className="mb-5 font-dm-sans text-sm leading-relaxed text-[#6F6B60]">
+            <p className="mb-5 font-dm-sans text-sm leading-relaxed text-ink-muted">
               Pulled from Google Calendar. Slots that clash with these are
               rejected — and if a clash appears later, the slot is withdrawn
               automatically.

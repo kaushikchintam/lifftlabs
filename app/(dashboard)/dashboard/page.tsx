@@ -74,15 +74,15 @@ function SessionRowLink({ s }: { s: SessionRow }) {
         <Video size={13} />
       </div>
       <div className="flex-1">
-        <p className="font-dm-sans text-sm text-[#18150F]">
+        <p className="font-dm-sans text-sm text-ink">
           Session with {s.counterpart?.name ?? "—"}
         </p>
-        <p className="font-dm-sans text-xs text-[#6F6B60]">
+        <p className="font-dm-sans text-xs text-ink-muted">
           {whenFmt(s.scheduled_at, s.timezone)}
           {s.status === "pending" ? " · awaiting payment" : ""}
         </p>
       </div>
-      <ChevronRight size={14} className="text-[#6F6B60] mt-1 flex-shrink-0" />
+      <ChevronRight size={14} className="text-ink-muted mt-1 flex-shrink-0" />
     </Link>
   );
 }
@@ -115,10 +115,10 @@ async function MentorDashboard({
   return (
     <div className="p-10">
       <div className="mb-8">
-        <h2 className="font-archivo-black text-5xl text-[#18150F] mb-2">
+        <h2 className="font-archivo-black text-5xl text-ink mb-2">
           Hello, {firstName}
         </h2>
-        <p className="font-dm-sans text-lg text-[#6F6B60]">
+        <p className="font-dm-sans text-lg text-ink-muted">
           Here's your mentoring at a glance.
         </p>
       </div>
@@ -128,12 +128,12 @@ async function MentorDashboard({
         <PayoutBanner userId={userId} payoutsParam={payoutsParam} />
       </div>
 
-      <div className="border border-[#E8E2D6] rounded-xl p-6 mb-6">
-        <p className="font-dm-sans text-xs text-[#6F6B60] mb-4">
+      <div className="rounded-xl border border-[#ECE7DD] bg-white p-6 mb-6 shadow-sm">
+        <p className="font-dm-sans text-xs text-ink-muted mb-4">
           Upcoming sessions
         </p>
         {sessions.length === 0 ? (
-          <p className="font-dm-sans text-sm text-[#6F6B60]">
+          <p className="font-dm-sans text-sm text-ink-muted">
             Nothing booked yet. Published slots appear to learners as soon as
             payouts are set up.
           </p>
@@ -149,27 +149,27 @@ async function MentorDashboard({
       <div className="grid grid-cols-2 gap-4">
         <Link
           href="/calendar"
-          className="border border-[#E8E2D6] rounded-xl p-6 hover:bg-[#FBF7EE] transition-colors"
+          className="rounded-xl border border-[#ECE7DD] bg-white p-6 shadow-sm transition-colors hover:bg-[#FAF8F3]"
         >
-          <div className="w-7 h-7 rounded-full bg-[#E8E2D6] flex items-center justify-center mb-3">
+          <div className="w-7 h-7 rounded-full bg-[#ECE7DD] flex items-center justify-center mb-3">
             <Calendar size={13} />
           </div>
-          <p className="font-dm-sans text-sm text-[#18150F] mb-1">
+          <p className="font-dm-sans text-sm text-ink mb-1">
             Calendar & slots
           </p>
-          <p className="font-dm-sans text-xs text-[#6F6B60]">
+          <p className="font-dm-sans text-xs text-ink-muted">
             Publish times you're open to mentoring
           </p>
         </Link>
         <Link
           href="/earnings"
-          className="border border-[#E8E2D6] rounded-xl p-6 hover:bg-[#FBF7EE] transition-colors"
+          className="rounded-xl border border-[#ECE7DD] bg-white p-6 shadow-sm transition-colors hover:bg-[#FAF8F3]"
         >
-          <div className="w-7 h-7 rounded-full bg-[#E8E2D6] flex items-center justify-center mb-3">
+          <div className="w-7 h-7 rounded-full bg-[#ECE7DD] flex items-center justify-center mb-3">
             <Zap size={13} />
           </div>
-          <p className="font-dm-sans text-sm text-[#18150F] mb-1">Earnings</p>
-          <p className="font-dm-sans text-xs text-[#6F6B60]">
+          <p className="font-dm-sans text-sm text-ink mb-1">Earnings</p>
+          <p className="font-dm-sans text-xs text-ink-muted">
             Paid sessions and your share
           </p>
         </Link>
@@ -227,23 +227,23 @@ async function LearnerDashboard({
     <div className="p-10">
       {/* Header */}
       <div className="mb-8">
-        <h2 className="font-archivo-black text-5xl text-[#18150F] mb-2">
+        <h2 className="font-archivo-black text-5xl text-ink mb-2">
           Hello, {firstName}
         </h2>
-        <p className="font-dm-sans text-lg text-[#6F6B60]">{subtitle}</p>
+        <p className="font-dm-sans text-lg text-ink-muted">{subtitle}</p>
       </div>
 
       {/* Next session — the real milestone */}
       {sessions.length > 0 ? (
-        <div className="bg-[#dceaf3] rounded-2xl px-8 py-6 flex items-center justify-between mb-6">
+        <div className="bg-brand-tint rounded-2xl px-8 py-6 flex items-center justify-between mb-6">
           <div>
-            <p className="font-dm-sans text-xs text-[#6F6B60] mb-2">
+            <p className="font-dm-sans text-xs text-ink-muted mb-2">
               Your next session
             </p>
-            <h2 className="font-archivo-black text-2xl text-[#18150F] mb-1">
+            <h2 className="font-archivo-black text-2xl text-ink mb-1">
               {sessions[0].counterpart?.name ?? "Mentoring session"}
             </h2>
-            <p className="font-dm-sans text-sm text-[#6F6B60]">
+            <p className="font-dm-sans text-sm text-ink-muted">
               {whenFmt(sessions[0].scheduled_at, sessions[0].timezone)}
               {sessions[0].status === "pending" ? " · awaiting payment" : ""}
             </p>
@@ -256,15 +256,15 @@ async function LearnerDashboard({
           </Link>
         </div>
       ) : (
-        <div className="bg-[#dceaf3] rounded-2xl px-8 py-6 flex items-center justify-between mb-6">
+        <div className="bg-brand-tint rounded-2xl px-8 py-6 flex items-center justify-between mb-6">
           <div>
-            <p className="font-dm-sans text-xs text-[#6F6B60] mb-2">
+            <p className="font-dm-sans text-xs text-ink-muted mb-2">
               Get started
             </p>
-            <h2 className="font-archivo-black text-2xl text-[#18150F] mb-1">
+            <h2 className="font-archivo-black text-2xl text-ink mb-1">
               Book your first session
             </h2>
-            <p className="font-dm-sans text-sm text-[#6F6B60]">
+            <p className="font-dm-sans text-sm text-ink-muted">
               Find a mentor who's walked the path you're on.
             </p>
           </div>
@@ -280,12 +280,12 @@ async function LearnerDashboard({
       {/* Bottom 2 cols */}
       <div className="grid grid-cols-2 gap-4">
         {/* Upcoming sessions */}
-        <div className="border border-[#E8E2D6] rounded-xl p-6">
-          <p className="font-dm-sans text-xs text-[#6F6B60] mb-4">
+        <div className="rounded-xl border border-[#ECE7DD] bg-white p-6 shadow-sm">
+          <p className="font-dm-sans text-xs text-ink-muted mb-4">
             Upcoming sessions
           </p>
           {sessions.length === 0 ? (
-            <p className="font-dm-sans text-sm text-[#6F6B60] mb-5">
+            <p className="font-dm-sans text-sm text-ink-muted mb-5">
               Nothing booked yet.
             </p>
           ) : (
@@ -297,27 +297,27 @@ async function LearnerDashboard({
           )}
           <Link
             href="/sessions"
-            className="inline-flex items-center gap-2 border border-[#E8E2D6] rounded-full px-4 py-2 font-dm-sans text-sm text-[#18150F] hover:bg-[#FBF7EE] transition-colors"
+            className="inline-flex items-center gap-2 rounded-full border border-[#ECE7DD] px-4 py-2 font-dm-sans text-sm text-ink hover:bg-[#FAF8F3] transition-colors"
           >
             All sessions <ChevronRight size={14} />
           </Link>
         </div>
 
         {/* Messages */}
-        <div className="border border-[#E8E2D6] rounded-xl p-6 flex flex-col">
-          <p className="font-dm-sans text-xs text-[#6F6B60] mb-1">Messages</p>
-          <p className="font-dm-sans text-sm text-[#18150F] mb-3">
+        <div className="rounded-xl border border-[#ECE7DD] bg-white p-6 shadow-sm flex flex-col">
+          <p className="font-dm-sans text-xs text-ink-muted mb-1">Messages</p>
+          <p className="font-dm-sans text-sm text-ink mb-3">
             {unreadCount > 0
               ? `${unreadCount} unread message${unreadCount === 1 ? "" : "s"}`
               : "You're all caught up"}
           </p>
-          <p className="font-dm-sans text-sm text-[#6F6B60] mb-5 flex-1">
+          <p className="font-dm-sans text-sm text-ink-muted mb-5 flex-1">
             Your conversation with each mentor opens automatically when you
             book a session.
           </p>
           <Link
             href="/messages"
-            className="w-full bg-[#2596BE] text-white font-dm-sans text-sm py-2.5 rounded-full hover:bg-[#1A7A9E] transition-colors flex items-center justify-center gap-2"
+            className="w-full bg-brand text-white font-dm-sans text-sm py-2.5 rounded-full hover:bg-brand-hover transition-colors flex items-center justify-center gap-2"
           >
             <MessageCircle size={14} /> Open messages
           </Link>

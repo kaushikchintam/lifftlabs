@@ -16,7 +16,7 @@ export function SyncButton() {
         <button
             onClick={sync}
             disabled={syncing}
-            className="inline-flex items-center gap-1.5 rounded-full border border-[#E8E2D6] bg-[#FBF7EE] px-4 py-1.5 font-dm-sans text-sm font-semibold text-[#3A372F] hover:border-[#18150F] disabled:opacity-50 transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-full border border-[#ECE7DD] bg-white px-4 py-1.5 font-dm-sans text-sm font-semibold text-ink-body hover:border-ink disabled:opacity-50 transition-colors"
         >
             <RefreshCw size={14} className={syncing ? "animate-spin" : ""} />
             {syncing ? "Syncing…" : "Refresh from Google"}

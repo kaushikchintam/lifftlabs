@@ -27,8 +27,8 @@ interface Me {
 }
 
 const inputCls =
-  "w-full rounded-lg border border-[#E8E2D6] bg-white px-3 py-2 font-dm-sans text-sm text-[#18150F] outline-none focus:border-[#2596BE]";
-const labelCls = "font-dm-sans text-xs text-[#6F6B60] mb-1 block";
+  "w-full rounded-lg border border-[#ECE7DD] bg-white px-3 py-2 font-dm-sans text-sm text-ink outline-none focus:border-brand";
+const labelCls = "font-dm-sans text-xs text-ink-muted mb-1 block";
 
 export function SettingsForm({ hasStripeAccount }: { hasStripeAccount: boolean }) {
   const [me, setMe] = useState<Me | null>(null);
@@ -146,7 +146,7 @@ export function SettingsForm({ hasStripeAccount }: { hasStripeAccount: boolean }
   }
 
   if (!me) {
-    return <p className="font-dm-sans text-sm text-[#6F6B60]">Loading…</p>;
+    return <p className="font-dm-sans text-sm text-ink-muted">Loading…</p>;
   }
 
   const initials = (name || "?")
@@ -159,8 +159,8 @@ export function SettingsForm({ hasStripeAccount }: { hasStripeAccount: boolean }
   return (
     <div className="space-y-6">
       {/* Avatar + identity */}
-      <section className="border border-[#E8E2D6] rounded-xl p-6">
-        <p className="font-dm-sans text-xs text-[#6F6B60] mb-4">Profile</p>
+      <section className="rounded-xl border border-[#ECE7DD] bg-white p-6 shadow-sm">
+        <p className="font-dm-sans text-xs text-ink-muted mb-4">Profile</p>
 
         <div className="flex items-center gap-5 mb-6">
           <div className="relative">
@@ -169,10 +169,10 @@ export function SettingsForm({ hasStripeAccount }: { hasStripeAccount: boolean }
               <img
                 src={me.user.image}
                 alt="Your avatar"
-                className="w-16 h-16 rounded-full object-cover border border-[#E8E2D6]"
+                className="w-16 h-16 rounded-full object-cover border border-[#ECE7DD]"
               />
             ) : (
-              <div className="w-16 h-16 rounded-full bg-[#18150F] flex items-center justify-center">
+              <div className="w-16 h-16 rounded-full bg-ink flex items-center justify-center">
                 <span className="font-dm-sans text-white text-lg">{initials}</span>
               </div>
             )}
@@ -181,11 +181,11 @@ export function SettingsForm({ hasStripeAccount }: { hasStripeAccount: boolean }
             <button
               onClick={() => fileRef.current?.click()}
               disabled={avatarBusy}
-              className="border border-[#E8E2D6] rounded-full px-4 py-2 font-dm-sans text-sm text-[#18150F] hover:bg-[#FBF7EE] transition-colors disabled:opacity-50"
+              className="border border-[#ECE7DD] rounded-full px-4 py-2 font-dm-sans text-sm text-ink hover:bg-[#FAF8F3] transition-colors disabled:opacity-50"
             >
               {avatarBusy ? "Uploading…" : "Change photo"}
             </button>
-            <p className="font-dm-sans text-xs text-[#6F6B60] mt-1">
+            <p className="font-dm-sans text-xs text-ink-muted mt-1">
               JPG, PNG or WebP, up to 2 MB.
             </p>
             <input
@@ -215,7 +215,7 @@ export function SettingsForm({ hasStripeAccount }: { hasStripeAccount: boolean }
           <div>
             <label className={labelCls}>Email</label>
             <input className={`${inputCls} opacity-60`} value={me.user.email} disabled />
-            <p className="font-dm-sans text-xs text-[#6F6B60] mt-1">
+            <p className="font-dm-sans text-xs text-ink-muted mt-1">
               Your sign-in email can't be changed here.
             </p>
           </div>
@@ -223,8 +223,8 @@ export function SettingsForm({ hasStripeAccount }: { hasStripeAccount: boolean }
       </section>
 
       {/* Role-specific fields */}
-      <section className="border border-[#E8E2D6] rounded-xl p-6">
-        <p className="font-dm-sans text-xs text-[#6F6B60] mb-4">
+      <section className="rounded-xl border border-[#ECE7DD] bg-white p-6 shadow-sm">
+        <p className="font-dm-sans text-xs text-ink-muted mb-4">
           {me.role === "mentor" ? "Mentor profile" : "Your journey"}
         </p>
 
@@ -268,7 +268,7 @@ export function SettingsForm({ hasStripeAccount }: { hasStripeAccount: boolean }
                 value={rate}
                 onChange={(e) => setRate(e.target.value)}
               />
-              <p className="font-dm-sans text-xs text-[#6F6B60] mt-1">
+              <p className="font-dm-sans text-xs text-ink-muted mt-1">
                 Per 60-minute session, before the 15% platform fee. Applies to
                 new bookings only.
               </p>
@@ -310,15 +310,15 @@ export function SettingsForm({ hasStripeAccount }: { hasStripeAccount: boolean }
 
       {/* Mentor payouts */}
       {me.role === "mentor" && hasStripeAccount && (
-        <section className="border border-[#E8E2D6] rounded-xl p-6">
-          <p className="font-dm-sans text-xs text-[#6F6B60] mb-2">Payouts</p>
-          <p className="font-dm-sans text-sm text-[#18150F] mb-4">
+        <section className="rounded-xl border border-[#ECE7DD] bg-white p-6 shadow-sm">
+          <p className="font-dm-sans text-xs text-ink-muted mb-2">Payouts</p>
+          <p className="font-dm-sans text-sm text-ink mb-4">
             Payout history and bank details live in your Stripe dashboard —
             LIFFT never sees your bank information.
           </p>
           <button
             onClick={managePayouts}
-            className="border border-[#E8E2D6] rounded-full px-4 py-2 font-dm-sans text-sm text-[#18150F] hover:bg-[#FBF7EE] transition-colors"
+            className="border border-[#ECE7DD] rounded-full px-4 py-2 font-dm-sans text-sm text-ink hover:bg-[#FAF8F3] transition-colors"
           >
             Manage payouts in Stripe
           </button>
@@ -330,7 +330,7 @@ export function SettingsForm({ hasStripeAccount }: { hasStripeAccount: boolean }
         <button
           onClick={save}
           disabled={saving || !name.trim()}
-          className="bg-[#18150F] text-white font-dm-sans text-sm px-6 py-2.5 rounded-full hover:bg-[#2d2a22] transition-colors disabled:opacity-50"
+          className="bg-ink text-white font-dm-sans text-sm px-6 py-2.5 rounded-full hover:bg-[#2d2a22] transition-colors disabled:opacity-50"
         >
           {saving ? "Saving…" : "Save changes"}
         </button>

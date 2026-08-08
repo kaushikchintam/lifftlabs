@@ -45,35 +45,35 @@ export default async function PaymentsPage() {
 
     return (
         <div className="mx-auto max-w-2xl space-y-6 p-4 md:p-6">
-            <h1 className="font-archivo-black text-2xl text-[#18150F] tracking-widest uppercase">Payments</h1>
+            <h1 className="font-archivo-black text-2xl text-ink tracking-widest uppercase">Payments</h1>
 
             {payments.length === 0 ? (
-                <p className="font-dm-sans text-sm text-[#6F6B60]">
+                <p className="font-dm-sans text-sm text-ink-muted">
                     No payments yet — they will appear here after your first booking.
                 </p>
             ) : (
                 <div className="space-y-3">
                     {payments.map((p) => (
-                        <div key={p.id} className="flex items-center justify-between rounded-2xl border border-[#E8E2D6] bg-[#FBF7EE] px-5 py-4 shadow-sm">
+                        <div key={p.id} className="flex items-center justify-between rounded-2xl border border-[#ECE7DD] bg-white px-5 py-4 shadow-sm">
                             <div>
-                                <p className="font-dm-sans font-semibold text-[#18150F]">
+                                <p className="font-dm-sans font-semibold text-ink">
                                     Session{p.session?.mentor?.name ? ` with ${p.session.mentor.name}` : ""}
                                 </p>
-                                <p className="font-dm-sans text-sm text-[#6F6B60] mt-0.5">
+                                <p className="font-dm-sans text-sm text-ink-muted mt-0.5">
                                     Paid {dateFmt.format(new Date(p.created_at))}
                                     {p.session_id && (
                                         <>
                                             {" · "}
                                             <Link
                                                 href={`/sessions/${p.session_id}`}
-                                                className="text-[#2596BE] hover:underline underline-offset-2">
+                                                className="text-brand hover:underline underline-offset-2">
                                                 view session
                                             </Link>
                                         </>
                                     )}
                                 </p>
                             </div>
-                            <p className="font-dm-sans font-semibold text-[#18150F]">
+                            <p className="font-dm-sans font-semibold text-ink">
                                 £{(p.amount_pence / 100).toFixed(2)}
                             </p>
                         </div>

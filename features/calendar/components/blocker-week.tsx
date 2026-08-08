@@ -103,19 +103,19 @@ export function BlockerWeek() {
     <div className="space-y-4 font-dm-sans">
       {[...byDay.entries()].map(([day, items]) => (
         <div key={day}>
-          <p className="text-[14.5px] font-semibold text-[#18150F]">{day}</p>
+          <p className="text-[14.5px] font-semibold text-ink">{day}</p>
           <ul className="mt-1 space-y-0.5">
             {items.map((b) => (
               <li key={b.id} className="flex items-center gap-2.5 py-0.5 pl-0.5">
                 <span
                   className={`h-2 w-2 flex-none rounded-full ${
-                    b.isLifftSession ? "bg-[#2596BE]" : "bg-[#9A958A]"
+                    b.isLifftSession ? "bg-brand" : "bg-ink-faintest"
                   }`}
                 />
-                <span className="text-[14.5px] font-semibold text-[#18150F]">
+                <span className="text-[14.5px] font-semibold text-ink">
                   {timeFmt.format(b.start)}–{timeFmt.format(b.end)}
                 </span>
-                <span className="text-sm text-[#6F6B60]">
+                <span className="text-sm text-ink-muted">
                   {b.isLifftSession ? "LIFFT session" : "busy"}
                 </span>
               </li>
