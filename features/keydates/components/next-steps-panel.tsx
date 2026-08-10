@@ -1,4 +1,4 @@
-interface Highlight {
+export interface Highlight {
   label: string;
   /** Real date — drives both sorting and the "still upcoming" filter, so
    *  this list quietly rolls forward on its own as months pass. */
@@ -15,7 +15,7 @@ interface Highlight {
 // Mirrors the milestones in data/ucas-dates.ts's APP_DATES, but as concrete
 // dates rather than month-index chips — that's what lets this panel rank
 // "closest to today" instead of just rendering next steps in row order.
-const HIGHLIGHTS: Highlight[] = [
+export const HIGHLIGHTS: Highlight[] = [
   { label: "Last UCAT test date", date: new Date(2026, 8, 25), hard: false, color: "#2596BE", description: "Book now if you haven't — late slots go first" },
   { label: "UCAS deadline for medicine", date: new Date(2026, 9, 15), hard: true, color: "#E63946", description: "Hard deadline, every UK medical school" },
   { label: "Earliest interview invites", date: new Date(2026, 10, 1), hard: false, color: "#F4A261", description: "Season opens — timing varies by school" },
