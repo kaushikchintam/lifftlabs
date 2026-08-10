@@ -17,7 +17,7 @@ export async function PATCH (request: NextRequest, { params }: { params: Promise
     const body = await request.json();
 
     //Dynamically build the update object based on what was sent
-    const updateData: Record<string, any> = {};
+    const updateData: { title? : string; status?: "todo" | "in_progress" | "done" } = {};
 
     if (body.title !== undefined) {
         if (typeof body.title !== 'string' || body.title.trim() === '') {
