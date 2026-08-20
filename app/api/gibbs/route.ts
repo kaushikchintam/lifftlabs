@@ -84,7 +84,7 @@ export async function POST (request: NextRequest) {
     const userId = guard.session.user.id;
 
     try {
-        let body: RefSession | RefCustom = await request.json();
+        const body: RefSession | RefCustom = await request.json();
 
         if ('session_id' in body) {
             // Ownership check on the session before attaching a reflection to it.
