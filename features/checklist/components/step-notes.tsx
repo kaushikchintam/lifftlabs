@@ -96,7 +96,7 @@ export function StepNotes({
         </div>
         <button
           onClick={() => setCombined(false)}
-          className="font-dm-sans text-xs text-ink-muted transition-colors hover:text-[#1A665A]"
+          className="font-dm-sans text-xs text-ink-muted transition-colors hover:text-brand"
         >
           Show separately
         </button>
@@ -110,7 +110,7 @@ export function StepNotes({
         <button
           key={note.id}
           onClick={() => startEdit(note)}
-          className="block w-full rounded-xl border border-[#ECE7DD] bg-[#FAF8F3] px-4 py-2.5 text-left font-dm-sans text-sm text-ink transition-colors hover:border-[#1A665A]/40"
+          className="block w-full rounded-xl border border-[#ECE7DD] bg-[#FAF8F3] px-4 py-2.5 text-left font-dm-sans text-sm text-ink transition-colors hover:border-brand/40"
         >
           {note.content}
           <span className="ml-2 text-ink-faintest">
@@ -127,7 +127,7 @@ export function StepNotes({
             onChange={(e) => setDraft(e.target.value)}
             placeholder="How's this going?"
             rows={2}
-            className="w-full rounded-xl border border-[#ECE7DD] bg-white px-4 py-2.5 font-dm-sans text-sm text-ink outline-none focus:border-[#1A665A]"
+            className="w-full rounded-xl border border-[#ECE7DD] bg-white px-4 py-2.5 font-dm-sans text-sm text-ink outline-none focus:border-brand"
           />
           <div className="flex items-center gap-2">
             <button
@@ -155,7 +155,7 @@ export function StepNotes({
             <button
               onClick={save}
               disabled={saving || !draft.trim()}
-              className="rounded-full bg-[#1A665A] px-4 py-1.5 font-dm-sans text-xs font-semibold text-white transition-colors hover:bg-[#15544A] disabled:opacity-50"
+              className="rounded-full bg-brand px-4 py-1.5 font-dm-sans text-xs font-semibold text-white transition-colors hover:bg-brand-hover disabled:opacity-50"
             >
               {saving ? "Saving…" : "Save"}
             </button>
@@ -166,7 +166,7 @@ export function StepNotes({
       {!composing && notes.length < MAX_NOTES && (
         <button
           onClick={startNew}
-          className="flex items-center gap-1.5 font-dm-sans text-xs text-ink-muted transition-colors hover:text-[#1A665A]"
+          className="flex items-center gap-1.5 font-dm-sans text-xs text-ink-muted transition-colors hover:text-brand"
         >
           <span className="text-sm leading-none">+</span> Add note
         </button>

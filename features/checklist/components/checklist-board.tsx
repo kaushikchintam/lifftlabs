@@ -88,12 +88,12 @@ export function ChecklistBoard({ initialSections }: { initialSections: Section[]
                   }
                 }}
                 placeholder="Section name…"
-                className="flex-1 rounded-lg border border-[#ECE7DD] bg-white px-3 py-2 font-dm-sans text-sm text-ink outline-none focus:border-[#1A665A]"
+                className="flex-1 rounded-lg border border-[#ECE7DD] bg-white px-3 py-2 font-dm-sans text-sm text-ink outline-none focus:border-brand"
               />
               <button
                 onClick={addSection}
                 disabled={saving}
-                className="rounded-full bg-[#1A665A] px-4 py-2 font-dm-sans text-sm font-semibold text-white transition-colors hover:bg-[#15544A] disabled:opacity-50"
+                className="rounded-full bg-brand px-4 py-2 font-dm-sans text-sm font-semibold text-white transition-colors hover:bg-brand-hover disabled:opacity-50"
               >
                 Add
               </button>
@@ -110,7 +110,7 @@ export function ChecklistBoard({ initialSections }: { initialSections: Section[]
           ) : (
             <button
               onClick={() => setAddingSection(true)}
-              className="flex items-center gap-1.5 font-dm-sans text-sm text-ink-muted transition-colors hover:text-[#1A665A]"
+              className="flex items-center gap-1.5 font-dm-sans text-sm text-ink-muted transition-colors hover:text-brand"
             >
               <span className="text-base leading-none">+</span> Add a section
             </button>

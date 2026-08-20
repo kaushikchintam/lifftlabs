@@ -30,7 +30,7 @@ const inputCls =
   "w-full rounded-lg border border-[#ECE7DD] bg-white px-3 py-2 font-dm-sans text-sm text-ink outline-none focus:border-brand";
 const labelCls = "font-dm-sans text-xs text-ink-muted mb-1 block";
 
-export function SettingsForm({ hasStripeAccount }: { hasStripeAccount: boolean }) {
+export function SettingsForm() {
   const [me, setMe] = useState<Me | null>(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -133,16 +133,6 @@ export function SettingsForm({ hasStripeAccount }: { hasStripeAccount: boolean }
       );
     }
     setAvatarBusy(false);
-  }
-
-  async function managePayouts() {
-    const res = await fetch("/api/mentor/stripe/manage", { method: "POST" });
-    if (res.ok) {
-      const { url } = await res.json();
-      window.open(url, "_blank", "noopener");
-    } else {
-      setError("Couldn't open Stripe — try again in a moment.");
-    }
   }
 
   if (!me) {
@@ -307,23 +297,6 @@ export function SettingsForm({ hasStripeAccount }: { hasStripeAccount: boolean }
           </div>
         )}
       </section>
-
-      {/* Mentor payouts */}
-      {me.role === "mentor" && hasStripeAccount && (
-        <section className="rounded-xl border border-[#ECE7DD] bg-white p-6 shadow-sm">
-          <p className="font-dm-sans text-xs text-ink-muted mb-2">Payouts</p>
-          <p className="font-dm-sans text-sm text-ink mb-4">
-            Payout history and bank details live in your Stripe dashboard —
-            LIFFT never sees your bank information.
-          </p>
-          <button
-            onClick={managePayouts}
-            className="border border-[#ECE7DD] rounded-full px-4 py-2 font-dm-sans text-sm text-ink hover:bg-[#FAF8F3] transition-colors"
-          >
-            Manage payouts in Stripe
-          </button>
-        </section>
-      )}
 
       {/* Save */}
       <div className="flex items-center gap-3">

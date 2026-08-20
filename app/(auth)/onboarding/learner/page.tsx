@@ -4,11 +4,12 @@ import { useRouter } from "next/navigation";
 
 
 
-type Step = 1 | 2 | 3;
+type Step = 1 | 2 | 3 | 4 ;
 type Direction = "forward" | "back";
 
 const backgroundOptions = ["Finance", "Engineering", "Teaching", "Law", "Allied health", "Nursing", "Pharmacy", "Other"];
 const destinationOptions = ["Into medicine (graduate entry)", "Into medicine (undergraduate)", "Change speciality", "Postgraduate exams", "Advance / leadership", "Not sure yet"];
+const stageOptions = ["Applicant", "Medical student", "Resident doctor"];
 const concernOptions = ["Ready for a bigger transition", "Worried it's too late", "Lost in the admissions maze", "Need a clear plan", "Worried about funding"];
 
 export default function LearnerOnboardingPage() {
@@ -18,6 +19,7 @@ export default function LearnerOnboardingPage() {
   const [background, setBackground] = useState("");
   const [destination, setDestination] = useState("");
   const [concern, setConcern] = useState("");
+  const [stage, setStage] = useState("");
 
   function goForward() {
     setDirection("forward");
@@ -50,6 +52,13 @@ export default function LearnerOnboardingPage() {
       value: concern,
       set: setConcern
     },
+    4: {
+      label: "What type of learner are you?",
+      sub: "This shapes which parts of the platform you see, you change it later as you progress.",
+      options: stageOptions, 
+      value: stage, 
+      set: setStage,
+    },
   };
   const current = steps[step];
 
@@ -60,7 +69,7 @@ export default function LearnerOnboardingPage() {
       <div className="flex items-center justify-between mb-20">
         <span className="font-archivo-black text-[#18150F] text-sm tracking-widest uppercase">LIFFT LABS</span>
         <div className="flex items-center gap-2">
-          {([1, 2, 3] as Step[]).map((s) => (
+          {([1, 2, 3, 4] as Step[]).map((s) => (
             <div
               key={s}
               className={`h-2 rounded-full transition-all duration-300 ${
@@ -82,7 +91,7 @@ export default function LearnerOnboardingPage() {
       >
         {/* Step pill */}
         <span className="inline-block font-dm-sans text-xs text-[#18150F] border border-[#18150F]/30 rounded-full px-4 py-1.5 mb-6">
-          Step {step} of 3
+          Step {step} of {Object.keys(steps).length}
         </span>
 
         {/* Headline */}
@@ -125,7 +134,7 @@ export default function LearnerOnboardingPage() {
           <button
             onClick={async () => {
               if (!current.value) return;
-              if (step < 3) {
+              if (step < 4) {
                 goForward();
               } else {
                 const res = await fetch("/api/onboarding/learner", {
@@ -135,6 +144,9 @@ export default function LearnerOnboardingPage() {
                     current_position: background,
                     target_role: destination,
                     primary_concern: concern,
+                    stage: stage === "Applicant" ? "applicant"
+                         : stage === "Medical student" ? "med_student"
+                         : "resident",
                   }),
                 });
                 if (!res.ok) return;
@@ -144,7 +156,7 @@ export default function LearnerOnboardingPage() {
             disabled={!current.value}
             className="rounded-full bg-[#2596BE] hover:bg-[#1A7A9E] disabled:opacity-40 disabled:cursor-not-allowed text-white font-dm-sans text-sm px-8 py-3 transition-colors"
           >
-            {step === 3 ? "Submit" : "Continue"}
+            {step === 4 ? "Submit" : "Continue"}
           </button>
         </div>
       </div>

@@ -1,0 +1,1 @@
+ALTER VIEW public.experience_log_with_hours SET (security_invoker = true);

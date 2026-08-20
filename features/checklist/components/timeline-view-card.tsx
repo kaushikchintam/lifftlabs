@@ -16,7 +16,7 @@ export function TimelineViewCard() {
     <div className="h-fit rounded-2xl border border-[#ECE7DD] bg-white p-6 shadow-sm">
       <div className="mb-3 flex items-center justify-between gap-2">
         <h3 className="font-dm-serif text-xl text-ink">Timeline view</h3>
-        <span className="rounded-full bg-[#1A665A]/10 px-2.5 py-1 font-dm-sans text-[10px] font-bold uppercase tracking-wide text-[#1A665A]">
+        <span className="rounded-full bg-brand/10 px-2.5 py-1 font-dm-sans text-[10px] font-bold uppercase tracking-wide text-brand">
           Live Map
         </span>
       </div>
@@ -40,7 +40,7 @@ export function TimelineViewCard() {
 
       <Link
         href="/keydates"
-        className="mt-4 block text-center font-dm-sans text-sm font-semibold text-[#1A665A] hover:underline"
+        className="mt-4 block text-center font-dm-sans text-sm font-semibold text-brand hover:underline"
       >
         Open Key Dates Calendar →
       </Link>

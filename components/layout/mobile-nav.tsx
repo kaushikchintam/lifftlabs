@@ -5,48 +5,43 @@ import { usePathname } from "next/navigation";
 import {
   LayoutGrid, Video, MessageSquare, CalendarDays,
   Wallet, Receipt, Users, CalendarClock, ListChecks, PiggyBank, ClipboardCheck, BookOpen, Feather, 
+  type LucideIcon
 } from "lucide-react";
 
-const mentorItems = [
-  { label: "Home", href: "/dashboard", icon: LayoutGrid },
-  { label: "Sessions", href: "/sessions", icon: Video },
-  { label: "Messages", href: "/messages", icon: MessageSquare },
-  { label: "Calendar", href: "/calendar", icon: CalendarDays },
-  { label: "Earnings", href: "/earnings", icon: Wallet },
-];
+import { CANONICAL_NAV, type Stages } from "./nav-items";
+const ICONS: Record<string, LucideIcon> = {
+  LayoutGrid, Video, MessageSquare, CalendarDays,
+  Wallet, Receipt, Users, CalendarClock, ListChecks, PiggyBank, ClipboardCheck, BookOpen, Feather
+}
 
-const learnerItems = [
-  { label: "Home", href: "/dashboard", icon: LayoutGrid },
-  { label: "Mentors", href: "/mentors", icon: Users },
-  { label: "Sessions", href: "/sessions", icon: Video },
-  { label: "Messages", href: "/messages", icon: MessageSquare },
-  { label: "Payments", href: "/payments", icon: Receipt },
-  { label: "Key Dates", href: "/keydates", icon: CalendarClock },
-  { label: "Checklist", href: "/checklist", icon: ListChecks },
-  { label: "Finances", href: "/finances", icon: PiggyBank }, 
-  { label: "Experience Log", href: "/experience-log", icon: ClipboardCheck },
-  { label: "Resources", href: "/resources", icon: BookOpen }, 
-  { label: "Feather", href: "/reflection", icon: Feather }, 
-];
+//props = 'role' becomens 'stage', since mentor is now just one value
+// among the four nav-items.ts filters against
+type Props = {
+  stage: Stages;
+}
 
-export function MobileNav({ role }: { role: "mentor" | "learner" }) {
+export function MobileNav({ stage }: Props) {
   const pathname = usePathname();
-  const items = role === "mentor" ? mentorItems : learnerItems;
+
+const navItems = CANONICAL_NAV.filter(
+  (item) => item.stages.includes("*") || item.stages.includes(stage)
+);
 
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 flex border-t border-[#E8E2D6] bg-[#FBF7EE]">
-      {items.map(({ label, href, icon: Icon }) => {
+      {navItems.map(({ id, label, href, icon }) => {
+        const Icon = icon ? ICONS[icon] : null;
         const active =
           pathname === href || (href !== "/dashboard" && pathname.startsWith(href));
         return (
           <Link
-            key={href}
+            key={id}
             href={href}
             className={`flex flex-1 flex-col items-center gap-1 py-3 font-dm-sans text-[10px] transition-colors ${
               active ? "text-[#18150F]" : "text-[#9A958A]"
             }`}
           >
-            <Icon size={20} strokeWidth={1.5} />
+            {Icon && <Icon size={20} strokeWidth={1.5} />}
             {label}
           </Link>
         );

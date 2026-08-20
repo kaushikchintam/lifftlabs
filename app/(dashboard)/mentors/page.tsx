@@ -43,7 +43,7 @@ export default async function MentorsPage() {
   return (
     <div className="p-10 max-w-3xl">
       <div className="mb-8">
-        <h2 className="font-archivo-black text-5xl text-ink mb-2">
+        <h2 className="font-dm-serif text-5xl text-ink mb-2">
           Mentors
         </h2>
         <p className="font-dm-sans text-lg text-ink-muted">

@@ -1,3 +1,7 @@
+/**
+ * Everythig below the nav <nav> block (Settings, Sign out, the user chip) stays untouched. key moves from href to id since that's what 
+ * nav-items.ts actually gives you as a stable identifier. 
+ */
 "use client";
 
 import Link from "next/link";
@@ -21,8 +25,24 @@ import {
   PiggyBank,
   ClipboardCheck, 
   BookOpen,
-  Feather, 
+  Feather, type LucideIcon
 } from "lucide-react";
+
+import { CANONICAL_NAV, type Stages } from "./nav-items";
+
+
+const ICONS: Record<string, LucideIcon> = {
+  LayoutGrid, Video, MessageSquare, CalendarDays, Wallet, Receipt, Users, Settings, LogOut, ChevronLeft, ChevronRight,
+  CalendarClock, ListChecks, PiggyBank, ClipboardCheck, BookOpen, Feather
+}
+
+// Props = 'role' becomes 'stage', since mentor is now just one value
+// among the four nav-items.ts filters against
+type Props = {
+  userName: string;
+  initials: string;
+  stage: Stages;
+}
 
 /**
  * Role-aware nav. `role` comes from the layout (mentor_profiles row check or
@@ -33,41 +53,15 @@ import {
  * layout, only the home page lives under /dashboard.
  */
 
-const mentorItems = [
-  { label: "Home", href: "/dashboard", icon: LayoutGrid },
-  { label: "Sessions", href: "/sessions", icon: Video },
-  { label: "Messages", href: "/messages", icon: MessageSquare },
-  { label: "Calendar", href: "/calendar", icon: CalendarDays },
-  { label: "Earnings", href: "/earnings", icon: Wallet },
-];
 
-const learnerItems = [
-  { label: "Home", href: "/dashboard", icon: LayoutGrid },
-  { label: "Mentors", href: "/mentors", icon: Users },
-  { label: "Sessions", href: "/sessions", icon: Video },
-  { label: "Messages", href: "/messages", icon: MessageSquare },
-  { label: "Payments", href: "/payments", icon: Receipt },
-  { label: "Key Dates", href: "/keydates", icon: CalendarClock },
-  { label: "Checklist", href: "/checklist", icon: ListChecks },
-  { label: "Finances", href: "/finances", icon: PiggyBank }, 
-  { label: "Experience Log", href: "/experience-log", icon: ClipboardCheck }, 
-  { label: "Resources", href: "/resources", icon: BookOpen }, 
-  { label: "Feather", href: "/reflection", icon: Feather }, 
-
-];
-
-type Props = {
-  userName: string;
-  initials: string;
-  role: "mentor" | "learner";
-};
-
-export default function Sidebar({ userName, initials, role }: Props) {
+export default function Sidebar({ userName, initials, stage }: Props) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
 
-  const navItems = role === "mentor" ? mentorItems : learnerItems;
+const navItems = CANONICAL_NAV.filter(
+  (item) => item.stages.includes("*") || item.stages.includes(stage)
+);
 
   return (
     <aside
@@ -90,13 +84,14 @@ export default function Sidebar({ userName, initials, role }: Props) {
       </div>
 
       <nav className="flex-1 flex flex-col gap-0.5 px-3">
-        {navItems.map(({ label, href, icon: Icon }) => {
+        {navItems.map(({ id, label, href, icon }) => {
+          const Icon = icon ? ICONS[icon] : null;
           const active =
             pathname === href ||
             (href !== "/dashboard" && pathname.startsWith(href));
           return (
             <Link
-              key={href}
+              key={id}
               href={href}
               title={collapsed ? label : undefined}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-dm-sans transition-colors ${collapsed ? "justify-center" : ""} ${
@@ -105,7 +100,7 @@ export default function Sidebar({ userName, initials, role }: Props) {
                   : "text-[#6F6B60] hover:bg-[#EDE8DC] hover:text-[#18150F]"
               }`}
             >
-              <Icon size={16} strokeWidth={1.5} />
+              {Icon && <Icon size={16} strokeWidth={1.5} />}
               {!collapsed && label}
             </Link>
           );

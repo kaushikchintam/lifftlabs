@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabase/admin";
+import { getCurrentStage } from "@/lib/stage";
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -15,10 +16,11 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  //clear state role cookie if session is gone
+  //clear state role cookie if session is gone, now also stage
   if(!session && role) {
     const res = NextResponse.next();
     res.cookies.delete("role");
+    res.cookies.delete("stage");
     return res
   }
 
@@ -96,6 +98,21 @@ export async function proxy(request: NextRequest) {
   // 4. Non-admin trying to reach /admin
   if (session && pathname.startsWith("/admin") && role !== "admin") {
     return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
+  //5. Session + role=learner + no stage cookie -> restore it
+  if (session && role === "learner" && !request.cookies.get("stage")?.value) {
+    const stage = await getCurrentStage(session.user.id);
+    if (stage) {
+      const res = NextResponse.next();
+      res.cookies.set("stage", stage, {
+        httpOnly: true, 
+        sameSite: "lax", 
+        secure: process.env.NODE_ENV === "production", 
+        maxAge: 60 * 60 * 24 * 30, 
+      });
+      return res;
+    }
   }
 
   return NextResponse.next();

@@ -8,7 +8,7 @@ export function SyncButton() {
 
     async function sync() {
         setSyncing(true);
-        await fetch("/api/mentor/calendar/sync").catch(() => {});
+        await fetch("/api/mentor/calendar/sync", { method: "POST" }).catch(() => {});
         setSyncing(false);
     }
 
