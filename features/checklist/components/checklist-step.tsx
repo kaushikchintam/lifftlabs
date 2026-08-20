@@ -59,7 +59,7 @@ export function ChecklistStep({
           onClick={cycleStatus}
           className={`flex h-5 w-5 flex-none items-center justify-center rounded-md border-2 transition-colors ${
             step.status === "done"
-              ? "border-[#1A665A] bg-[#1A665A]"
+              ? "border-brand bg-brand"
               : step.status === "in_progress"
                 ? "border-warning bg-white"
                 : "border-[#D8D2C4] bg-white"
@@ -79,7 +79,7 @@ export function ChecklistStep({
             onChange={(e) => setTitle(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && saveTitle()}
             onBlur={saveTitle}
-            className="flex-1 border-b border-[#1A665A] bg-transparent font-dm-sans text-sm font-semibold text-ink outline-none"
+            className="flex-1 border-b border-brand bg-transparent font-dm-sans text-sm font-semibold text-ink outline-none"
           />
         ) : (
           <p

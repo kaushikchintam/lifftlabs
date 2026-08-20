@@ -12,8 +12,8 @@ export function ChecklistHeader({ doneSteps, totalSteps }: ChecklistHeaderProps)
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-6">
         <div>
-          <span className="mb-2 inline-flex items-center gap-1.5 font-dm-sans text-xs font-bold uppercase tracking-wide text-[#1A665A]">
-            <span className="inline-block h-px w-4 bg-[#1A665A]" />
+          <span className="mb-2 inline-flex items-center gap-1.5 font-dm-sans text-xs font-bold uppercase tracking-wide text-brand">
+            <span className="inline-block h-px w-4 bg-brand" />
             My preparation
           </span>
           <h1 className="font-dm-serif text-5xl text-ink">Application checklist</h1>
@@ -32,11 +32,11 @@ export function ChecklistHeader({ doneSteps, totalSteps }: ChecklistHeaderProps)
       <div className="rounded-2xl border border-[#ECE7DD] bg-white p-6 shadow-sm">
         <div className="mb-3 flex items-center justify-between">
           <p className="font-dm-sans text-sm font-semibold text-ink">Overall Readiness</p>
-          <p className="font-dm-sans text-sm font-bold text-[#1A665A]">{percent}%</p>
+          <p className="font-dm-sans text-sm font-bold text-brand">{percent}%</p>
         </div>
         <div className="h-2.5 w-full overflow-hidden rounded-full bg-[#ECE7DD]">
           <div
-            className="h-full rounded-full bg-[#1A665A] transition-all"
+            className="h-full rounded-full bg-brand transition-all"
             style={{ width: `${percent}%` }}
           />
         </div>

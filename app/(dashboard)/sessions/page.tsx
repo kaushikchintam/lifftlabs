@@ -30,10 +30,10 @@ const STATUS_LABELS: Record<string, string> = {
 
 const STATUS_STYLES: Record<string, string> = {
   pending:   "bg-[#FEF3C7] text-[#92400E]",
-  confirmed: "bg-[#DDEBF3] text-[#1A7A9E]",
+  confirmed: "bg-brand-tint text-brand-hover",
   completed: "bg-[#F1ECE0] text-ink",
-  cancelled: "bg-[#F1ECE0] text-[#9A958A]",
-  expired:   "bg-[#F1ECE0] text-[#9A958A]",
+  cancelled: "bg-[#F1ECE0] text-ink-faintest",
+  expired:   "bg-[#F1ECE0] text-ink-faintest",
 };
 
 function formatWhen(iso: string, tz: string): string {
@@ -62,7 +62,7 @@ function SessionCard({ s, userId }: { s: SessionRow; userId: string }) {
             {formatWhen(s.scheduled_at, s.timezone)}
           </p>
         </div>
-        <span className={`rounded-full px-3 py-1 font-dm-sans text-xs font-semibold ${STATUS_STYLES[s.status] ?? "bg-[#F1ECE0] text-[#9A958A]"}`}>
+        <span className={`rounded-full px-3 py-1 font-dm-sans text-xs font-semibold ${STATUS_STYLES[s.status] ?? "bg-[#F1ECE0] text-ink-faintest"}`}>
           {STATUS_LABELS[s.status] ?? s.status}
         </span>
       </div>
@@ -97,7 +97,7 @@ export default async function SessionsPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-8 p-4 md:p-6">
-      <h1 className="font-archivo-black text-2xl text-ink tracking-widest uppercase">Sessions</h1>
+      <h1 className="font-dm-serif text-5xl text-ink">Sessions</h1>
 
       <section className="space-y-3">
         <h2 className="font-dm-serif text-xl text-ink">Upcoming</h2>

@@ -7,8 +7,7 @@ import { requireSession } from "@/lib/auth/require-admin";
  * "avatars" bucket, URL persisted on Better Auth's user.image.
  *
  * Requires the bucket once: Supabase Dashboard → Storage → New bucket →
- * name "avatars", Public ON. (Service role uploads bypass storage RLS,
- * consistent with ADR 010.)
+ * name "avatars"
  */
 
 const MAX_BYTES = 2 * 1024 * 1024; // 2 MB

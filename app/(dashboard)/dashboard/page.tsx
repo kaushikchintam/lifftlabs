@@ -115,7 +115,7 @@ async function MentorDashboard({
   return (
     <div className="p-10">
       <div className="mb-8">
-        <h2 className="font-archivo-black text-5xl text-ink mb-2">
+        <h2 className="font-dm-serif text-5xl text-ink mb-2">
           Hello, {firstName}
         </h2>
         <p className="font-dm-sans text-lg text-ink-muted">
@@ -227,7 +227,7 @@ async function LearnerDashboard({
     <div className="p-10">
       {/* Header */}
       <div className="mb-8">
-        <h2 className="font-archivo-black text-5xl text-ink mb-2">
+        <h2 className="font-dm-serif text-5xl text-ink mb-2">
           Hello, {firstName}
         </h2>
         <p className="font-dm-sans text-lg text-ink-muted">{subtitle}</p>
@@ -240,7 +240,7 @@ async function LearnerDashboard({
             <p className="font-dm-sans text-xs text-ink-muted mb-2">
               Your next session
             </p>
-            <h2 className="font-archivo-black text-2xl text-ink mb-1">
+            <h2 className="font-dm-serif text-2xl text-ink mb-1">
               {sessions[0].counterpart?.name ?? "Mentoring session"}
             </h2>
             <p className="font-dm-sans text-sm text-ink-muted">
@@ -250,7 +250,7 @@ async function LearnerDashboard({
           </div>
           <Link
             href={`/sessions/${sessions[0].id}`}
-            className="bg-[#18150F] text-white font-dm-sans text-sm px-5 py-2.5 rounded-full hover:bg-[#2d2a22] transition-colors flex-shrink-0"
+            className="bg-brand text-white font-dm-sans text-sm px-5 py-2.5 rounded-full hover:bg-brand-hover transition-colors flex-shrink-0"
           >
             View session
           </Link>
@@ -261,7 +261,7 @@ async function LearnerDashboard({
             <p className="font-dm-sans text-xs text-ink-muted mb-2">
               Get started
             </p>
-            <h2 className="font-archivo-black text-2xl text-ink mb-1">
+            <h2 className="font-dm-serif text-2xl text-ink mb-1">
               Book your first session
             </h2>
             <p className="font-dm-sans text-sm text-ink-muted">
@@ -270,7 +270,7 @@ async function LearnerDashboard({
           </div>
           <Link
             href="/mentors"
-            className="bg-[#18150F] text-white font-dm-sans text-sm px-5 py-2.5 rounded-full hover:bg-[#2d2a22] transition-colors flex-shrink-0"
+            className="bg-brand text-white font-dm-sans text-sm px-5 py-2.5 rounded-full hover:bg-brand-hover transition-colors flex-shrink-0"
           >
             Browse mentors
           </Link>
