@@ -34,6 +34,7 @@ jobs:
           BETTER_AUTH_SECRET: ci-placeholder-secret
           STRIPE_SECRET_KEY: sk_test_placeholder
           STRIPE_WEBHOOK_SECRET: whsec_placeholder
+          STRIPE_BILLING_KEY: rk_test_placeholder
           GOOGLE_CLIENT_ID: placeholder
           GOOGLE_CLIENT_SECRET: placeholder
           SUPABASE_URL: https://placeholder.supabase.co
