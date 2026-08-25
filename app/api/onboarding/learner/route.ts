@@ -16,12 +16,12 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "invalid_stage" }, { status: 400 });
     }
 
-    const { error } = await supabaseAdmin.from("learner_profiles").insert({
+    const { error } = await supabaseAdmin.from("learner_profiles").upsert({
         user_id: session.user.id,
         current_position,
         target_role,
         primary_concern,
-    });
+    }, { onConflict: "user_id" });
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500});
 

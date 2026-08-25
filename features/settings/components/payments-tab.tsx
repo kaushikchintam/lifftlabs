@@ -1,26 +1,30 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 
-interface PaymentRow {
-  id: string;
-  amount_pence: number;
-  created_at: string;
-  session_id: string | null;
-  mentor_name: string | null;
+interface SubscriptionInfo {
+  status: string | null;
+  currentPeriodEnd: string | null;
 }
+
+const STATUS_LABEL: Record<string, string> = {
+  active: "Active",
+  trialing: "Active (trial)",
+  canceling: "Canceling at end of period",
+  canceled: "Canceled",
+  past_due: "Payment failed — update your card",
+};
 
 const dateFmt = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric" });
 
 export function PaymentsTab({
   role,
   hasStripeAccount,
-  payments,
+  subscription,
 }: {
   role: "mentor" | "learner";
   hasStripeAccount: boolean;
-  payments: PaymentRow[];
+  subscription: SubscriptionInfo;
 }) {
   const [error, setError] = useState<string | null>(null);
   const [opening, setOpening] = useState(false);
@@ -35,6 +39,19 @@ export function PaymentsTab({
       window.open(url, "_blank", "noopener");
     } else {
       setError("Couldn't open Stripe — try again in a moment.");
+    }
+  }
+
+  async function manageBilling() {
+    setOpening(true);
+    setError(null);
+    const res = await fetch("/api/billing/portal", { method: "POST" });
+    setOpening(false);
+    if (res.ok) {
+      const { url } = await res.json();
+      window.open(url, "_blank", "noopener");
+    } else {
+      setError("Couldn't open billing — try again in a moment.");
     }
   }
 
@@ -65,37 +82,31 @@ export function PaymentsTab({
   }
 
   return (
-    <div className="rounded-2xl border border-[#ECE7DD] bg-white shadow-sm">
-      <p className="px-6 pt-6 font-dm-sans font-semibold text-ink">Payment history</p>
-      {payments.length === 0 ? (
-        <p className="px-6 pb-6 pt-2 font-dm-sans text-sm text-ink-muted">
-          No payments yet — they'll appear here after your first booking.
-        </p>
+    <div className="rounded-2xl border border-[#ECE7DD] bg-white p-6 shadow-sm">
+      <p className="font-dm-sans font-semibold text-ink mb-1">Subscription</p>
+      {subscription.status ? (
+        <>
+          <p className="font-dm-sans text-sm text-ink-muted mb-1">
+            {STATUS_LABEL[subscription.status] ?? subscription.status}
+          </p>
+          {subscription.currentPeriodEnd && (
+            <p className="font-dm-sans text-sm text-ink-muted mb-4">
+              {subscription.status === "canceling" ? "Access until" : "Renews"}{" "}
+              {dateFmt.format(new Date(subscription.currentPeriodEnd))}
+            </p>
+          )}
+          <button
+            onClick={manageBilling}
+            disabled={opening}
+            className="rounded-full border border-[#ECE7DD] px-4 py-2 font-dm-sans text-sm text-ink transition-colors hover:bg-[#FAF8F3] disabled:opacity-50"
+          >
+            {opening ? "Opening…" : "Manage billing"}
+          </button>
+        </>
       ) : (
-        <div className="px-6 pb-6 pt-2">
-          {payments.map((p) => (
-            <div key={p.id} className="flex items-center justify-between border-t border-[#ECE7DD] py-3 first:border-t-0">
-              <div>
-                <p className="font-dm-sans text-sm font-semibold text-ink">
-                  Session{p.mentor_name ? ` with ${p.mentor_name}` : ""}
-                </p>
-                <p className="font-dm-sans text-sm text-ink-muted mt-0.5">
-                  Paid {dateFmt.format(new Date(p.created_at))}
-                  {p.session_id && (
-                    <>
-                      {" · "}
-                      <Link href={`/sessions/${p.session_id}`} className="text-brand hover:underline underline-offset-2">
-                        view session
-                      </Link>
-                    </>
-                  )}
-                </p>
-              </div>
-              <p className="font-dm-sans font-semibold text-ink">£{(p.amount_pence / 100).toFixed(2)}</p>
-            </div>
-          ))}
-        </div>
+        <p className="font-dm-sans text-sm text-ink-muted mb-4">You&rsquo;re not subscribed yet.</p>
       )}
+      {error && <p className="mt-3 font-dm-sans text-sm text-danger">{error}</p>}
     </div>
   );
 }

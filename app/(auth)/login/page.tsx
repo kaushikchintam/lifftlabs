@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { emailSchema, loginSchema } from "@/features/auth/schema";
 import { authClient } from "@/lib/auth/client";
+import { GradientBackground } from "@/components/ui/bloom-field-gradient";
 
 type Step = "email" | "password";
 
@@ -15,17 +16,20 @@ export default function LoginPage() {
   const [error, setError] = useState("");
 
   return (
-    <div className="flex h-screen">
+    <div className="relative flex h-screen overflow-hidden">
+      <div className="absolute inset-0">
+        <GradientBackground className="h-full w-full" />
+      </div>
 
       {/* Left panel */}
-      <div className="hidden md:flex w-1/2 bg-[#2596BE] items-center justify-center">
-        <h1 className="font-archivo-black text-white text-8xl leading-none tracking-tight">
+      <div className="relative z-10 hidden md:flex w-1/2 items-center justify-center">
+        <h1 className="font-archivo-black text-white text-8xl leading-none tracking-tight drop-shadow-lg">
           LIFFT<br />LABS
         </h1>
       </div>
 
       {/* Right panel */}
-      <div className="flex w-full md:w-1/2 bg-[#DDEBF3] items-center justify-center px-6">
+      <div className="relative z-10 flex w-full md:w-1/2 items-center justify-center px-6">
         <div className="bg-white rounded-2xl p-10 w-full max-w-md shadow-sm">
 
           {/* Logo mark */}
@@ -42,7 +46,7 @@ export default function LoginPage() {
           <h2 className="font-archivo-black text-2xl text-[#18150F] mb-1">
             Sign in to your account
           </h2>
-          <p className="font-dm-sans text-[#6F6B60] text-sm mb-6">
+          <p className="font-sligoil text-[#6F6B60] text-sm mb-6">
             Welcome back — pick up where you left off.
           </p>
 
@@ -50,18 +54,18 @@ export default function LoginPage() {
           {step === "email" && (
             <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-1">
-                <label className="font-dm-sans text-sm text-[#18150F]">Email</label>
+                <label className="font-sligoil text-sm text-[#18150F]">Email</label>
                 <input
                   type="email"
                   placeholder="Enter your email"
                   value={email}
                   onChange={(e) => { setEmail(e.target.value); setError(""); }}
-                  className="font-dm-sans border border-border rounded-lg px-4 py-2.5 text-sm outline-none focus:border-[#2596BE] transition-colors"
+                  className="font-sligoil border border-border rounded-lg px-4 py-2.5 text-sm outline-none focus:border-[#2596BE] transition-colors"
                 />
-                {error && <p className="font-dm-sans text-xs text-[#E63946] mt-1">{error}</p>}
+                {error && <p className="font-sligoil text-xs text-[#E63946] mt-1">{error}</p>}
               </div>
               <Button
-                className="h-auto w-full bg-[#2596BE] hover:bg-[#1A7A9E] text-white rounded-full py-3 font-dm-sans"
+                className="h-auto w-full bg-[#2596BE] hover:bg-[#1A7A9E] text-white rounded-full py-3 font-sligoil"
                 onClick={() => 
                   {const result = emailSchema.safeParse({ email });
                   if (!result.success) {
@@ -81,21 +85,21 @@ export default function LoginPage() {
           {step === "password" && (
             <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-1">
-                <label className="font-dm-sans text-sm text-[#18150F]">Password</label>
+                <label className="font-sligoil text-sm text-[#18150F]">Password</label>
                 <input
                   type="password"
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => { setPassword(e.target.value); setError(""); }}
-                  className="font-dm-sans border border-border rounded-lg px-4 py-2.5 text-sm outline-none focus:border-[#2596BE] transition-colors"
+                  className="font-sligoil border border-border rounded-lg px-4 py-2.5 text-sm outline-none focus:border-[#2596BE] transition-colors"
                 />
-                {error && <p className="font-dm-sans text-xs text-[#E63946] mt-1">{error}</p>}
-                <Link href="/forgot-password" className="font-dm-sans text-xs text-[#2596BE] hover:underline self-end">
+                {error && <p className="font-sligoil text-xs text-[#E63946] mt-1">{error}</p>}
+                <Link href="/forgot-password" className="font-sligoil text-xs text-[#2596BE] hover:underline self-end">
                   Forgot password?
                 </Link>
               </div>
               <Button
-                className="h-auto w-full bg-[#2596BE] hover:bg-[#1A7A9E] text-white rounded-full py-3 font-dm-sans"
+                className="h-auto w-full bg-[#2596BE] hover:bg-[#1A7A9E] text-white rounded-full py-3 font-sligoil"
                 onClick={async () => {
                   const result = loginSchema.safeParse({ email, password });
                   if (!result.success) {
@@ -117,7 +121,7 @@ export default function LoginPage() {
               </Button>
               <button
                 onClick={() => setStep("email")}
-                className="font-dm-sans text-sm text-[#6F6B60] hover:text-[#18150F] transition-colors text-center"
+                className="font-sligoil text-sm text-[#6F6B60] hover:text-[#18150F] transition-colors text-center"
               >
                 ← Back
               </button>
@@ -127,14 +131,14 @@ export default function LoginPage() {
           {/* Divider */}
           <div className="flex items-center gap-3 my-6">
             <div className="flex-1 h-px bg-border" />
-            <span className="font-dm-sans text-xs text-[#6F6B60]">Or continue with</span>
+            <span className="font-sligoil text-xs text-[#6F6B60]">Or continue with</span>
             <div className="flex-1 h-px bg-border" />
           </div>
 
           {/* Google */}
           <Button
             variant="outline"
-            className="h-auto w-full rounded-full py-3 font-dm-sans text-sm gap-3"
+            className="h-auto w-full rounded-full py-3 font-sligoil text-sm gap-3"
             onClick={async () => {
               await authClient.signIn.social({ provider: "google", callbackURL: "/dashboard" });
             }}
@@ -149,7 +153,7 @@ export default function LoginPage() {
           </Button>
 
           {/* Sign up link */}
-          <p className="font-dm-sans text-sm text-[#6F6B60] text-center mt-6">
+          <p className="font-sligoil text-sm text-[#6F6B60] text-center mt-6">
             Don't have an account?{" "}
             <Link href="/signup" className="text-[#2596BE] font-medium hover:underline">
               Sign up

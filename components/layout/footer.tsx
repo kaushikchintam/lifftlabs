@@ -11,7 +11,7 @@ export default function Footer() {
             <p className="font-archivo-black text-lg tracking-widest uppercase mb-3">
               LIFFT LABS
             </p>
-            <p className="font-dm-sans text-sm text-white/60 max-w-xs leading-relaxed">
+            <p className="font-sligoil text-sm text-white/60 max-w-xs leading-relaxed">
               Mentorship for people retraining into medicine and advancing
               within it.
             </p>
@@ -19,10 +19,10 @@ export default function Footer() {
 
           <div className="flex gap-16">
             <div>
-              <p className="font-dm-sans text-xs uppercase tracking-wide text-white/40 mb-3">
+              <p className="font-sligoil text-xs uppercase tracking-wide text-white/40 mb-3">
                 Platform
               </p>
-              <ul className="font-dm-sans text-sm space-y-2">
+              <ul className="font-sligoil text-sm space-y-2">
                 <li>
                   <Link href="/about" className="text-white/80 hover:text-white transition-colors">
                     About
@@ -36,10 +36,10 @@ export default function Footer() {
               </ul>
             </div>
             <div>
-              <p className="font-dm-sans text-xs uppercase tracking-wide text-white/40 mb-3">
+              <p className="font-sligoil text-xs uppercase tracking-wide text-white/40 mb-3">
                 Legal
               </p>
-              <ul className="font-dm-sans text-sm space-y-2">
+              <ul className="font-sligoil text-sm space-y-2">
                 <li>
                   <Link href="/privacy" className="text-white/80 hover:text-white transition-colors">
                     Privacy policy
@@ -53,10 +53,10 @@ export default function Footer() {
               </ul>
             </div>
             <div>
-              <p className="font-dm-sans text-xs uppercase tracking-wide text-white/40 mb-3">
+              <p className="font-sligoil text-xs uppercase tracking-wide text-white/40 mb-3">
                 Contact
               </p>
-              <ul className="font-dm-sans text-sm space-y-2">
+              <ul className="font-sligoil text-sm space-y-2">
                 <li>
                   <a
                     href="mailto:hello@lifftlabs.com"
@@ -70,7 +70,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <p className="font-dm-sans text-xs text-white/40 mt-12">
+        <p className="font-sligoil text-xs text-white/40 mt-12">
           © {new Date().getFullYear()} LIFFT Labs. All rights reserved.
         </p>
       </div>

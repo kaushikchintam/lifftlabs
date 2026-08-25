@@ -65,8 +65,10 @@
 
   /* Fonts */
   --font-archivo-black: var(--font-archivo-black);
+  --font-archivo: var(--font-archivo);
   --font-dm-sans: var(--font-dm-sans);
   --font-dm-serif: var(--font-dm-serif);
+  --font-sligoil: var(--font-sligoil);
 }
 
 :root {

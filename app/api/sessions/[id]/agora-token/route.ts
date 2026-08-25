@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { requireSession } from "@/lib/auth/require-admin";
 import { buildRtcToken, deterministicUid } from "@/lib/agora/token";
+import { hasPlatformAccess } from "@/lib/access";
 
 /**
  * GET /api/sessions/[id]/agora-token (P5-01)
@@ -48,6 +49,12 @@ export async function GET(
 
   if (s.status !== "confirmed") {
     return NextResponse.json({ error: "session_not_joinable" }, { status: 409 });
+  }
+
+  // Video access is part of the subscription now — mentors always pass
+  // (see hasPlatformAccess), learners need to be currently subscribed.
+  if (!(await hasPlatformAccess(guard.session.user.id))) {
+    return NextResponse.json({ error: "subscription_required" }, { status: 402 });
   }
 
   const now = Date.now();
