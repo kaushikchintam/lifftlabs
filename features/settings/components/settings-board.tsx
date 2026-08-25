@@ -8,12 +8,9 @@ import { PaymentsTab } from "./payments-tab";
 
 type Stage = "applicant" | "med_student" | "resident";
 
-interface PaymentRow {
-  id: string;
-  amount_pence: number;
-  created_at: string;
-  session_id: string | null;
-  mentor_name: string | null;
+interface SubscriptionInfo {
+  status: string | null;
+  currentPeriodEnd: string | null;
 }
 
 const TABS = [
@@ -25,12 +22,12 @@ export function SettingsBoard({
   role,
   hasStripeAccount,
   currentStage,
-  payments,
+  subscription,
 }: {
   role: "mentor" | "learner";
   hasStripeAccount: boolean;
   currentStage: Stage | null;
-  payments: PaymentRow[];
+  subscription: SubscriptionInfo;
 }) {
   const [tab, setTab] = useState<(typeof TABS)[number]["id"]>("account");
 
@@ -71,7 +68,7 @@ export function SettingsBoard({
             <SettingsForm />
           </div>
         ) : (
-          <PaymentsTab role={role} hasStripeAccount={hasStripeAccount} payments={payments} />
+          <PaymentsTab role={role} hasStripeAccount={hasStripeAccount} subscription={subscription} />
         )}
       </div>
     </div>

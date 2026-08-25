@@ -7,7 +7,7 @@
  */
 export default function TermsPage() {
   return (
-    <div className="mx-auto max-w-2xl space-y-6 px-6 py-12 text-sm leading-relaxed">
+    <div className="font-sligoil mx-auto max-w-2xl space-y-6 px-6 py-12 text-sm leading-relaxed">
       <h1 className="font-serif text-3xl">Terms of Service</h1>
       <p className="text-muted-foreground">Last updated: 14 July 2026 — DRAFT</p>
 

@@ -5,8 +5,8 @@ import { getCurrentStage } from "@/lib/stage";
 import { SettingsBoard } from "@/features/settings/components/settings-board";
 
 /** Settings — /settings. Role-aware: mentors get payout management under
- *  Payments; learners get payment history there and a Stage switcher under
- *  Account. */
+ *  Payments; learners get their subscription status there and a Stage
+ *  switcher under Account. */
 
 export default async function SettingsPage() {
   const session = await getServerSession();
@@ -24,37 +24,22 @@ export default async function SettingsPage() {
   const currentStage =
     rawStage === "applicant" || rawStage === "med_student" || rawStage === "resident" ? rawStage : null;
 
-  let payments: {
-    id: string;
-    amount_pence: number;
-    created_at: string;
-    session_id: string | null;
-    mentor_name: string | null;
-  }[] = [];
+  let subscription: { status: string | null; currentPeriodEnd: string | null } = {
+    status: null,
+    currentPeriodEnd: null,
+  };
 
   if (role === "learner") {
     const { data } = await supabaseAdmin
-      .from("payments")
-      .select(
-        `id, amount_pence, created_at, session_id,
-         session:mentor_sessions(mentor:user!mentor_sessions_mentor_id_fkey(name))`
-      )
+      .from("learner_profiles")
+      .select("subscription_status, current_period_end")
       .eq("user_id", session.user.id)
-      .order("created_at", { ascending: false });
+      .maybeSingle();
 
-    payments = ((data ?? []) as unknown as {
-      id: string;
-      amount_pence: number;
-      created_at: string;
-      session_id: string | null;
-      session: { mentor: { name: string } | null } | null;
-    }[]).map((p) => ({
-      id: p.id,
-      amount_pence: p.amount_pence,
-      created_at: p.created_at,
-      session_id: p.session_id,
-      mentor_name: p.session?.mentor?.name ?? null,
-    }));
+    subscription = {
+      status: data?.subscription_status ?? null,
+      currentPeriodEnd: data?.current_period_end ?? null,
+    };
   }
 
   return (
@@ -63,7 +48,12 @@ export default async function SettingsPage() {
         <h2 className="font-dm-serif text-5xl text-ink mb-2">Settings</h2>
       </div>
 
-      <SettingsBoard role={role} hasStripeAccount={!!mentor?.stripe_account_id} currentStage={currentStage} payments={payments} />
+      <SettingsBoard
+        role={role}
+        hasStripeAccount={!!mentor?.stripe_account_id}
+        currentStage={currentStage}
+        subscription={subscription}
+      />
     </div>
   );
 }

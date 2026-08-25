@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth/client";
+import { GradientBackground } from "@/components/ui/bloom-field-gradient";
 
 export default function LearnerSignupPage() {
     const [fullName, setFullName] = useState("");
@@ -19,32 +20,20 @@ export default function LearnerSignupPage() {
     const [otp, setOtp] = useState("");
 
 return (
-    <div className="flex h-screen">
+    <div className="relative flex h-screen overflow-hidden">
+        <div className="absolute inset-0">
+          <GradientBackground className="h-full w-full" />
+        </div>
+
         {/* Left panel */}
-        <div className="relative hidden md:flex w-1/2">
-          {/* Background image */}
-          <img src="/images/ok.jpg" className="absolute inset-0 w-full h-full object-cover" />
-          
-          {/* Dark gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/35 z-10" />
-          
-          {/* Text content */}
-          <div className="absolute inset-0 flex flex-col justify-between p-10 z-20">
-            <span className="font-archivo-black text-white text-sm tracking-widest uppercase drop-shadow-lg">LIFFT LABS</span>
-            <div>
-              <h2 className="font-archivo-black text-white text-4xl leading-tight mb-4 drop-shadow-lg [text-shadow:0_2px_12px_rgba(0,0,0,0.8)]">
-                You didn't train this hard to feel stuck.
-              </h2>
-              <p className="font-dm-sans text-white/90 text-base italic drop-shadow-md">
-                Someone who's been where you are is one match away.
-              </p>
-            </div>
-            <span className="font-dm-sans text-white/70 text-sm drop-shadow-md">The platform built for healthcare transition</span>
-          </div>
+        <div className="relative z-10 hidden md:flex w-1/2 items-center justify-center">
+          <h1 className="font-archivo-black text-white text-8xl leading-none tracking-tight drop-shadow-lg">
+            LIFFT<br />LABS
+          </h1>
         </div>
 
         {/* Right panel */}
-        <div className="flex w-full md:w-1/2 bg-[#DDEBF3] items-center justify-center px-6">
+        <div className="relative z-10 flex w-full md:w-1/2 items-center justify-center px-6">
           <div className="bg-white rounded-2xl p-10 w-full max-w-md shadow-sm">
 
             {/* Logo mark */}
@@ -57,49 +46,49 @@ return (
 
             {/* Heading */}
             <h2 className="font-archivo-black text-2xl text-[#18150F] mb-1">Create your account</h2>
-            <p className="font-dm-sans text-[#6F6B60] text-sm mb-6">Join the platform built for healthcare transition.</p>
+            <p className="font-sligoil text-[#6F6B60] text-sm mb-6">Join the platform built for healthcare transition.</p>
 
             <div className="flex flex-col gap-3">
               {/* Full Name */}
               <div className="flex flex-col gap-1">
-                <label className="font-dm-sans text-sm text-[#18150F]">Full Name</label>
+                <label className="font-sligoil text-sm text-[#18150F]">Full Name</label>
                 <input
                   type="text"
                   placeholder="Enter your full name"
                   value={fullName}
                   onChange={(e) => { setFullName(e.target.value); setError(""); }}
-                  className="font-dm-sans border border-border rounded-lg px-4 py-2.5 text-sm outline-none focus:border-[#2596BE] transition-colors"
+                  className="font-sligoil border border-border rounded-lg px-4 py-2.5 text-sm outline-none focus:border-[#2596BE] transition-colors"
                 />
               </div>
 
               {/* Email */}
               <div className="flex flex-col gap-1">
-                <label className="font-dm-sans text-sm text-[#18150F]">Email</label>
+                <label className="font-sligoil text-sm text-[#18150F]">Email</label>
                 <input
                   type="email"
                   placeholder="Enter your email"
                   value={email}
                   onChange={(e) => { setEmail(e.target.value); setError(""); }}
-                  className="font-dm-sans border border-border rounded-lg px-4 py-2.5 text-sm outline-none focus:border-[#2596BE] transition-colors"
+                  className="font-sligoil border border-border rounded-lg px-4 py-2.5 text-sm outline-none focus:border-[#2596BE] transition-colors"
                 />
               </div>
 
               {/* Password */}
               <div className="flex flex-col gap-1">
-                <label className="font-dm-sans text-sm text-[#18150F]">Password</label>
+                <label className="font-sligoil text-sm text-[#18150F]">Password</label>
                 <input
                   type="password"
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => { setPassword(e.target.value); setError(""); }}
-                  className="font-dm-sans border border-border rounded-lg px-4 py-2.5 text-sm outline-none focus:border-[#2596BE] transition-colors"
+                  className="font-sligoil border border-border rounded-lg px-4 py-2.5 text-sm outline-none focus:border-[#2596BE] transition-colors"
                 />
               </div>
 
-              {error && <p className="font-dm-sans text-xs text-[#E63946]">{error}</p>}
+              {error && <p className="font-sligoil text-xs text-[#E63946]">{error}</p>}
 
               <Button
-                className="h-auto w-full bg-[#2596BE] hover:bg-[#1A7A9E] text-white rounded-full py-3 font-dm-sans"
+                className="h-auto w-full bg-[#2596BE] hover:bg-[#1A7A9E] text-white rounded-full py-3 font-sligoil"
                 onClick={async () => {
                   const result = signupSchema.safeParse({ fullName, email, password });
                   if (!result.success) {
@@ -127,14 +116,14 @@ return (
             {/* Divider */}
             <div className="flex items-center gap-3 my-6">
               <div className="flex-1 h-px bg-border" />
-              <span className="font-dm-sans text-xs text-[#6F6B60]">Or continue with</span>
+              <span className="font-sligoil text-xs text-[#6F6B60]">Or continue with</span>
               <div className="flex-1 h-px bg-border" />
             </div>
 
             {/* Google */}
             <Button
               variant="outline"
-              className="h-auto w-full rounded-full py-3 font-dm-sans text-sm gap-3"
+              className="h-auto w-full rounded-full py-3 font-sligoil text-sm gap-3"
               onClick={async () => {
                 await authClient.signIn.social({ provider: "google", callbackURL: "/onboarding/learner" });
               }}
@@ -149,7 +138,7 @@ return (
             </Button>
 
             {/* Log in link */}
-            <p className="font-dm-sans text-sm text-[#6F6B60] text-center mt-6">
+            <p className="font-sligoil text-sm text-[#6F6B60] text-center mt-6">
               Already have an account?{" "}
               <Link href="/login" className="text-[#2596BE] font-medium hover:underline">Log in</Link>
             </p>
@@ -162,7 +151,7 @@ return (
             <DialogContent className="sm:max-w-sm" onInteractOutside={(e) => e.preventDefault()}>
                 <DialogHeader>
                     <DialogTitle className="font-archivo-black text-[#18150F] text-xl">Check your email</DialogTitle>
-                    <DialogDescription className="font-dm-sans text-[#6F6B60] text-sm">
+                    <DialogDescription className="font-sligoil text-[#6F6B60] text-sm">
                         We sent a 6-digit code to <span className="font-medium text-[#18150F]">{email}</span>
                     </DialogDescription>
                 </DialogHeader>
@@ -175,10 +164,10 @@ return (
                     placeholder="000000"
                     value={otp}
                     onChange={(e) => { setOtp(e.target.value.replace(/\D/g, "")); setOtpError(""); }}
-                    className="font-dm-sans border border-border rounded-lg px-4 py-3 text-sm outline-none focus:border-[#2596BE] transition-colors tracking-widest text-center text-lg"
+                    className="font-sligoil border border-border rounded-lg px-4 py-3 text-sm outline-none focus:border-[#2596BE] transition-colors tracking-widest text-center text-lg"
                     />
-                    {otpError && <p className="font-dm-sans text-xs text-[#E63946]">{otpError}</p>}
-                    <Button className="h-auto w-full bg-[#2596BE] hover:bg-[#1A7A9E] text-white rounded-full py-3 font-dm-sans"
+                    {otpError && <p className="font-sligoil text-xs text-[#E63946]">{otpError}</p>}
+                    <Button className="h-auto w-full bg-[#2596BE] hover:bg-[#1A7A9E] text-white rounded-full py-3 font-sligoil"
                     onClick={async () => {
                         const { error: verifyError } = await authClient.emailOtp.verifyEmail({ email, otp });
                         if (verifyError) {
@@ -191,7 +180,7 @@ return (
                     </Button>
 
                     <button
-                     className="font-dm-sans text-sm text-[#6F6B60] hover:text-[#18150F] transition-colors text-center"
+                     className="font-sligoil text-sm text-[#6F6B60] hover:text-[#18150F] transition-colors text-center"
                      onClick={async () => {
                         await authClient.emailOtp.sendVerificationOtp({ email, type: "email-verification"});
                      }}
