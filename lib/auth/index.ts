@@ -19,6 +19,7 @@ export const auth = betterAuth({
   trustedOrigins: [
     "http://localhost:3000",
     "https://dingbat-payday-bogus.ngrok-free.dev",
+    "https://lifftlabs.com",
   ],
   account: {
 		accountLinking: {
