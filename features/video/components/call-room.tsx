@@ -51,6 +51,7 @@ export function CallRoom({
   const [fullscreen, setFullscreen] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [remoteUsers, setRemoteUsers] = useState<IAgoraRTCRemoteUser[]>([]);
+  const [remoteLeft, setRemoteLeft] = useState(false);
 
   const clientRef = useRef<IAgoraRTCClient | null>(null);
   const micTrackRef = useRef<IMicrophoneAudioTrack | null>(null);
@@ -58,6 +59,7 @@ export function CallRoom({
   const localVideoRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const joinedAtRef = useRef<number | null>(null);
+  const hasRemoteJoinedRef = useRef(false);
 
   const fetchToken = useCallback(async (): Promise<TokenResponse> => {
     const res = await fetch(`/api/sessions/${sessionId}/agora-token`);
@@ -86,6 +88,15 @@ export function CallRoom({
     return () => document.removeEventListener("fullscreenchange", onChange);
   }, []);
 
+  // Self PiP — runs after the in-call DOM (and its ref) actually mounts,
+  // since the camTrack is created/published while still showing the
+  // "connecting" screen, before localVideoRef exists.
+  useEffect(() => {
+    if (state === "in-call" && !remoteLeft && localVideoRef.current && camTrackRef.current) {
+      camTrackRef.current.play(localVideoRef.current);
+    }
+  }, [state, remoteLeft]);
+
   const join = useCallback(
     async (devices: DeviceSelection) => {
       setState("connecting");
@@ -99,14 +110,19 @@ export function CallRoom({
         client.on("user-published", async (user, mediaType) => {
           await client.subscribe(user, mediaType);
           if (mediaType === "audio") user.audioTrack?.play();
+          hasRemoteJoinedRef.current = true;
           setRemoteUsers([...client.remoteUsers]);
         });
         client.on("user-unpublished", () =>
           setRemoteUsers([...clientRef.current!.remoteUsers])
         );
-        client.on("user-left", () =>
-          setRemoteUsers([...clientRef.current!.remoteUsers])
-        );
+        client.on("user-left", () => {
+          const updated = clientRef.current!.remoteUsers;
+          setRemoteUsers([...updated]);
+          if (hasRemoteJoinedRef.current && updated.length === 0) {
+            setRemoteLeft(true);
+          }
+        });
         client.on("token-privilege-will-expire", async () => {
           try {
             const fresh = await fetchToken();
@@ -128,7 +144,6 @@ export function CallRoom({
         camTrackRef.current = camTrack;
 
         await client.publish([micTrack, camTrack]);
-        if (localVideoRef.current) camTrack.play(localVideoRef.current);
 
         joinedAtRef.current = Date.now();
         setState("in-call");
@@ -209,6 +224,8 @@ export function CallRoom({
       <div className="aspect-video w-full">
         {remote ? (
           <RemoteStage user={remote} name={counterpartName} />
+        ) : remoteLeft ? (
+          <LocalMainStage camTrack={camTrackRef.current} camOn={camOn} counterpartName={counterpartName} />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
             <p className="font-dm-sans text-sm text-slate-400">
@@ -218,20 +235,23 @@ export function CallRoom({
         )}
       </div>
 
-      {/* Self PiP */}
-      <div className="absolute right-4 top-4 z-20 w-40 overflow-hidden rounded-xl border-2 border-white/20 bg-slate-900 shadow-lg sm:w-48">
-        <div className="relative aspect-video">
-          <div ref={localVideoRef} className="h-full w-full" />
-          {!camOn && (
-            <div className="absolute inset-0 flex items-center justify-center bg-slate-900">
-              <VideoOff size={16} className="text-slate-500" />
-            </div>
-          )}
-          <span className="absolute bottom-1.5 left-1.5 rounded bg-black/60 px-1.5 py-0.5 font-dm-sans text-[10px] text-white">
-            You
-          </span>
+      {/* Self PiP — hidden once the other person has left and the local
+          video takes over the main stage instead (see LocalMainStage). */}
+      {!remoteLeft && (
+        <div className="absolute right-4 top-4 z-20 w-40 overflow-hidden rounded-xl border-2 border-white/20 bg-slate-900 shadow-lg sm:w-48">
+          <div className="relative aspect-video">
+            <div ref={localVideoRef} className="h-full w-full" />
+            {!camOn && (
+              <div className="absolute inset-0 flex items-center justify-center bg-slate-900">
+                <VideoOff size={16} className="text-slate-500" />
+              </div>
+            )}
+            <span className="absolute bottom-1.5 left-1.5 rounded bg-black/60 px-1.5 py-0.5 font-dm-sans text-[10px] text-white">
+              You
+            </span>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Floating controls */}
       <div className="absolute bottom-5 left-1/2 z-20 flex -translate-x-1/2 items-center gap-3 rounded-full bg-black/50 px-4 py-2.5 backdrop-blur">
@@ -294,6 +314,37 @@ function ControlButton({
     >
       {children}
     </button>
+  );
+}
+
+function LocalMainStage({
+  camTrack,
+  camOn,
+  counterpartName,
+}: {
+  camTrack: ICameraVideoTrack | null;
+  camOn: boolean;
+  counterpartName: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (ref.current && camTrack) camTrack.play(ref.current);
+  }, [camTrack]);
+  return (
+    <div className="relative h-full w-full">
+      <div ref={ref} className="h-full w-full" />
+      {!camOn && (
+        <div className="absolute inset-0 flex items-center justify-center bg-slate-900">
+          <VideoOff size={16} className="text-slate-500" />
+        </div>
+      )}
+      <span className="absolute top-3 left-3 rounded bg-black/60 px-2 py-1 font-dm-sans text-xs text-white">
+        {counterpartName} left the call
+      </span>
+      <span className="absolute bottom-3 left-3 rounded bg-black/60 px-2 py-1 font-dm-sans text-xs text-white">
+        You
+      </span>
+    </div>
   );
 }
 
