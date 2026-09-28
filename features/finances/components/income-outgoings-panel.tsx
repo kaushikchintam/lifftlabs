@@ -14,15 +14,23 @@ interface Row {
 }
 interface IncomeRow extends Row {
   status_tag: string | null;
+  is_part_time: boolean;
 }
 interface OutgoingRow extends Row {
   tag: string | null;
 }
 
-function QuickAddRow({ onAdd }: { onAdd: (label: string, pounds: number, cadence: "monthly" | "yearly") => void }) {
+function QuickAddRow({
+  onAdd,
+  showPartTime,
+}: {
+  onAdd: (label: string, pounds: number, cadence: "monthly" | "yearly", isPartTime: boolean) => void;
+  showPartTime?: boolean;
+}) {
   const [label, setLabel] = useState("");
   const [amount, setAmount] = useState("");
   const [cadence, setCadence] = useState<"monthly" | "yearly">("monthly");
+  const [isPartTime, setIsPartTime] = useState(false);
 
   return (
     <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -32,13 +40,20 @@ function QuickAddRow({ onAdd }: { onAdd: (label: string, pounds: number, cadence
         <option value="monthly">/mo</option>
         <option value="yearly">/yr</option>
       </select>
+      {showPartTime && (
+        <label className="flex items-center gap-1.5 font-dm-sans text-xs text-ink-muted">
+          <input type="checkbox" checked={isPartTime} onChange={(e) => setIsPartTime(e.target.checked)} />
+          Part-time
+        </label>
+      )}
       <button
         onClick={() => {
           const pounds = Number(amount);
           if (!label.trim() || !pounds) return;
-          onAdd(label, pounds, cadence);
+          onAdd(label, pounds, cadence, isPartTime);
           setLabel("");
           setAmount("");
+          setIsPartTime(false);
         }}
         className="font-dm-sans text-sm text-brand hover:underline"
       >
@@ -67,11 +82,11 @@ export function IncomeOutgoingsPanel({ stage }: { stage: FinanceStage }) {
     refreshOutgoings();
   }, [refreshIncome, refreshOutgoings]);
 
-  async function addIncome(label: string, pounds: number, cadence: "monthly" | "yearly") {
+  async function addIncome(label: string, pounds: number, cadence: "monthly" | "yearly", isPartTime: boolean) {
     await fetch("/api/finances/income", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ label, amountPence: Math.round(pounds * 100), cadence }),
+      body: JSON.stringify({ label, amountPence: Math.round(pounds * 100), cadence, isPartTime }),
     });
     refreshIncome();
   }
@@ -81,6 +96,7 @@ export function IncomeOutgoingsPanel({ stage }: { stage: FinanceStage }) {
   }
 
   async function addOutgoing(label: string, pounds: number, cadence: "monthly" | "yearly") {
+    // no part-time concept for outgoings — QuickAddRow's onAdd is shared, extra arg just unused
     await fetch("/api/finances/outgoings", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -105,6 +121,7 @@ export function IncomeOutgoingsPanel({ stage }: { stage: FinanceStage }) {
                 <p className="font-dm-sans text-sm font-semibold text-ink">
                   {row.label}
                   {row.status_tag && <span className="ml-2 rounded-full bg-[#F1ECE0] px-2 py-0.5 font-dm-sans text-xs text-ink-muted">{row.status_tag}</span>}
+                  {row.is_part_time && <span className="ml-2 rounded-full bg-brand-tint/60 px-2 py-0.5 font-dm-sans text-xs text-brand">Part-time</span>}
                 </p>
                 {row.description && <p className="font-dm-sans text-xs text-ink-muted">{row.description}</p>}
               </div>
@@ -119,7 +136,7 @@ export function IncomeOutgoingsPanel({ stage }: { stage: FinanceStage }) {
             </div>
           ))}
         </div>
-        <QuickAddRow onAdd={addIncome} />
+        <QuickAddRow onAdd={addIncome} showPartTime />
       </div>
 
       <div className="rounded-2xl border border-[#ECE7DD] bg-white p-5 shadow-sm">

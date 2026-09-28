@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
 
     const { data, error } = await supabaseAdmin
         .from("income_sources")
-        .select("id, label, amount_pence, cadence, status_tag, description")
+        .select("id, label, amount_pence, cadence, status_tag, description, is_part_time")
         .eq("user_id", guard.session.user.id)
         .order("created_at", { ascending: true });
 
@@ -43,6 +43,7 @@ export async function POST(request: NextRequest) {
             cadence: body.cadence,
             status_tag: body.statusTag?.trim() || null,
             description: body.description?.trim() || null,
+            is_part_time: !!body.isPartTime,
         })
         .select()
         .single();

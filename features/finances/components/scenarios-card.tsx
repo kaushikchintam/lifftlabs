@@ -1,9 +1,11 @@
 export function ScenariosCard({
   totalFundPence,
   monthlyShortfallPence,
+  monthlyPartTimeIncomePence,
 }: {
   totalFundPence: number;
   monthlyShortfallPence: number;
+  monthlyPartTimeIncomePence: number;
 }) {
   const monthsFor = (extraShortfallPence: number) => {
     const shortfall = monthlyShortfallPence + extraShortfallPence;
@@ -11,12 +13,19 @@ export function ScenariosCard({
     return Math.floor(totalFundPence / shortfall);
   };
 
+  // Losing part-time income doesn't change what you spend, only what
+  // covers it — so the shortfall grows by exactly what that income was
+  // covering, i.e. the part-time income itself.
   const scenarios = [
     { label: "Plan holds (current shortfall)", months: monthsFor(0) },
     { label: "Shortfall +£300/mo (rent rise, etc.)", months: monthsFor(30000) },
-    // Approximation — full removal of part-time income isn't tracked as
-    // its own figure yet, so this doubles the base shortfall as a stand-in.
-    { label: "Full-time study, no part-time income", months: monthsFor(monthlyShortfallPence) },
+    {
+      label:
+        monthlyPartTimeIncomePence > 0
+          ? `Full-time study, no part-time income (−£${(monthlyPartTimeIncomePence / 100).toLocaleString()}/mo)`
+          : "Full-time study, no part-time income",
+      months: monthsFor(monthlyPartTimeIncomePence),
+    },
   ];
 
   return (
