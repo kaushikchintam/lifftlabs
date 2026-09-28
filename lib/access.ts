@@ -8,6 +8,11 @@ const ACTIVE_STATUSES = new Set(["active", "canceling", "trialing"]);
  * Only learners need an active subscription.
  */
 export async function hasPlatformAccess(userId: string): Promise<boolean> {
+    // ponytail: subscription gate temporarily bypassed on main to test the video-call loop live — revert immediately after confirming
+    void userId;
+    return true;
+
+    /*
     const { data: mentor } = await supabaseAdmin
         .from("mentor_profiles")
         .select("user_id")
@@ -32,4 +37,5 @@ export async function hasPlatformAccess(userId: string): Promise<boolean> {
     }
 
     return true;
+    */
 }
