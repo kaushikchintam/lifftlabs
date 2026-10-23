@@ -7,7 +7,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -62,6 +62,15 @@
   --color-success: #2A9D5C;
   --color-danger: #E63946;
   --color-warning: #F4A261;
+
+  /* Marketplace design language (sampled from the 2026-10 screens) */
+  --color-lf-page: #FAFAFA;
+  --color-lf-ink: #111111;
+  --color-lf-body: #4A4A4A;
+  --color-lf-muted: #5E5E5E;
+  --color-lf-line: #E8E8E8;
+  --color-lf-line-strong: #E0E0E0;
+  --color-lf-soft: #F7F7F7;
 
   /* Fonts */
   --font-archivo-black: var(--font-archivo-black);

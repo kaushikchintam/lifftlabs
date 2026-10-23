@@ -25,10 +25,11 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "invalid signature"}, { status: 400 });
     }
 
-    // Idempotency
+    // Idempotency. Prefixed: on one Stripe account both webhook endpoints get the
+    // same checkout.session.completed, and each must handle its own copy.
     const { error: ledgerError } = await supabaseAdmin
       .from("stripe_events")
-      .insert({ id: event.id, type: event.type });
+      .insert({ id: `billing:${event.id}`, type: event.type });
 
     if (ledgerError) {
         if (ledgerError.code === "23505") {

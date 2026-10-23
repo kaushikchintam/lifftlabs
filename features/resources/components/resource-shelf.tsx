@@ -27,12 +27,12 @@ export function ResourceShelf({ shelf, accent }: { shelf: ResourceShelfData; acc
   }, [refresh]);
 
   return (
-    <div className="rounded-2xl border border-[#ECE7DD] bg-white overflow-hidden shadow-sm">
-      <div className={`px-5 py-4 ${accent === "brand" ? "bg-brand text-white" : "bg-brand-tint/60 text-ink"}`}>
-        <h3 className="font-dm-serif text-2xl">{shelf.title}</h3>
-        <p className={`font-dm-sans text-sm ${accent === "brand" ? "text-white/80" : "text-ink-muted"}`}>{shelf.subtitle}</p>
+    <div className="overflow-hidden rounded-2xl border border-lf-line bg-white">
+      <div className={`px-7 py-6 ${accent === "brand" ? "bg-lf-ink text-white" : "bg-[#E2F1E8] text-lf-ink"}`}>
+        <h3 className="font-bold tracking-tight text-2xl">{shelf.title}</h3>
+        <p className={`text-sm ${accent === "brand" ? "text-white/80" : "text-lf-muted"}`}>{shelf.subtitle}</p>
       </div>
-      <div className="px-5">
+      <div className="px-7">
         {shelf.resources.map((resource) => (
           <ResourceCard
             key={resource.slug}

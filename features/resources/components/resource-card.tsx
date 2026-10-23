@@ -52,27 +52,27 @@ export function ResourceCard({
   }
 
   return (
-    <div className="flex gap-3 border-b border-[#ECE7DD] py-4 last:border-b-0">
-      <div className="flex h-9 w-9 flex-none items-center justify-center rounded-lg bg-[#F1ECE0] text-ink-muted">
+    <div className="flex gap-3 border-b border-lf-line py-4 last:border-b-0">
+      <div className="flex h-9 w-9 flex-none items-center justify-center rounded-lg bg-lf-soft text-lf-muted">
         <Icon size={16} />
       </div>
       <div className="flex-1">
         <div className="flex flex-wrap items-baseline gap-2">
-          <span className="font-dm-sans font-semibold text-ink">{resource.title}</span>
+          <span className="font-semibold text-lf-ink">{resource.title}</span>
           {resource.url ? (
-            <a href={resource.url} target="_blank" rel="noreferrer" className="font-dm-sans text-sm text-ink-muted hover:text-brand hover:underline">
+            <a href={resource.url} target="_blank" rel="noreferrer" className="text-sm text-lf-muted hover:text-lf-ink hover:underline">
               {resource.sourceLabel}
             </a>
           ) : (
-            <span className="font-dm-sans text-sm text-ink-muted">{resource.sourceLabel}</span>
+            <span className="text-sm text-lf-muted">{resource.sourceLabel}</span>
           )}
         </div>
-        <p className="mt-1 font-dm-sans text-sm text-ink-muted">{resource.description}</p>
+        <p className="mt-1 text-sm text-lf-muted">{resource.description}</p>
 
         {editing ? (
           <div ref={editRef} className="mt-2 flex items-start gap-2">
             <textarea
-              className="flex-1 rounded-lg border border-[#D8D2C2] px-3 py-2 font-dm-sans text-sm text-ink focus:border-brand focus:outline-none"
+              className="flex-1 rounded-lg border border-lf-line-strong px-3 py-2 text-sm text-lf-ink focus:border-lf-ink focus:outline-none"
               placeholder="What did this show you?"
               rows={2}
               value={draft}
@@ -81,19 +81,19 @@ export function ResourceCard({
             <button
               onClick={handleSave}
               disabled={saving}
-              className="rounded-full bg-brand px-4 py-2 font-dm-sans text-sm font-semibold text-white hover:bg-brand-hover disabled:opacity-50 transition-colors"
+              className="rounded-full bg-lf-ink px-4 py-2 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50 transition-colors"
             >
               {saving ? "Saving…" : "Save"}
             </button>
           </div>
         ) : reflection ? (
           <button onClick={() => setEditing(true)} className="mt-2 block text-left">
-            <span className="font-dm-sans text-sm italic text-ink-body">&ldquo;{reflection}&rdquo;</span>
+            <span className="text-sm italic text-lf-body">&ldquo;{reflection}&rdquo;</span>
           </button>
         ) : (
           <button
             onClick={() => setEditing(true)}
-            className="mt-2 flex items-center gap-1.5 font-dm-sans text-xs text-ink-muted hover:text-ink transition-colors"
+            className="mt-2 flex items-center gap-1.5 text-xs text-lf-muted hover:text-lf-ink transition-colors"
           >
             <PenLine size={12} /> Add a reflection
           </button>

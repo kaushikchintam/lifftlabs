@@ -1,23 +1,14 @@
 import { ConversationList } from "@/features/chat/components/conversation-list";
+import { MessagesFooter } from "@/features/chat/components/messages-footer";
 
 export default function MessagesLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex h-full p-2 md:p-4">
-      <div className="flex flex-1 overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-[#2596BE]/25 via-[#DDEBF3] to-[#DDEBF3]/60">
-        {/* Left panel — glass sidebar, hidden on mobile */}
-        <div className="hidden md:flex w-72 flex-none flex-col border-r border-white/40 bg-white/50 backdrop-blur-xl">
-          <div className="px-5 pt-6 pb-4 border-b border-white/30">
-            <h1 className="font-archivo-black text-lg text-[#18150F] tracking-widest uppercase">Messages</h1>
-          </div>
-          <div className="flex-1 overflow-y-auto py-2">
-            <ConversationList />
-          </div>
-        </div>
-        {/* Right panel — glass chat panel, white-tinted */}
-        <div className="flex-1 min-w-0 flex flex-col bg-white/75 backdrop-blur-xl">
-          {children}
-        </div>
+    <div className="flex h-[calc(100vh-10rem)] min-h-[560px] overflow-hidden rounded-2xl border border-lf-line bg-white">
+      <div className="hidden w-[480px] flex-none flex-col border-r border-lf-line md:flex">
+        <ConversationList />
+        <MessagesFooter />
       </div>
+      <div className="flex min-w-0 flex-1 flex-col">{children}</div>
     </div>
   );
 }

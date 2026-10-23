@@ -45,3 +45,5 @@ jobs:
           AGORA_APP_ID: placeholder
           AGORA_APP_CERTIFICATE: placeholder
           CRON_SECRET: placeholder
+          UPSTASH_REDIS_REST_URL: https://placeholder.upstash.io
+          UPSTASH_REDIS_REST_TOKEN: placeholder

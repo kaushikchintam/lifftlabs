@@ -50,7 +50,11 @@ export async function POST(request: NextRequest) {
                     card_payments: { requested: true },
                     transfers: { requested: true },  
                 },
+                // Prefilled so mentors skip Stripe's "industry" and "website" questions.
+                // ponytail: platform URL for everyone (BETTER_AUTH_URL is localhost in dev, which Stripe rejects); per-mentor page when one exists
                 business_profile: {
+                    mcc: "8299", // Schools and educational services
+                    url: "https://lifftlabs.com",
                     product_description: "One-to-one career mentoring sessions",
                 },
                 metadata: { mentor_id: userId }, 

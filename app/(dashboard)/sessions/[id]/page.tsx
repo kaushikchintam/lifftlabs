@@ -1,166 +1,90 @@
-import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
+import { notFound, redirect } from "next/navigation";
 import { getServerSession } from "@/lib/auth/session";
 import { supabaseAdmin } from "@/lib/supabase/admin";
-import { PaymentStatusRefresher } from "@/features/sessions/components/payment-status";
+import { Avatar, Pill, btnPrimary } from "@/components/ui/lifft";
+import { describeAnswers, getJourney } from "@/features/journeys/config";
+import { formatSession } from "@/utils/format-date";
+import { isJoinable } from "@/lib/join-window";
 
 /**
- * Session detail (P3-11). Participants only — anyone else gets a 404, which
- * deliberately doesn't reveal whether the session exists.
+ * Session detail + the brief. Participants only (404 otherwise). The mentor
+ * sees ONLY the answers the learner left shared; the learner sees all theirs.
  */
-
-const STATUS_STYLES: Record<string, string> = {
-  pending:   "bg-[#FEF3C7] text-[#92400E]",
-  confirmed: "bg-[#DDEBF3] text-[#1A7A9E]",
-  completed: "bg-[#F1ECE0] text-ink",
-  cancelled: "bg-[#F1ECE0] text-ink-faintest",
-  expired:   "bg-[#F1ECE0] text-ink-faintest",
-};
-
-const STATUS_COPY: Record<string, { label: string; hint?: string }> = {
-  pending: {
-    label: "Awaiting payment",
-    hint: "This slot is held while payment completes. It releases automatically if checkout is abandoned.",
-  },
-  confirmed: { label: "Confirmed" },
-  completed: { label: "Completed" },
-  cancelled: { label: "Cancelled" },
-  expired: {
-    label: "Expired",
-    hint: "Payment wasn't completed in time, so the slot was released.",
-  },
-};
-
-export default async function SessionDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function SessionDetailPage(props: PageProps<"/sessions/[id]">) {
   const session = await getServerSession();
   if (!session) redirect("/login");
-
-  const { id } = await params;
+  const { id } = await props.params;
 
   const { data: s } = await supabaseAdmin
     .from("mentor_sessions")
     .select(
-      `id, scheduled_at, ends_at, timezone, status, notes,
-       mentor_id, learner_id,
-       mentor:user!mentor_sessions_mentor_id_fkey(name, email),
-       learner:user!mentor_sessions_learner_id_fkey(name, email)`
+      `id, scheduled_at, ends_at, status, journey, intake_id, mentor_id, learner_id, refunded_at,
+       mentor:user!mentor_sessions_mentor_id_fkey(name),
+       learner:user!mentor_sessions_learner_id_fkey(name)`
     )
     .eq("id", id)
     .maybeSingle();
+  if (!s || (s.mentor_id !== session.user.id && s.learner_id !== session.user.id)) notFound();
 
-  // Participant check: 404 for everyone else.
-  if (
-    !s ||
-    (s.mentor_id !== session.user.id && s.learner_id !== session.user.id)
-  ) {
-    notFound();
-  }
+  const isMentor = s.mentor_id === session.user.id;
+  const other = ((isMentor ? s.learner : s.mentor) as unknown as { name: string } | null)?.name || "—";
+  const otherId = isMentor ? s.learner_id : s.mentor_id;
+  const journey = s.journey ? getJourney(s.journey) : undefined;
 
-  const row = s as unknown as {
-    id: string;
-    scheduled_at: string;
-    ends_at: string;
-    timezone: string;
-    status: string;
-    notes: string | null;
-    mentor_id: string;
-    learner_id: string;
-    mentor: { name: string } | null;
-    learner: { name: string } | null;
-  };
-
-  const tz = row.timezone || "Europe/London";
-  const when = new Intl.DateTimeFormat("en-GB", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: tz,
-  }).format(new Date(row.scheduled_at));
-  const until = new Intl.DateTimeFormat("en-GB", {
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: tz,
-  }).format(new Date(row.ends_at));
-
-  const status = STATUS_COPY[row.status] ?? { label: row.status };
-
-  // Join window: 15 min before start until session end. The button is a
-  // placeholder until P5 wires Agora; the window logic is real now so the
-  // page behaves correctly on day one of video.
-  const nowMs = Date.now();
-  const joinOpens = new Date(row.scheduled_at).getTime() - 15 * 60 * 1000;
-  const joinCloses = new Date(row.ends_at).getTime();
-  const joinable =
-    row.status === "confirmed" && nowMs >= joinOpens && nowMs <= joinCloses;
+  const { data: intake } = s.intake_id
+    ? await supabaseAdmin.from("intakes").select("answers, shared_keys").eq("id", s.intake_id).maybeSingle()
+    : { data: null };
+  const shared = new Set((intake?.shared_keys as string[] | undefined) ?? []);
+  const brief = journey && intake
+    ? describeAnswers(journey, intake.answers as Record<string, string[]>).filter((r) => !isMentor || shared.has(r.id))
+    : [];
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6 p-4 md:p-6">
-      <header>
-        <h1 className="font-dm-serif text-2xl text-ink">
-          Session with{" "}
-          {row.mentor_id === session.user.id
-            ? row.learner?.name
-            : row.mentor?.name}
-        </h1>
-        <p className="font-dm-sans text-sm text-ink-muted mt-1">
-          {when} – {until}
-        </p>
-      </header>
-
-      <PaymentStatusRefresher status={row.status} />
-
-      <div className="rounded-2xl border border-[#ECE7DD] bg-white space-y-5 p-6 shadow-sm">
+    <div className="max-w-[900px]">
+      <div className="mb-8 flex items-center gap-5">
+        <Avatar name={other} id={otherId} size={72} />
         <div>
-          <p className="font-dm-sans text-xs uppercase tracking-widest text-ink-faintest mb-1.5">
-            Status
+          <h1 className="text-3xl font-medium">{formatSession(s.scheduled_at)}</h1>
+          <p className="text-[19px] text-lf-muted">
+            with {other}
+            {journey ? ` · ${journey.title}` : ""}
           </p>
-          <span className={`inline-block rounded-full px-3 py-1 font-dm-sans text-xs font-semibold ${STATUS_STYLES[row.status] ?? "bg-[#F1ECE0] text-ink-faintest"}`}>
-            {status.label}
-          </span>
-          {status.hint && (
-            <p className="mt-2 font-dm-sans text-sm text-ink-muted">{status.hint}</p>
+        </div>
+        <div className="ml-auto">
+          <Pill tone={s.refunded_at ? "refunded" : s.status}>{s.refunded_at ? "Refunded" : s.status[0].toUpperCase() + s.status.slice(1)}</Pill>
+        </div>
+      </div>
+
+      {s.status === "confirmed" && (
+        <div className="mb-6">
+          {isJoinable(s.status, s.scheduled_at, s.ends_at) ? (
+            <Link href={`/sessions/${s.id}/call`} className={btnPrimary}>Join session</Link>
+          ) : (
+            <span className={btnPrimary} aria-disabled>Join · opens 10 min before</span>
           )}
         </div>
+      )}
 
-        <div>
-          <p className="font-dm-sans text-xs uppercase tracking-widest text-ink-faintest mb-1.5">
-            Participants
-          </p>
-          <p className="font-dm-sans text-sm text-ink">
-            {row.mentor?.name} <span className="text-ink-muted">(mentor)</span> · {row.learner?.name} <span className="text-ink-muted">(learner)</span>
-          </p>
-        </div>
-
-        {row.notes && (
-          <div>
-            <p className="font-dm-sans text-xs uppercase tracking-widest text-ink-faintest mb-1.5">
-              Notes
-            </p>
-            <p className="font-dm-sans text-sm text-ink whitespace-pre-wrap">{row.notes}</p>
-          </div>
-        )}
-
-        {row.status === "confirmed" && (
-          <div className="border-t border-[#ECE7DD] pt-5">
-            {joinable ? (
-              <Link
-                href={`/sessions/${row.id}/call`}
-                className="inline-block rounded-full bg-[#18150F] px-6 py-2.5 font-dm-sans text-sm font-semibold text-[#FBF7EE] hover:bg-[#3A372F] transition-colors"
-              >
-                Join Session
-              </Link>
-            ) : (
-              <button disabled className="rounded-full bg-[#18150F] px-6 py-2.5 font-dm-sans text-sm font-semibold text-[#FBF7EE] opacity-40 cursor-not-allowed">
-                Join opens 15 minutes before start
-              </button>
-            )}
-          </div>
+      <div className="rounded-2xl border border-lf-line bg-white p-7">
+        <h2 className="text-[23px] font-medium">{isMentor ? `${other}'s brief` : "What you shared"}</h2>
+        <p className="mb-2 text-[17px] text-lf-muted">
+          {isMentor ? "Only what they chose to share." : "Change what's shared from About me on Home."}
+        </p>
+        {brief.length === 0 ? (
+          <p className="border-t border-lf-line pt-4 text-[17px] text-lf-muted">Nothing shared.</p>
+        ) : (
+          <ul>
+            {brief.map((r) => (
+              <li key={r.id} className="flex items-center justify-between border-t border-lf-line py-4">
+                <div>
+                  <p className="text-[15px] text-lf-muted">{r.question}</p>
+                  <p className="text-[19px]">{r.answer}</p>
+                </div>
+                {!isMentor && <Pill tone={shared.has(r.id) ? "shared" : "hidden"}>{shared.has(r.id) ? "Shared" : "Hidden"}</Pill>}
+              </li>
+            ))}
+          </ul>
         )}
       </div>
     </div>

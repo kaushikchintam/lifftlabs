@@ -3,6 +3,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { requireSession } from "@/lib/auth/require-admin";
+import { isPlus } from "@/lib/auth/role";
 
 interface RefSession {
     session_id: string,
@@ -82,6 +83,8 @@ export async function POST (request: NextRequest) {
     }
 
     const userId = guard.session.user.id;
+    // Creating is LIFFT Plus; reading, editing and deleting your own entries stays free.
+    if (!(await isPlus(userId))) return NextResponse.json({ error: "plus_required" }, { status: 402 });
 
     try {
         const body: RefSession | RefCustom = await request.json();

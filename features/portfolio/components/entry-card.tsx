@@ -73,36 +73,36 @@ export function EntryCard({
   }
 
   return (
-    <div className="rounded-2xl border border-[#ECE7DD] bg-white p-5 shadow-sm">
+    <div className="rounded-2xl border border-lf-line bg-white p-5 shadow-sm">
       <div className="flex items-start justify-between gap-4">
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <h4 className="font-dm-sans font-semibold text-ink">{entry.title}</h4>
-            <span className="rounded-full bg-[#F1ECE0] px-2.5 py-0.5 font-dm-sans text-xs text-ink-muted">
+            <h4 className="font-semibold text-lf-ink">{entry.title}</h4>
+            <span className="rounded-full bg-lf-soft px-2.5 py-0.5 text-xs text-lf-muted">
               {typeLabel(entry.category, entry.type)}
             </span>
             {entry.linked_specialty && (
-              <span className="rounded-full bg-[#F1ECE0] px-2.5 py-0.5 font-dm-sans text-xs text-ink-muted">
+              <span className="rounded-full bg-lf-soft px-2.5 py-0.5 text-xs text-lf-muted">
                 {entry.linked_specialty}
               </span>
             )}
           </div>
-          <p className="mt-1 font-dm-sans text-sm text-ink-muted">
+          <p className="mt-1 text-sm text-lf-muted">
             {entry.organisation} · {dateRange}
           </p>
         </div>
-        <button onClick={handleDelete} title="Delete" className="text-ink-faintest hover:text-ink transition-colors">
+        <button onClick={handleDelete} title="Delete" className="text-lf-muted hover:text-lf-ink transition-colors">
           <Trash2 size={16} />
         </button>
       </div>
 
-      <p className="mt-3 font-dm-sans text-sm text-ink-body">{entry.reflection}</p>
+      <p className="mt-3 text-sm text-lf-body">{entry.reflection}</p>
 
       {entry.attachments.length > 0 && (
         <ul className="mt-3 space-y-1">
           {entry.attachments.map((a) => (
             <li key={a.id}>
-              <a href={a.signedUrl} target="_blank" rel="noreferrer" className="font-dm-sans text-xs text-brand hover:underline">
+              <a href={a.signedUrl} target="_blank" rel="noreferrer" className="text-xs text-[#2F7A55] hover:underline">
                 {a.file_name}
               </a>
             </li>
@@ -111,20 +111,20 @@ export function EntryCard({
       )}
 
       <div className="mt-3 flex items-center gap-4">
-        <label className="flex items-center gap-1.5 font-dm-sans text-xs text-ink-muted hover:text-ink transition-colors cursor-pointer">
+        <label className="flex items-center gap-1.5 text-xs text-lf-muted hover:text-lf-ink transition-colors cursor-pointer">
           <Paperclip size={13} />
           {uploading ? "Uploading…" : "Add evidence"}
           <input type="file" className="hidden" onChange={handleAddEvidence} disabled={uploading} />
         </label>
 
         {entry.signed_off_at ? (
-          <span className="flex items-center gap-1.5 font-dm-sans text-xs text-brand">
+          <span className="flex items-center gap-1.5 text-xs text-[#2F7A55]">
             <ShieldCheck size={13} /> Signed off
           </span>
         ) : (
           <button
             onClick={handleSignOff}
-            className="flex items-center gap-1.5 font-dm-sans text-xs text-ink-muted hover:text-ink transition-colors"
+            className="flex items-center gap-1.5 text-xs text-lf-muted hover:text-lf-ink transition-colors"
           >
             <Shield size={13} /> Mark signed off
           </button>

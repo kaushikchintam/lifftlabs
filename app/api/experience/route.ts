@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { requireSession } from "@/lib/auth/require-admin";
+import { isPlus } from "@/lib/auth/role";
 
 /**
  * GET (the whole list of logged experience), POST (log button)
@@ -112,6 +113,8 @@ export async function POST (request: NextRequest){
         return NextResponse.json({error: "unauthorized"}, {status: 401 });
     }
     const userId = guard.session.user.id;
+    // Creating is LIFFT Plus; reading, editing and deleting your own entries stays free.
+    if (!(await isPlus(userId))) return NextResponse.json({ error: "plus_required" }, { status: 402 });
 
     let body: CreateExperienceBody;
     try {

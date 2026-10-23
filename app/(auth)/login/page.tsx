@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { LoaderCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { emailSchema, loginSchema } from "@/features/auth/schema";
 import { authClient } from "@/lib/auth/client";
@@ -9,11 +10,19 @@ import { GradientBackground } from "@/components/ui/bloom-field-gradient";
 
 type Step = "email" | "password";
 
+/** Same-site path from ?returnTo=, else the dashboard. */
+function returnTo(): string {
+  const r = new URLSearchParams(window.location.search).get("returnTo");
+  return r && r.startsWith("/") && !r.startsWith("//") ? r : "/dashboard";
+}
+
 export default function LoginPage() {
   const [step, setStep] = useState<Step>("email");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  // Stays true on success: the full-page redirect to the dashboard replaces this page.
+  const [busy, setBusy] = useState(false);
 
   return (
     <div className="relative flex h-screen overflow-hidden">
@@ -31,6 +40,12 @@ export default function LoginPage() {
       {/* Right panel */}
       <div className="relative z-10 flex w-full md:w-1/2 items-center justify-center px-6">
         <div className="bg-white rounded-2xl p-10 w-full max-w-md shadow-sm">
+          {busy ? (
+            <div className="flex flex-col items-center gap-4 py-16" role="status">
+              <LoaderCircle size={44} className="animate-spin text-[#2596BE]" />
+              <p className="font-sligoil text-sm text-[#6F6B60]">Signing you in…</p>
+            </div>
+          ) : (<>
 
           {/* Logo mark */}
           <div className="flex flex-col items-center mb-8">
@@ -107,12 +122,14 @@ export default function LoginPage() {
                     return;
                   }
                   setError("");
+                  setBusy(true);
                   const { error: signInError } = await authClient.signIn.email({
                     email,
                     password,
-                    callbackURL: "/dashboard",
+                    callbackURL: returnTo(),
                   });
                   if (signInError) {
+                    setBusy(false);
                     setError(signInError.message ?? "Invalid email or password.");
                   }
                 }}
@@ -140,7 +157,8 @@ export default function LoginPage() {
             variant="outline"
             className="h-auto w-full rounded-full py-3 font-sligoil text-sm gap-3"
             onClick={async () => {
-              await authClient.signIn.social({ provider: "google", callbackURL: "/dashboard" });
+              setBusy(true);
+              await authClient.signIn.social({ provider: "google", callbackURL: returnTo() });
             }}
           >
             <svg width="18" height="18" viewBox="0 0 18 18">
@@ -155,11 +173,11 @@ export default function LoginPage() {
           {/* Sign up link */}
           <p className="font-sligoil text-sm text-[#6F6B60] text-center mt-6">
             Don't have an account?{" "}
-            <Link href="/signup" className="text-[#2596BE] font-medium hover:underline">
-              Sign up
+            <Link href="/#journeys" className="text-[#2596BE] font-medium hover:underline">
+              Find a mentor
             </Link>
           </p>
-
+          </>)}
         </div>
       </div>
     </div>

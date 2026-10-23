@@ -8,15 +8,10 @@ import { resend } from "@/lib/resend/client";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/auth/require-admin";
 
-const schema = z.object({
-    fullName: z.string().min(1),
-    email: z.email(),
-    reapplyLink: z.url().optional(),
-})
+const schema = z.object({ applicationId: z.uuid() })
 
 export async function POST(request: NextRequest) {
-    const body = await request.json()
-    const result = schema.safeParse(body);
+    const result = schema.safeParse(await request.json().catch(() => null));
     const guard = await requireAdmin(request.headers);
     if (!guard.ok) {
         return NextResponse.json(
@@ -32,10 +27,16 @@ export async function POST(request: NextRequest) {
          )
     }
 
-    const { fullName, email, reapplyLink } = result.data
+    const { data: app } = await supabaseAdmin
+      .from("mentor_applications")
+      .select("id, full_name, email")
+      .eq("id", result.data.applicationId)
+      .maybeSingle();
+    if (!app) return NextResponse.json({ error: "not_found" }, { status: 404 });
+    const email = app.email as string;
 
     const html = await render(
-        React.createElement(MentorRejectionEmail, { fullName, reapplyLink })
+        React.createElement(MentorRejectionEmail, { fullName: app.full_name, reapplyLink: undefined })
     )
 
     await resend.emails.send({
@@ -47,8 +48,8 @@ export async function POST(request: NextRequest) {
 
     await supabaseAdmin
       .from("mentor_applications")
-      .update({ status: "rejected" })
-      .eq("email", email);
+      .update({ status: "rejected", reviewed_at: new Date().toISOString(), reviewed_by: guard.session.user.id })
+      .eq("id", app.id);
 
     return NextResponse.json({
         success: true

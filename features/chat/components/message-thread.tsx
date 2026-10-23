@@ -1,8 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 /**
  * P6-01/02/04 — the thread. Polling, not sockets (ADR 010: Better Auth
@@ -24,18 +22,17 @@ function cursorOf(m: Message): string {
   return `${m.created_at}|${m.id}`;
 }
 
-function initials(name: string): string {
-  return name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
-}
-
 export function MessageThread({
   conversationId,
   currentUserId,
-  counterpartName,
+  header,
+  emptyText = "No messages yet. Say hello.",
 }: {
   conversationId: string;
   currentUserId: string;
-  counterpartName?: string;
+  /** Server-rendered header (avatar, name, actions). */
+  header?: React.ReactNode;
+  emptyText?: string;
 }) {
   const [messages, setMessages] = useState<Message[]>([]);  //two parts, generic type <Message[]> and the initial value ([])
   const [draft, setDraft] = useState("");
@@ -174,24 +171,14 @@ export function MessageThread({
   if (loading) {
     return (
       <div className="flex flex-1 items-center justify-center">
-        <p className="font-dm-sans text-sm text-[#6F6B60]">Loading messages…</p>
+        <p className="text-[15px] text-lf-muted">Loading messages…</p>
       </div>
     );
   }
 
   return (
     <div className="flex h-full flex-col">
-      {/* Header */}
-      {counterpartName && (
-        <div className="flex-none border-b border-white/40 bg-white/60 backdrop-blur-sm px-5 py-4 flex items-center gap-3">
-          <div className="h-9 w-9 rounded-full bg-[#18150F] flex items-center justify-center">
-            <span className="font-dm-sans text-xs font-semibold text-white">
-              {initials(counterpartName)}
-            </span>
-          </div>
-          <p className="font-dm-sans font-semibold text-[#18150F]">{counterpartName}</p>
-        </div>
-      )}
+      {header}
 
       {/* Messages */}
       <div
@@ -206,7 +193,7 @@ export function MessageThread({
           <div className="flex justify-center pb-2">
             <button
               onClick={loadOlder}
-              className="font-dm-sans text-xs text-[#6F6B60] hover:text-[#18150F] transition-colors"
+              className="text-[13px] text-lf-muted hover:text-lf-ink"
             >
               Load earlier messages
             </button>
@@ -215,9 +202,7 @@ export function MessageThread({
 
         {messages.length === 0 && (
           <div className="flex h-full items-center justify-center">
-            <p className="font-dm-sans text-sm text-[#6F6B60]">
-              No messages yet — say hello.
-            </p>
+            <p className="text-[17px] text-lf-muted">{emptyText}</p>
           </div>
         )}
 
@@ -232,13 +217,13 @@ export function MessageThread({
                 <div
                   className={`px-4 py-2.5 text-sm ${
                     mine
-                      ? "bg-[#18150F] text-[#FBF7EE] rounded-2xl rounded-br-sm"
-                      : "bg-[#FBF7EE] border border-[#E8E2D6] text-[#18150F] rounded-2xl rounded-bl-sm"
+                      ? "bg-lf-ink text-white rounded-2xl rounded-br-sm"
+                      : "bg-lf-soft border border-lf-line text-lf-ink rounded-2xl rounded-bl-sm"
                   }`}
                 >
-                  <p className="font-dm-sans whitespace-pre-wrap break-words">{m.content}</p>
+                  <p className="whitespace-pre-wrap break-words text-[15px]">{m.content}</p>
                 </div>
-                <p className="font-dm-sans text-[10px] text-[#9A958A] px-1">
+                <p className="px-1 text-[11px] text-lf-muted">
                   {timeFmt.format(new Date(m.created_at))}
                 </p>
               </div>
@@ -250,37 +235,26 @@ export function MessageThread({
 
       {/* Input bar */}
       <form
-        className="flex-none border-t border-white/30 bg-white/60 backdrop-blur-md px-5 py-4"
+        className="flex flex-none gap-3 border-t border-lf-line px-6 py-5"
         onSubmit={(e) => {
           e.preventDefault();
           send();
         }}
       >
-        <div className="flex items-center gap-2 rounded-full border border-white/50 bg-white/80 px-4 py-2.5">
-          <input
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            placeholder="Type your message here…"
-            maxLength={4000}
-            className="flex-1 bg-transparent font-dm-sans text-sm text-[#18150F] placeholder:text-[#9A958A] outline-none"
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                send();
-              }
-            }}
-          />
-          <button
-            type="submit"
-            disabled={!draft.trim()}
-            className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-[#2596BE] text-white disabled:opacity-40 hover:bg-[#1A7A9E] transition-colors"
-          >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="22" y1="2" x2="11" y2="13" />
-              <polygon points="22 2 15 22 11 13 2 9 22 2" />
-            </svg>
-          </button>
-        </div>
+        <input
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          placeholder="Write a message"
+          maxLength={4000}
+          className="flex-1 rounded-xl border border-lf-line-strong px-4 py-3 text-[17px] outline-none placeholder:text-[#9A9A9A] focus:border-lf-ink"
+        />
+        <button
+          type="submit"
+          disabled={!draft.trim()}
+          className="rounded-xl bg-lf-ink px-6 text-[17px] font-medium text-white disabled:opacity-40"
+        >
+          Send
+        </button>
       </form>
     </div>
   );
