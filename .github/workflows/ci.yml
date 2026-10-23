@@ -20,7 +20,8 @@ jobs:
         run: npm ci
 
       - name: Typecheck
-        run: npx tsc --noEmit
+        # typegen creates the global PageProps/LayoutProps types (normally made by next dev/build)
+        run: npx next typegen && npx tsc --noEmit
 
       - name: Lint
         run: npm run lint
