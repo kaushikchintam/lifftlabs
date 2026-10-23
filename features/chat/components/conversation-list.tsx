@@ -3,20 +3,25 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Avatar } from "@/components/ui/lifft";
+import { formatSession } from "@/utils/format-date";
 
 interface Conversation {
   id: string;
+  counterpartId: string;
   counterpartName: string;
+  journeyTitle: string | null;
+  nextSessionAt: string | null;
+  archived: boolean;
   lastMessageAt: string | null;
   unread: number;
 }
 
-function initials(name: string): string {
-  return name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
-}
+type Filter = "all" | "unread" | "archived";
 
 export function ConversationList() {
   const [conversations, setConversations] = useState<Conversation[] | null>(null);
+  const [filter, setFilter] = useState<Filter>("all");
   const pathname = usePathname();
 
   useEffect(() => {
@@ -24,63 +29,62 @@ export function ConversationList() {
       const res = await fetch("/api/conversations");
       setConversations(res.ok ? (await res.json()).conversations : []);
     })();
-  }, []);
+  }, [pathname]); // refetch after archive/unarchive navigates
 
-  if (conversations === null) {
-    return (
-      <p className="px-5 py-3 font-dm-sans text-sm text-[#6F6B60]">Loading…</p>
-    );
-  }
-
-  if (conversations.length === 0) {
-    return (
-      <p className="px-5 py-3 font-dm-sans text-sm text-[#6F6B60]">
-        No conversations yet — one opens automatically with your first booked session.
-      </p>
-    );
-  }
-
-  const dateFmt = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short" });
+  const shown = (conversations ?? []).filter((c) =>
+    filter === "archived" ? c.archived : !c.archived && (filter === "all" || c.unread > 0)
+  );
 
   return (
-    <div>
-      {conversations.map((c) => {
-        const active = pathname === `/messages/${c.id}`;
-        return (
-          <Link
-            key={c.id}
-            href={`/messages/${c.id}`}
-            className={`flex items-center gap-3 px-4 py-3 transition-colors ${
-              active ? "bg-[#EDE8DC]" : "hover:bg-[#EDE8DC]/60"
+    <div className="flex min-h-0 flex-1 flex-col">
+      <div className="flex gap-2 border-b border-lf-line px-4">
+        {(["all", "unread", "archived"] as Filter[]).map((f) => (
+          <button
+            key={f}
+            onClick={() => setFilter(f)}
+            className={`border-b-[3px] px-3 py-4 text-[19px] capitalize ${
+              filter === f ? "border-lf-ink text-lf-ink" : "border-transparent text-lf-muted"
             }`}
           >
-            {/* Avatar */}
-            <div className="h-10 w-10 flex-none rounded-full bg-[#18150F] flex items-center justify-center">
-              <span className="font-dm-sans text-xs font-semibold text-white">
-                {initials(c.counterpartName)}
-              </span>
-            </div>
-            {/* Name + meta */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between gap-2">
-                <p className={`font-dm-sans text-sm truncate ${active ? "font-semibold" : "font-medium"} text-[#18150F]`}>
-                  {c.counterpartName}
-                </p>
-                {c.lastMessageAt && (
-                  <p className="font-dm-sans text-[11px] text-[#6F6B60] flex-none">
-                    {dateFmt.format(new Date(c.lastMessageAt))}
-                  </p>
-                )}
-              </div>
-              {c.unread > 0 && (
-                <span className="mt-0.5 inline-flex items-center rounded-full bg-[#2596BE] px-2 py-0.5 font-dm-sans text-[10px] font-semibold text-white">
-                  {c.unread} new
-                </span>
-              )}
-            </div>
-          </Link>
-        );
-      })}
+            {f}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex-1 overflow-y-auto">
+        {conversations === null ? (
+          <p className="px-6 py-4 text-[15px] text-lf-muted">Loading…</p>
+        ) : shown.length === 0 ? (
+          <p className="px-6 py-4 text-[15px] text-lf-muted">
+            {filter === "all" ? "No conversations yet. One opens with your first booked session." : `Nothing ${filter}.`}
+          </p>
+        ) : (
+          shown.map((c) => {
+            const active = pathname === `/messages/${c.id}`;
+            return (
+              <Link
+                key={c.id}
+                href={`/messages/${c.id}`}
+                className={`flex items-center gap-4 border-b border-lf-line px-6 py-5 ${active ? "bg-lf-soft" : "hover:bg-lf-soft/60"}`}
+              >
+                <Avatar name={c.counterpartName} id={c.counterpartId} size={60} />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="truncate text-[19px] font-semibold">{c.counterpartName}</p>
+                    {c.unread > 0 && (
+                      <span className="rounded-full bg-lf-ink px-2 py-0.5 text-[12px] font-semibold text-white">{c.unread}</span>
+                    )}
+                  </div>
+                  {c.journeyTitle && <p className="truncate text-[15px] text-lf-muted">{c.journeyTitle}</p>}
+                  {c.nextSessionAt && (
+                    <p className="truncate text-[17px] text-lf-body">Next session {formatSession(c.nextSessionAt)}</p>
+                  )}
+                </div>
+              </Link>
+            );
+          })
+        )}
+      </div>
     </div>
   );
 }

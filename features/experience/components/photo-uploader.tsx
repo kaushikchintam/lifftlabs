@@ -65,7 +65,7 @@ export function PhotoUploader({
 
   return (
     <div>
-      <p className="mb-1.5 font-dm-sans text-xs font-bold uppercase tracking-wide text-ink-muted">{copy.label}</p>
+      <p className="mb-1.5 text-xs font-bold uppercase tracking-wide text-lf-muted">{copy.label}</p>
 
       <div className="flex flex-wrap gap-2">
         {attachments.map((a) =>
@@ -75,14 +75,14 @@ export function PhotoUploader({
               <img
                 src={a.signedUrl}
                 alt={a.file_name}
-                className="h-16 w-16 rounded-lg border border-[#ECE7DD] object-cover"
+                className="h-16 w-16 rounded-lg border border-lf-line object-cover"
               />
               <span
                 onClick={(e) => {
                   e.stopPropagation();
                   remove(a);
                 }}
-                className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-ink text-white opacity-0 transition-opacity group-hover:opacity-100"
+                className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-lf-ink text-white opacity-0 transition-opacity group-hover:opacity-100"
               >
                 <X size={11} />
               </span>
@@ -90,12 +90,12 @@ export function PhotoUploader({
           ) : (
             <span
               key={a.id}
-              className="flex items-center gap-1.5 rounded-full border border-[#ECE7DD] bg-white px-3 py-1.5 font-dm-sans text-xs text-ink-muted"
+              className="flex items-center gap-1.5 rounded-full border border-lf-line bg-white px-3 py-1.5 text-xs text-lf-muted"
             >
-              <a href={a.signedUrl} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 hover:text-ink">
+              <a href={a.signedUrl} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 hover:text-lf-ink">
                 <FileText size={13} /> {a.file_name}
               </a>
-              <button type="button" onClick={() => remove(a)} className="text-ink-faintest hover:text-danger">
+              <button type="button" onClick={() => remove(a)} className="text-lf-muted hover:text-[#B42318]">
                 <X size={12} />
               </button>
             </span>
@@ -107,13 +107,13 @@ export function PhotoUploader({
         <button
           onClick={() => fileRef.current?.click()}
           disabled={uploading}
-          className="mt-2 flex items-center gap-1.5 font-dm-sans text-xs text-ink-muted transition-colors hover:text-brand disabled:opacity-50"
+          className="mt-2 flex items-center gap-1.5 text-xs text-lf-muted transition-colors hover:text-lf-ink disabled:opacity-50"
         >
           <span className="text-sm leading-none">+</span> {uploading ? "Uploading…" : copy.addLabel}
         </button>
       )}
 
-      {error && <p className="mt-1 font-dm-sans text-xs text-danger">{error}</p>}
+      {error && <p className="mt-1 text-xs text-[#B42318]">{error}</p>}
 
       <input
         ref={fileRef}
@@ -138,13 +138,13 @@ export function PhotoUploader({
             <div className="absolute right-3 top-3 flex items-center gap-2">
               <button
                 onClick={() => remove(viewing)}
-                className="rounded-full bg-white/90 px-3 py-1.5 font-dm-sans text-xs font-semibold text-danger hover:bg-white transition-colors"
+                className="rounded-full bg-white/90 px-3 py-1.5 text-xs font-semibold text-[#B42318] hover:bg-white transition-colors"
               >
                 Remove
               </button>
               <button
                 onClick={() => setViewing(null)}
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-ink hover:bg-white transition-colors"
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-lf-ink hover:bg-white transition-colors"
               >
                 <X size={16} />
               </button>

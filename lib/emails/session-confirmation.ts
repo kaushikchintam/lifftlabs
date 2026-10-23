@@ -1,7 +1,6 @@
 import { render } from "@react-email/render";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { resend } from "@/lib/resend/client"; // adjust if your export name differs
-import { buildSessionIcs } from "@/lib/calendar/ics";
 import SessionConfirmation from "@/emails/session-confirmation";
 
 /**
@@ -39,7 +38,6 @@ export async function sendSessionConfirmation(
     if (!row.mentor?.email || !row.learner?.email) return false;
 
     const start = new Date(row.scheduled_at);
-    const end = new Date(row.ends_at);
     const tz = row.timezone || "Europe/London";
     const whenFormatted = new Intl.DateTimeFormat("en-GB", {
       weekday: "long",
@@ -51,25 +49,7 @@ export async function sendSessionConfirmation(
       timeZoneName: "short",
     }).format(start);
 
-    const sessionUrl = `${process.env.BETTER_AUTH_URL}/sessions/${row.id}`;
-
-    const ics = buildSessionIcs({
-      uid: row.id,
-      start,
-      end,
-      summary: `LIFFT mentoring session — ${row.mentor.name} & ${row.learner.name}`,
-      description: `Join your session: ${sessionUrl}`,
-      organizerEmail: "hello@mail.lifftlabs.com",
-      attendees: [
-        { name: row.mentor.name, email: row.mentor.email },
-        { name: row.learner.name, email: row.learner.email },
-      ],
-      url: sessionUrl,
-    });
-    const icsAttachment = {
-      filename: "lifft-session.ics",
-      content: Buffer.from(ics),
-    };
+    const sessionUrl = `${process.env.BETTER_AUTH_URL}/dashboard`;
 
     const recipients: Array<{
       to: string;
@@ -107,7 +87,6 @@ export async function sendSessionConfirmation(
         to: r.to,
         subject: `Session confirmed — ${whenFormatted}`,
         html,
-        attachments: [icsAttachment],
       });
     }
 

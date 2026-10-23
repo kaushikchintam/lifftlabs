@@ -24,12 +24,18 @@ type AdminGuard =
     | {ok : true; session: NonNullable<Awaited<ReturnType<typeof auth.api.getSession>>> }
     | { ok: false; status: 401 | 403 };
 
+/** Admin is a permission, not a role: mentors/learners on the allowlist keep
+ *  their own dashboard and also get the team console. */
+export function isAdminEmail(email?: string | null): boolean {
+    return !!email && ADMIN_EMAILS.includes(email.toLowerCase());
+}
+
 export async function requireAdmin(headers: Headers): Promise<AdminGuard> {
     const session = await auth.api.getSession({ headers });
 
     if (!session) return { ok: false, status: 401 };
 
-    if (!ADMIN_EMAILS.includes(session.user.email.toLowerCase())) {
+    if (!isAdminEmail(session.user.email)) {
         return { ok: false, status: 403 }; 
     }
 

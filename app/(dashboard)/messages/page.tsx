@@ -1,15 +1,15 @@
-import { MessageSquare } from "lucide-react";
+import { ConversationList } from "@/features/chat/components/conversation-list";
 
 export default function MessagesPage() {
   return (
-    <div className="flex flex-1 flex-col items-center justify-center h-full text-center px-8">
-      <div className="w-12 h-12 rounded-full border border-[#E8E2D6] bg-[#FBF7EE] flex items-center justify-center mb-4">
-        <MessageSquare size={20} className="text-ink-muted" />
+    <>
+      {/* On phones the list lives here; on desktop it's the left column. */}
+      <div className="flex flex-1 flex-col md:hidden">
+        <ConversationList />
       </div>
-      <p className="font-dm-sans font-semibold text-ink mb-1">Your messages</p>
-      <p className="font-dm-sans text-sm text-ink-muted">
-        Select a conversation from the left to start messaging.
-      </p>
-    </div>
+      <div className="hidden flex-1 items-center justify-center px-8 text-center text-[17px] text-lf-muted md:flex">
+        Pick a conversation to start messaging.
+      </div>
+    </>
   );
 }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { requireSession } from "@/lib/auth/require-admin";
+import { isPlus } from "@/lib/auth/role";
 import { PORTFOLIO_CATEGORIES, PORTFOLIO_TYPES, type PortfolioCategory } from "@/features/portfolio/components/data/portfolio-options";
 
 interface AttachmentRow {
@@ -92,6 +93,8 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "unauthorized" }, { status: 401 });
     }
     const userId = guard.session.user.id;
+    // Creating is LIFFT Plus; reading, editing and deleting your own entries stays free.
+    if (!(await isPlus(userId))) return NextResponse.json({ error: "plus_required" }, { status: 402 });
 
     let body: CreatePortfolioBody;
     try {

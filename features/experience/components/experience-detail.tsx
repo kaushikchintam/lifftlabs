@@ -71,47 +71,47 @@ export function ExperienceDetail({
     .join(" · ");
 
   return (
-    <div className="rounded-2xl border border-[#ECE7DD] bg-white p-6 shadow-sm">
+    <div className="rounded-2xl border border-lf-line bg-white p-6 shadow-sm">
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-start gap-4">
-          <div className="flex h-14 w-14 flex-none flex-col items-center justify-center rounded-xl bg-[#ECE7DD]">
-            <span className="font-dm-serif text-lg leading-none text-ink">{hours}h</span>
+          <div className="flex h-14 w-14 flex-none flex-col items-center justify-center rounded-xl bg-lf-line">
+            <span className="font-bold tracking-tight text-lg leading-none text-lf-ink">{hours}h</span>
             {rising && (
-              <span className="mt-0.5 font-dm-sans text-[9px] font-semibold uppercase text-ink-faintest">
+              <span className="mt-0.5 text-[9px] font-semibold uppercase text-lf-muted">
                 &amp; rising
               </span>
             )}
           </div>
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <h3 className="font-dm-sans text-base font-semibold text-ink">
+              <h3 className="text-base font-semibold text-lf-ink">
                 {log.activity_description || log.organisation}
               </h3>
-              <span className="rounded-full bg-[#FAF8F3] px-3 py-1 font-dm-sans text-xs font-semibold text-ink-muted">
+              <span className="rounded-full bg-lf-soft px-3 py-1 text-xs font-semibold text-lf-muted">
                 {typeLabel}
               </span>
             </div>
-            <p className="mt-1 font-dm-sans text-sm text-ink-muted">{metaLine}</p>
+            <p className="mt-1 text-sm text-lf-muted">{metaLine}</p>
           </div>
         </div>
 
         <button
           onClick={deleteLog}
           disabled={deleting}
-          className="flex-none font-dm-sans text-xs text-ink-faintest transition-colors hover:text-danger disabled:opacity-50"
+          className="flex-none text-xs text-lf-muted transition-colors hover:text-[#B42318] disabled:opacity-50"
         >
           Delete
         </button>
       </div>
 
-      <div className="mt-4 grid gap-3 border-t border-[#ECE7DD] pt-4 sm:grid-cols-2">
+      <div className="mt-4 grid gap-3 border-t border-lf-line pt-4 sm:grid-cols-2">
         {log.supervisor && (
-          <p className="font-dm-sans text-sm text-ink">
+          <p className="text-sm text-lf-ink">
             <span className="font-semibold">Supervisor</span> — {log.supervisor}
           </p>
         )}
         {log.evidence_reference && (
-          <p className="font-dm-sans text-sm text-ink">
+          <p className="text-sm text-lf-ink">
             <span className="font-semibold">Evidence</span> — {log.evidence_reference}
           </p>
         )}
@@ -122,7 +122,7 @@ export function ExperienceDetail({
         <PhotoUploader experienceId={log.id} kind="evidence" attachments={evidence} onChange={onChange} />
       </div>
 
-      <div className="mt-4 border-t border-[#ECE7DD] pt-4">
+      <div className="mt-4 border-t border-lf-line pt-4">
         <ReflectionBox experienceId={log.id} reflection={log.reflection} onChange={onChange} />
       </div>
     </div>

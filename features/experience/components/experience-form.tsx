@@ -25,8 +25,8 @@ function Pill({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-full px-4 py-2 font-dm-sans text-sm font-semibold transition-colors ${
-        active ? "bg-ink text-white" : "border border-[#ECE7DD] bg-white text-ink hover:border-ink/30"
+      className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+        active ? "bg-lf-ink text-white" : "border border-lf-line bg-white text-lf-ink hover:border-lf-ink"
       }`}
     >
       {children}
@@ -35,9 +35,9 @@ function Pill({
 }
 
 const inputCls =
-  "w-full rounded-lg border border-[#ECE7DD] bg-[#FBF7EE] px-3 py-2 font-dm-sans text-sm text-ink outline-none focus:border-brand";
+  "w-full rounded-xl border border-lf-line-strong bg-white px-4 py-3 text-[15px] text-lf-ink outline-none placeholder:text-[#9A9A9A] focus:border-lf-ink";
 const labelCls =
-  "mb-1.5 block font-dm-sans text-xs font-bold uppercase tracking-wide text-ink-muted";
+  "mb-1.5 block text-xs font-bold uppercase tracking-wide text-lf-muted";
 
 export function ExperienceForm({
   onDone,
@@ -161,7 +161,7 @@ export function ExperienceForm({
   }
 
   return (
-    <div className="rounded-2xl border border-[#ECE7DD] bg-brand-tint p-6">
+    <div className="rounded-2xl border border-lf-line bg-white p-7">
       <div>
         <span className={labelCls}>Experience type</span>
         <div className="flex flex-wrap gap-2">
@@ -246,14 +246,14 @@ export function ExperienceForm({
 
           {!isRecurring ? (
             <>
-              <span className="font-dm-sans text-sm text-ink-muted">started</span>
+              <span className="text-sm text-lf-muted">started</span>
               <input
                 type="date"
                 className={`${inputCls} w-auto`}
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
               />
-              <span className="font-dm-sans text-sm text-ink-muted">to</span>
+              <span className="text-sm text-lf-muted">to</span>
               <input
                 type="date"
                 className={`${inputCls} w-auto`}
@@ -271,7 +271,7 @@ export function ExperienceForm({
             </>
           ) : (
             <>
-              <span className="font-dm-sans text-sm text-ink-muted">started</span>
+              <span className="text-sm text-lf-muted">started</span>
               <input
                 type="date"
                 className={`${inputCls} w-auto`}
@@ -286,7 +286,7 @@ export function ExperienceForm({
                 value={hoursPerPeriod}
                 onChange={(e) => setHoursPerPeriod(e.target.value)}
               />
-              <span className="font-dm-sans text-sm text-ink-muted">every</span>
+              <span className="text-sm text-lf-muted">every</span>
               {FREQUENCY_UNITS.map((f) => (
                 <Pill
                   key={f.value}
@@ -304,14 +304,14 @@ export function ExperienceForm({
                 value={headStartHours}
                 onChange={(e) => setHeadStartHours(e.target.value)}
               />
-              <span className="font-dm-sans text-sm text-ink-muted">until</span>
+              <span className="text-sm text-lf-muted">until</span>
               <input
                 type="date"
                 className={`${inputCls} w-auto`}
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
               />
-              <span className="font-dm-sans text-xs text-ink-faintest">(leave blank if ongoing)</span>
+              <span className="text-xs text-lf-muted">(leave blank if ongoing)</span>
             </>
           )}
         </div>
@@ -345,11 +345,11 @@ export function ExperienceForm({
             type="button"
             onClick={() => fileRef.current?.click()}
             disabled={photos.length >= MAX_PHOTOS}
-            className="rounded-full border border-[#ECE7DD] bg-white px-4 py-2 font-dm-sans text-sm font-semibold text-ink transition-colors hover:border-ink/30 disabled:opacity-50"
+            className="rounded-full border border-lf-line bg-white px-4 py-2 text-sm font-semibold text-lf-ink transition-colors hover:border-lf-ink disabled:opacity-50"
           >
             + Add up to 4 photos
           </button>
-          <p className="font-dm-sans text-sm text-ink-muted">
+          <p className="text-sm text-lf-muted">
             Wards, teams, your badge — great memory-joggers for interviews
           </p>
         </div>
@@ -358,13 +358,13 @@ export function ExperienceForm({
             {photos.map((file, i) => (
               <span
                 key={i}
-                className="flex items-center gap-1.5 rounded-full border border-[#ECE7DD] bg-white px-3 py-1 font-dm-sans text-xs text-ink-muted"
+                className="flex items-center gap-1.5 rounded-full border border-lf-line bg-white px-3 py-1 text-xs text-lf-muted"
               >
                 {file.name}
                 <button
                   type="button"
                   onClick={() => setPhotos((prev) => prev.filter((_, j) => j !== i))}
-                  className="text-ink-faintest hover:text-danger"
+                  className="text-lf-muted hover:text-[#B42318]"
                 >
                   ×
                 </button>
@@ -392,11 +392,11 @@ export function ExperienceForm({
             type="button"
             onClick={() => evidenceRef.current?.click()}
             disabled={evidence.length >= MAX_PHOTOS}
-            className="rounded-full border border-[#ECE7DD] bg-white px-4 py-2 font-dm-sans text-sm font-semibold text-ink transition-colors hover:border-ink/30 disabled:opacity-50"
+            className="rounded-full border border-lf-line bg-white px-4 py-2 text-sm font-semibold text-lf-ink transition-colors hover:border-lf-ink disabled:opacity-50"
           >
             + Add up to 4 files
           </button>
-          <p className="font-dm-sans text-sm text-ink-muted">
+          <p className="text-sm text-lf-muted">
             Signed letters, certificates, coordinator emails — PDF or image
           </p>
         </div>
@@ -405,13 +405,13 @@ export function ExperienceForm({
             {evidence.map((file, i) => (
               <span
                 key={i}
-                className="flex items-center gap-1.5 rounded-full border border-[#ECE7DD] bg-white px-3 py-1 font-dm-sans text-xs text-ink-muted"
+                className="flex items-center gap-1.5 rounded-full border border-lf-line bg-white px-3 py-1 text-xs text-lf-muted"
               >
                 {file.name}
                 <button
                   type="button"
                   onClick={() => setEvidence((prev) => prev.filter((_, j) => j !== i))}
-                  className="text-ink-faintest hover:text-danger"
+                  className="text-lf-muted hover:text-[#B42318]"
                 >
                   ×
                 </button>
@@ -432,13 +432,13 @@ export function ExperienceForm({
         />
       </div>
 
-      {error && <p className="mt-4 font-dm-sans text-sm text-danger">{error}</p>}
+      {error && <p className="mt-4 text-sm text-[#B42318]">{error}</p>}
 
       <div className="mt-6 flex items-center justify-end gap-3">
         <button
           type="button"
           onClick={onCancel}
-          className="font-dm-sans text-sm text-ink-muted transition-colors hover:text-ink"
+          className="text-sm text-lf-muted transition-colors hover:text-lf-ink"
         >
           Cancel
         </button>
@@ -446,7 +446,7 @@ export function ExperienceForm({
           type="button"
           onClick={save}
           disabled={saving}
-          className="rounded-full bg-brand px-6 py-2.5 font-dm-sans text-sm font-semibold text-white transition-colors hover:bg-brand-hover disabled:opacity-50"
+          className="rounded-full bg-lf-ink px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:opacity-90 disabled:opacity-50"
         >
           {saving ? "Saving…" : "Save to log"}
         </button>

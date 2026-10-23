@@ -34,6 +34,7 @@ export function EntryForm({
         title,
         type,
         organisation,
+        // ponytail: reuses the old linked_specialty column for the linked medical school
         linked_specialty: linkedSpecialty || undefined,
         start_date: startDate,
         end_date: endDate || undefined,
@@ -45,15 +46,15 @@ export function EntryForm({
   }
 
   const inputClass =
-    "w-full rounded-lg border border-[#D8D2C2] bg-white px-3 py-2 font-dm-sans text-sm text-ink placeholder:text-ink-faintest focus:border-brand focus:outline-none";
-  const labelClass = "font-dm-sans text-sm text-ink-muted mb-1 block";
+    "w-full rounded-xl border border-lf-line-strong bg-white px-4 py-3 text-[15px] text-lf-ink placeholder:text-[#9A9A9A] focus:border-lf-ink focus:outline-none";
+  const labelClass = "text-sm text-lf-muted mb-1 block";
 
   return (
-    <div className="rounded-2xl bg-brand-tint/40 border border-brand-tint p-5 space-y-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div className="space-y-4 rounded-2xl border border-lf-line bg-lf-soft p-6">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div>
           <label className={labelClass}>Title</label>
-          <input className={inputClass} placeholder="e.g. Sepsis pathway QI project" value={title} onChange={(e) => setTitle(e.target.value)} />
+          <input className={inputClass} placeholder="e.g. EPQ on antibiotic resistance" value={title} onChange={(e) => setTitle(e.target.value)} />
         </div>
         <div>
           <label className={labelClass}>Type</label>
@@ -66,11 +67,11 @@ export function EntryForm({
         </div>
         <div>
           <label className={labelClass}>Organisation / venue</label>
-          <input className={inputClass} placeholder="Trust, society, journal…" value={organisation} onChange={(e) => setOrganisation(e.target.value)} />
+          <input className={inputClass} placeholder="School, charity, hospital, course…" value={organisation} onChange={(e) => setOrganisation(e.target.value)} />
         </div>
         <div>
-          <label className={labelClass}>Linked specialty (optional)</label>
-          <input className={inputClass} placeholder="e.g. Cardiology" value={linkedSpecialty} onChange={(e) => setLinkedSpecialty(e.target.value)} />
+          <label className={labelClass}>Linked medical school (optional)</label>
+          <input className={inputClass} placeholder="e.g. King's College London" value={linkedSpecialty} onChange={(e) => setLinkedSpecialty(e.target.value)} />
         </div>
         <div>
           <label className={labelClass}>Date</label>
@@ -97,11 +98,11 @@ export function EntryForm({
         <button
           onClick={handleSave}
           disabled={saving}
-          className="rounded-full bg-brand px-5 py-2 font-dm-sans text-sm font-semibold text-white hover:bg-brand-hover disabled:opacity-50 transition-colors"
+          className="rounded-full bg-lf-ink px-5 py-2 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50 transition-colors"
         >
           {saving ? "Saving…" : "Save entry"}
         </button>
-        <button onClick={onCancel} className="rounded-full border border-[#D8D2C2] px-5 py-2 font-dm-sans text-sm text-ink-muted hover:text-ink transition-colors">
+        <button onClick={onCancel} className="rounded-full border border-lf-line-strong px-5 py-2 text-sm text-lf-muted hover:text-lf-ink transition-colors">
           Cancel
         </button>
       </div>

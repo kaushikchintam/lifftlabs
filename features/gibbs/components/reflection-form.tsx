@@ -90,14 +90,14 @@ export function ReflectionForm({
   }
 
   const inputClass =
-    "w-full rounded-lg border border-[#D8D2C2] bg-white px-3 py-2 font-dm-sans text-sm text-ink placeholder:text-ink-faintest focus:border-brand focus:outline-none";
+    "w-full rounded-lg border border-lf-line-strong bg-white px-3 py-2 text-sm text-lf-ink placeholder:text-[#9A9A9A] focus:border-lf-ink focus:outline-none";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
       <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-lg">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h3 className="font-dm-serif text-2xl text-ink">
+            <h3 className="font-bold tracking-tight text-2xl text-lf-ink">
               {isSessionBased
                 ? `Session with ${sessionMeta?.mentor_name ?? "your mentor"}`
                 : isEditing
@@ -105,19 +105,19 @@ export function ReflectionForm({
                 : "New reflection"}
             </h3>
             {sessionMeta && (
-              <p className="font-dm-sans text-sm text-ink-muted">
+              <p className="text-sm text-lf-muted">
                 {new Intl.DateTimeFormat("en-GB", { weekday: "long", day: "numeric", month: "long" }).format(new Date(sessionMeta.scheduled_at))}
               </p>
             )}
           </div>
-          <button onClick={onClose} className="font-dm-sans text-sm text-ink-muted hover:text-ink transition-colors">
+          <button onClick={onClose} className="text-sm text-lf-muted hover:text-lf-ink transition-colors">
             Close
           </button>
         </div>
 
         {!isSessionBased && (
           <div className="mt-4">
-            <label className="mb-1 block font-dm-sans text-sm text-ink-muted">Title</label>
+            <label className="mb-1 block text-sm text-lf-muted">Title</label>
             <input className={inputClass} placeholder="What's this about?" value={title} onChange={(e) => setTitle(e.target.value)} />
           </div>
         )}
@@ -125,8 +125,8 @@ export function ReflectionForm({
         <div className="mt-4 space-y-4">
           {FIELDS.map((f) => (
             <div key={f.key}>
-              <label className="mb-1 block font-dm-sans text-sm font-semibold text-ink">{f.label}</label>
-              <p className="mb-1 font-dm-sans text-xs text-ink-muted">{f.prompt}</p>
+              <label className="mb-1 block text-sm font-semibold text-lf-ink">{f.label}</label>
+              <p className="mb-1 text-xs text-lf-muted">{f.prompt}</p>
               <textarea
                 className={inputClass}
                 rows={3}
@@ -137,17 +137,17 @@ export function ReflectionForm({
           ))}
         </div>
 
-        {error && <p className="mt-3 font-dm-sans text-sm text-red-600">{error}</p>}
+        {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
 
         <div className="mt-5 flex items-center gap-3">
           <button
             onClick={handleSave}
             disabled={saving}
-            className="rounded-full bg-brand px-5 py-2 font-dm-sans text-sm font-semibold text-white hover:bg-brand-hover disabled:opacity-50 transition-colors"
+            className="rounded-full bg-lf-ink px-5 py-2 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50 transition-colors"
           >
             {saving ? "Saving…" : "Save reflection"}
           </button>
-          <button onClick={onClose} className="rounded-full border border-[#D8D2C2] px-5 py-2 font-dm-sans text-sm text-ink-muted hover:text-ink transition-colors">
+          <button onClick={onClose} className="rounded-full border border-lf-line-strong px-5 py-2 text-sm text-lf-muted hover:text-lf-ink transition-colors">
             Cancel
           </button>
         </div>

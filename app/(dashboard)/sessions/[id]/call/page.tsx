@@ -3,6 +3,7 @@ import { getServerSession } from "@/lib/auth/session";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { CallRoom } from "@/features/video/components/call-room";
 import { MessageThread } from "@/features/chat/components/message-thread";
+import { isJoinable } from "@/lib/join-window";
 
 /**
  * The video call page (P5-02). URL: /sessions/[id]/call
@@ -49,10 +50,7 @@ export default async function CallPage({
   };
 
   // Server-side window check mirrors the token route
-  const now = Date.now();
-  const opens = new Date(row.scheduled_at).getTime() - 15 * 60 * 1000;
-  const closes = new Date(row.ends_at).getTime() + 30 * 60 * 1000;
-  if (row.status !== "confirmed" || now < opens || now > closes) {
+  if (!isJoinable(row.status, row.scheduled_at, row.ends_at)) {
     redirect(`/sessions/${id}`);
   }
 
@@ -83,9 +81,9 @@ export default async function CallPage({
   }
 
   return (
-    <div className="mx-auto max-w-6xl p-6">
+    <div>
       <header className="mb-4">
-        <h1 className="font-archivo-black text-xl text-[#18150F]">
+        <h1 className="text-2xl font-medium text-lf-ink">
           Session with {counterpartName}
         </h1>
       </header>
@@ -94,8 +92,8 @@ export default async function CallPage({
         <CallRoom sessionId={id} counterpartName={counterpartName} />
 
         {conversationId && (
-          <aside className="hidden lg:block rounded-2xl border border-[#E8E2D6] bg-[#FBF7EE] p-4 flex flex-col">
-            <p className="font-dm-sans text-xs text-[#6F6B60] mb-3">Chat</p>
+          <aside className="hidden lg:flex flex-col rounded-2xl border border-lf-line bg-white p-4">
+            <p className="mb-3 text-sm text-lf-muted">Chat</p>
             <MessageThread
               conversationId={conversationId}
               currentUserId={session.user.id}

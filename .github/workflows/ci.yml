@@ -20,7 +20,8 @@ jobs:
         run: npm ci
 
       - name: Typecheck
-        run: npx tsc --noEmit
+        # typegen creates the global PageProps/LayoutProps types (normally made by next dev/build)
+        run: npx next typegen && npx tsc --noEmit
 
       - name: Lint
         run: npm run lint
@@ -45,3 +46,5 @@ jobs:
           AGORA_APP_ID: placeholder
           AGORA_APP_CERTIFICATE: placeholder
           CRON_SECRET: placeholder
+          UPSTASH_REDIS_REST_URL: https://placeholder.upstash.io
+          UPSTASH_REDIS_REST_TOKEN: placeholder

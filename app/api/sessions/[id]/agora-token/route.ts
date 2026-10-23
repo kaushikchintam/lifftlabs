@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { requireSession } from "@/lib/auth/require-admin";
 import { buildRtcToken, deterministicUid } from "@/lib/agora/token";
-import { hasPlatformAccess } from "@/lib/access";
+import { joinWindow } from "@/lib/join-window";
 
 /**
  * GET /api/sessions/[id]/agora-token (P5-01)
@@ -11,15 +11,12 @@ import { hasPlatformAccess } from "@/lib/access";
  *   1. authenticated
  *   2. participant of THIS session (channel name = session id is guessable
  *      from booking history — participant gating is the real lock)
- *   3. inside the join window: 15 min before start → end + 30 min grace
+ *   3. inside the join window: 10 min before start → end + 30 min grace
  *
  * Token TTL runs to end + 30 min, so a token fetched at page load (P5-03
  * pre-fetch) outlives the whole session. The client still wires
  * onTokenPrivilegeWillExpire → refetch, covering edge cases.
  */
-
-const JOIN_OPENS_BEFORE_MS = 15 * 60 * 1000;
-const GRACE_AFTER_END_MS = 30 * 60 * 1000;
 
 export async function GET(
   request: NextRequest,
@@ -51,15 +48,9 @@ export async function GET(
     return NextResponse.json({ error: "session_not_joinable" }, { status: 409 });
   }
 
-  // Video access is part of the subscription now — mentors always pass
-  // (see hasPlatformAccess), learners need to be currently subscribed.
-  if (!(await hasPlatformAccess(guard.session.user.id))) {
-    return NextResponse.json({ error: "subscription_required" }, { status: 402 });
-  }
-
+  // Paying for the session is the access check: only confirmed (paid) sessions get here.
   const now = Date.now();
-  const opens = new Date(s.scheduled_at).getTime() - JOIN_OPENS_BEFORE_MS;
-  const closes = new Date(s.ends_at).getTime() + GRACE_AFTER_END_MS;
+  const { opens, closes } = joinWindow(s.scheduled_at, s.ends_at);
   if (now < opens || now > closes) {
     return NextResponse.json({ error: "outside_join_window" }, { status: 409 });
   }

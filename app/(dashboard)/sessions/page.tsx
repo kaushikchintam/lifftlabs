@@ -1,123 +1,43 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getServerSession } from "@/lib/auth/session";
-import { supabaseAdmin } from "@/lib/supabase/admin";
+import { roleOf } from "@/lib/auth/role";
+import { btnPrimary } from "@/components/ui/lifft";
+import { conversationsByCounterpart, intakesById, rebookHref, sessionsFor } from "@/features/space/queries";
+import { SessionsFull, type RowActions } from "@/features/space/components/sessions-list";
 
-/**
- * Sessions list (P3-10). One page for both roles: shows every session where
- * the current user is mentor or learner, split into upcoming and past.
- */
-
-interface SessionRow {
-  id: string;
-  scheduled_at: string;
-  ends_at: string;
-  timezone: string;
-  status: string;
-  mentor_id: string;
-  learner_id: string;
-  mentor: { name: string } | null;
-  learner: { name: string } | null;
-}
-
-const STATUS_LABELS: Record<string, string> = {
-  pending: "Awaiting payment",
-  confirmed: "Confirmed",
-  completed: "Completed",
-  cancelled: "Cancelled",
-  expired: "Expired",
-};
-
-const STATUS_STYLES: Record<string, string> = {
-  pending:   "bg-[#FEF3C7] text-[#92400E]",
-  confirmed: "bg-brand-tint text-brand-hover",
-  completed: "bg-[#F1ECE0] text-ink",
-  cancelled: "bg-[#F1ECE0] text-ink-faintest",
-  expired:   "bg-[#F1ECE0] text-ink-faintest",
-};
-
-function formatWhen(iso: string, tz: string): string {
-  return new Intl.DateTimeFormat("en-GB", {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: tz || "Europe/London",
-  }).format(new Date(iso));
-}
-
-function SessionCard({ s, userId }: { s: SessionRow; userId: string }) {
-  const isMentor = s.mentor_id === userId;
-  const counterpart = isMentor ? s.learner?.name : s.mentor?.name;
-  return (
-    <Link href={`/sessions/${s.id}`}>
-      <div className="flex items-center justify-between rounded-2xl border border-[#ECE7DD] bg-white px-5 py-4 shadow-sm transition-colors hover:bg-[#FAF8F3]">
-        <div>
-          <p className="font-dm-sans font-semibold text-ink">
-            {isMentor ? "Session with " : "Mentoring session with "}
-            {counterpart ?? "—"}
-          </p>
-          <p className="font-dm-sans text-sm text-ink-muted mt-0.5">
-            {formatWhen(s.scheduled_at, s.timezone)}
-          </p>
-        </div>
-        <span className={`rounded-full px-3 py-1 font-dm-sans text-xs font-semibold ${STATUS_STYLES[s.status] ?? "bg-[#F1ECE0] text-ink-faintest"}`}>
-          {STATUS_LABELS[s.status] ?? s.status}
-        </span>
-      </div>
-    </Link>
-  );
-}
-
-export default async function SessionsPage() {
+export default async function MySessionsPage() {
   const session = await getServerSession();
   if (!session) redirect("/login");
   const userId = session.user.id;
+  const role = await roleOf(userId);
 
-  const { data } = await supabaseAdmin
-    .from("mentor_sessions")
-    .select(
-      `id, scheduled_at, ends_at, timezone, status, mentor_id, learner_id,
-       mentor:user!mentor_sessions_mentor_id_fkey(name),
-       learner:user!mentor_sessions_learner_id_fkey(name)`
-    )
-    .or(`mentor_id.eq.${userId},learner_id.eq.${userId}`)
-    .in("status", ["pending", "confirmed", "completed", "cancelled"])
-    .order("scheduled_at", { ascending: false });
+  const rows = await sessionsFor(userId, role);
+  const [convos, intakes] = await Promise.all([
+    conversationsByCounterpart(userId),
+    intakesById(rows.map((r) => r.intakeId)),
+  ]);
 
-  const sessions = (data ?? []) as unknown as SessionRow[];
-  const now = new Date();
-  const upcoming = sessions
-    .filter((s) => new Date(s.ends_at) >= now && s.status !== "cancelled")
-    .sort((a, b) => a.scheduled_at.localeCompare(b.scheduled_at));
-  const past = sessions.filter(
-    (s) => new Date(s.ends_at) < now || s.status === "cancelled"
+  const actions = new Map<string, RowActions>(
+    rows.map((r) => {
+      const cid = convos.get(role === "mentor" ? r.learnerId : r.mentorId);
+      const intake = r.intakeId ? intakes.get(r.intakeId) : undefined;
+      return [r.id, { messageHref: cid ? `/messages/${cid}` : null, rebookHref: rebookHref(r, intake, true) }];
+    })
   );
+  const latest = rows[0];
 
   return (
-    <div className="mx-auto max-w-2xl space-y-8 p-4 md:p-6">
-      <h1 className="font-dm-serif text-5xl text-ink">Sessions</h1>
-
-      <section className="space-y-3">
-        <h2 className="font-dm-serif text-xl text-ink">Upcoming</h2>
-        {upcoming.length === 0 ? (
-          <p className="font-dm-sans text-sm text-ink-muted">
-            Nothing booked yet. Browse mentors to schedule a session.
-          </p>
-        ) : (
-          upcoming.map((s) => <SessionCard key={s.id} s={s} userId={userId} />)
+    <>
+      <div className="mb-6 flex items-center justify-between gap-4">
+        <h1 className="text-3xl font-medium">My sessions</h1>
+        {role === "learner" && latest && (
+          <Link href={rebookHref(latest, latest.intakeId ? intakes.get(latest.intakeId) : undefined, false)} className={btnPrimary}>
+            Book with a different mentor
+          </Link>
         )}
-      </section>
-
-      <section className="space-y-3">
-        <h2 className="font-dm-serif text-xl text-ink">Past</h2>
-        {past.length === 0 ? (
-          <p className="font-dm-sans text-sm text-ink-muted">No past sessions.</p>
-        ) : (
-          past.map((s) => <SessionCard key={s.id} s={s} userId={userId} />)
-        )}
-      </section>
-    </div>
+      </div>
+      <SessionsFull rows={rows} role={role} actions={actions} />
+    </>
   );
 }

@@ -39,7 +39,7 @@ export function ReflectionBox({
           onChange={(e) => setDraft(e.target.value)}
           placeholder="What did this change about how you see the move?"
           rows={2}
-          className="w-full rounded-xl border border-[#ECE7DD] bg-white px-4 py-2.5 font-dm-sans text-sm text-ink outline-none focus:border-brand"
+          className="w-full rounded-xl border border-lf-line bg-white px-4 py-2.5 text-sm text-lf-ink outline-none focus:border-lf-ink"
         />
         <div className="flex items-center gap-2">
           <button
@@ -47,14 +47,14 @@ export function ReflectionBox({
               setDraft(reflection ?? "");
               setEditing(false);
             }}
-            className="rounded-full border border-[#ECE7DD] px-4 py-1.5 font-dm-sans text-xs font-semibold text-ink-muted transition-colors hover:text-ink"
+            className="rounded-full border border-lf-line px-4 py-1.5 text-xs font-semibold text-lf-muted transition-colors hover:text-lf-ink"
           >
             Cancel
           </button>
           <button
             onClick={save}
             disabled={saving}
-            className="rounded-full bg-brand px-4 py-1.5 font-dm-sans text-xs font-semibold text-white transition-colors hover:bg-brand-hover disabled:opacity-50"
+            className="rounded-full bg-lf-ink px-4 py-1.5 text-xs font-semibold text-white transition-colors hover:opacity-90 disabled:opacity-50"
           >
             {saving ? "Saving…" : "Save"}
           </button>
@@ -65,12 +65,12 @@ export function ReflectionBox({
 
   return (
     <div className="flex items-center justify-between gap-4">
-      <p className="font-dm-sans text-sm text-ink-muted">
+      <p className="text-sm text-lf-muted">
         {reflection || "No reflection yet — what did this change about how you see the move?"}
       </p>
       <button
         onClick={() => setEditing(true)}
-        className="flex flex-none items-center gap-1.5 font-dm-sans text-sm font-semibold text-ink transition-colors hover:text-brand"
+        className="flex flex-none items-center gap-1.5 text-sm font-semibold text-lf-ink transition-colors hover:text-lf-ink"
       >
         <Pencil size={13} /> Reflect
       </button>

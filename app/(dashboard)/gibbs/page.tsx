@@ -1,17 +1,14 @@
-import { getServerSession } from "@/lib/auth/session";
-import { redirect } from "next/navigation";
+import { PlusGate } from "@/components/layout/plus-gate";
+import { PageHeader } from "@/components/layout/page-header";
 import { GibbsBoard } from "@/features/gibbs/components/gibbs-board";
 
-export default async function GibbsPage() {
-  const session = await getServerSession();
-  if (!session) redirect("/login");
-
+export default function GibbsPage() {
   return (
-    <div className="min-h-full bg-[#FAF8F3] p-4 md:p-8">
-      <div className="mx-auto max-w-3xl space-y-6">
-        <h1 className="font-dm-serif text-5xl text-ink">Reflection</h1>
+    <PlusGate>
+      <div className="max-w-4xl">
+        <PageHeader eyebrow="Gibbs reflective cycle" title="Reflection" />
         <GibbsBoard />
       </div>
-    </div>
+    </PlusGate>
   );
 }

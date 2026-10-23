@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { requireSession } from "@/lib/auth/require-admin";
+import { getJourney } from "@/features/journeys/config";
 
 /**
  * GET /api/conversations — the current user's conversations, newest activity
@@ -17,7 +18,7 @@ export async function GET(request: NextRequest) {
   // Conversations I'm in
   const { data: memberships, error } = await supabaseAdmin
     .from("conversation_participants")
-    .select("conversation_id, conversation:conversations(id, last_message_at)")
+    .select("conversation_id, archived_at, conversation:conversations(id, last_message_at)")
     .eq("user_id", userId);
 
   if (error) {
@@ -52,6 +53,24 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  // Journey + next session per counterpart, for the list subtitle.
+  const { data: pairSessions } = await supabaseAdmin
+    .from("mentor_sessions")
+    .select("mentor_id, learner_id, scheduled_at, journey")
+    .or(`mentor_id.eq.${userId},learner_id.eq.${userId}`)
+    .in("status", ["confirmed", "completed"])
+    .order("scheduled_at", { ascending: true });
+  const now = new Date().toISOString();
+  const pairInfo = new Map<string, { journey: string | null; nextAt: string | null }>();
+  for (const p of pairSessions ?? []) {
+    const other = p.mentor_id === userId ? p.learner_id : p.mentor_id;
+    const cur = pairInfo.get(other) ?? { journey: null, nextAt: null };
+    cur.journey = p.journey ?? cur.journey;
+    if (!cur.nextAt && p.scheduled_at > now) cur.nextAt = p.scheduled_at;
+    pairInfo.set(other, cur);
+  }
+  const counterpartIdByConversation = new Map((others ?? []).map((o) => [o.conversation_id, o.user_id as string]));
+
   const counterpartByConversation = new Map(
     (others ?? []).map((o) => [
       o.conversation_id,
@@ -65,9 +84,15 @@ export async function GET(request: NextRequest) {
         id: string;
         last_message_at: string | null;
       } | null;
+      const counterpartId = counterpartIdByConversation.get(m.conversation_id) ?? "";
+      const info = pairInfo.get(counterpartId);
       return {
         id: m.conversation_id,
+        counterpartId,
         counterpartName: counterpartByConversation.get(m.conversation_id) || "—",
+        journeyTitle: info?.journey ? getJourney(info.journey)?.title ?? null : null,
+        nextSessionAt: info?.nextAt ?? null,
+        archived: !!m.archived_at,
         lastMessageAt: convo?.last_message_at ?? null,
         unread: unreadByConversation.get(m.conversation_id) ?? 0,
       };

@@ -33,6 +33,11 @@ export default function Footer() {
                     Log in
                   </Link>
                 </li>
+                <li>
+                  <Link href="/mentor/apply" className="text-white/80 hover:text-white transition-colors">
+                    For mentors
+                  </Link>
+                </li>
               </ul>
             </div>
             <div>

@@ -1,126 +1,81 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabase/admin";
-import { getCurrentStage } from "@/lib/stage";
+import { isAdminEmail } from "@/lib/auth/require-admin";
+
+const COOKIE = {
+  httpOnly: true,
+  sameSite: "lax" as const,
+  secure: process.env.NODE_ENV === "production",
+  maxAge: 60 * 60 * 24 * 30,
+};
+
+const PROTECTED = ["/dashboard", "/mentors", "/sessions", "/messages", "/onboarding", "/admin", "/experience", "/portfolio", "/gibbs", "/resources", "/profile"];
+
+/** Every response gets an anon_id (funnel counting) if it doesn't have one. */
+function withAnon(request: NextRequest, res: NextResponse) {
+  if (!request.cookies.get("anon_id")) {
+    res.cookies.set("anon_id", crypto.randomUUID(), { ...COOKIE, maxAge: 60 * 60 * 24 * 365 });
+  }
+  return res;
+}
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const session = await auth.api.getSession({ headers: request.headers });
   const role = request.cookies.get("role")?.value;
+  const next = () => withAnon(request, NextResponse.next());
+  const go = (path: string) => withAnon(request, NextResponse.redirect(new URL(path, request.url)));
 
-  //to check if user is an unverifed state or not
+  // Unverified accounts can browse and finish booking (the account step
+  // verifies inline); the app itself waits for the code at /verify.
   if (session && !session.user.emailVerified) {
-    if (!pathname.startsWith("/signup") && !pathname.startsWith("/api/auth")) {
-      return NextResponse.redirect(new URL("/signup/learner", request.url));
+    return PROTECTED.some((p) => pathname.startsWith(p)) || pathname === "/login" ? go("/verify") : next();
+  }
+
+  // Signed out: drop the advisory role cookie, guard the app.
+  if (!session) {
+    if (PROTECTED.some((p) => pathname.startsWith(p))) {
+      return go(`/login?returnTo=${encodeURIComponent(pathname + request.nextUrl.search)}`);
     }
-    return NextResponse.next();
+    const res = next();
+    if (role) res.cookies.delete("role");
+    return res;
   }
 
-  //clear state role cookie if session is gone, now also stage
-  if(!session && role) {
-    const res = NextResponse.next();
-    res.cookies.delete("role");
-    res.cookies.delete("stage");
-    return res
-  }
+  if (pathname === "/login" || pathname === "/verify") return go("/dashboard");
 
-  if (session && process.env.ADMIN_EMAILS?. split(",").includes(session.user.email ?? "")) {
-    if (role !== "admin") {
-      const res = NextResponse.next();
-      res.cookies.set("role", "admin", {
-        httpOnly: true,
-        sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 60 * 60 * 24 * 30, // 30 days
-      });
-      return res;
-    }
-  }
-  // 1. No session + protected path → login
-  if (!session && (
-    pathname.startsWith("/dashboard") ||
-    pathname.startsWith("/onboarding") ||
-    pathname.startsWith("/admin")
-  )) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
+  // Admin is a permission (allowlist), not a role.
+  if (pathname.startsWith("/admin") && !isAdminEmail(session.user.email)) return go("/dashboard");
 
-  // 2. Session + auth page → dashboard
-  if (session && (pathname === "/login" || pathname.startsWith("/signup"))) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  }
-
-  // 3. Session + no role cookie
-  if (session && !role) {
-    if (pathname.startsWith("/onboarding")) return NextResponse.next();
-
-    // Check if user already completed onboarding — auto-restore role cookie
-    const [{ data: mentorProfile }, { data: learnerProfile }] = await Promise.all([
+  // No role cookie: restore it from whichever profile exists.
+  if (!role && !pathname.startsWith("/onboarding")) {
+    const [{ data: mentor }, { data: learner }] = await Promise.all([
       supabaseAdmin.from("mentor_profiles").select("user_id").eq("user_id", session.user.id).maybeSingle(),
       supabaseAdmin.from("learner_profiles").select("user_id").eq("user_id", session.user.id).maybeSingle(),
     ]);
 
-    const cookieOpts = {
-      httpOnly: true,
-      sameSite: "lax" as const,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 60 * 60 * 24 * 30,
-    };
-
-    if (mentorProfile) {
-      const res = NextResponse.redirect(new URL("/dashboard", request.url));
-      res.cookies.set("role", "mentor", cookieOpts);
+    if (mentor || learner) {
+      const res = next();
+      res.cookies.set("role", mentor ? "mentor" : "learner", COOKIE);
       return res;
     }
 
-    if (learnerProfile) {
-      const res = NextResponse.redirect(new URL("/dashboard", request.url));
-      res.cookies.set("role", "learner", cookieOpts);
-      return res;
-    }
-
-    // No profile yet → send to correct onboarding
+    // Approved mentors arrive by magic link and finish onboarding first.
     if (pathname.startsWith("/dashboard")) {
-      const { data: mentorAccount } = await supabaseAdmin
+      const { data: magic } = await supabaseAdmin
         .from("account")
         .select("providerId")
         .eq("userId", session.user.id)
         .eq("providerId", "magic-link")
         .maybeSingle();
-
-      return NextResponse.redirect(new URL(
-        mentorAccount ? "/onboarding/mentor" : "/onboarding/learner",
-        request.url
-      ));
+      if (magic) return go("/onboarding/mentor");
     }
   }
 
-  // 4. Non-admin trying to reach /admin
-  if (session && pathname.startsWith("/admin") && role !== "admin") {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  }
-
-  //5. Session + role=learner + no stage cookie -> restore it
-  if (session && role === "learner" && !request.cookies.get("stage")?.value) {
-    const stage = await getCurrentStage(session.user.id);
-    if (stage) {
-      const res = NextResponse.next();
-      res.cookies.set("stage", stage, {
-        httpOnly: true, 
-        sameSite: "lax", 
-        secure: process.env.NODE_ENV === "production", 
-        maxAge: 60 * 60 * 24 * 30, 
-      });
-      return res;
-    }
-  }
-
-  return NextResponse.next();
+  return next();
 }
 
 export const config = {
-  matcher: [
-    // Added api| here to prevent middleware from processing backend API routes
-    '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|woff2)$).*)"],
 };
