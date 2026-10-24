@@ -19,8 +19,6 @@ export interface MentorApprovalEmailProps {
   fullName: string;
   /** Secure magic link to complete the mentor profile (expires in 24h). */
   profileLink: string;
-  /** Stripe Connect onboarding link for payouts. */
-  stripeLink: string;
   /** Support address shown in the footer line. */
   supportEmail?: string;
 }
@@ -45,8 +43,7 @@ const benefits = [
 export const MentorApprovalEmail = ({
   fullName = "there",
   profileLink = "https://app.lifftlabs.com/profile",
-  stripeLink = "https://connect.stripe.com/setup",
-  supportEmail = "mentor@lifftlabs.com",
+  supportEmail = "management@lifftlabs.com",
 }: MentorApprovalEmailProps) => (
   <Html lang="en">
     <Head />
@@ -88,8 +85,8 @@ export const MentorApprovalEmail = ({
             Complete your profile &rarr;
           </Button>
           <Text style={caption}>
-            This is a secure magic link — no password needed. It expires in 24
-            hours.
+            This is a secure magic link that expires in 24 hours. You&apos;ll set a
+            password on the next step.
           </Text>
         </Section>
 
@@ -106,17 +103,6 @@ export const MentorApprovalEmail = ({
               </Row>
             ))}
           </Section>
-        </Section>
-
-        {/* Secondary CTA: Stripe Connect */}
-        <Section style={{ padding: "24px 40px 0 40px" }}>
-          <Button href={stripeLink} style={secondaryButton}>
-            Connect your bank account &rarr;
-          </Button>
-          <Text style={caption}>
-            Payouts are handled securely by Stripe. Connect now or later from your
-            dashboard.
-          </Text>
         </Section>
 
         {/* Questions */}
@@ -221,21 +207,6 @@ const primaryButton: React.CSSProperties = {
   fontWeight: 700,
   fontSize: 16,
   color: "#ffffff",
-  textDecoration: "none",
-  textAlign: "center",
-};
-
-const secondaryButton: React.CSSProperties = {
-  display: "block",
-  width: "100%",
-  boxSizing: "border-box",
-  border: "1.5px solid rgba(24,21,15,0.30)",
-  borderRadius: 999,
-  padding: "14px 28px",
-  fontFamily: sans,
-  fontWeight: 700,
-  fontSize: 15,
-  color: ink,
   textDecoration: "none",
   textAlign: "center",
 };
