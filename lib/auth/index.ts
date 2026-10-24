@@ -106,15 +106,15 @@ export const auth = betterAuth({
     }),
     magicLink({
       disableSignUp: false, 
+      expiresIn: 60 * 60 * 24, // approval email promises 24h (default is 5 min)
       async sendMagicLink(data) {
         if (!data.metadata?.isAdminApproval) return; 
 
-        const { fullName, stripeLink } = data.metadata ?? {};
+        const { fullName } = data.metadata ?? {};
         const html = await render(
           React.createElement(MentorApprovalEmail, {
             fullName,
             profileLink: data.url,
-            stripeLink,
           })
         );
         await resend.emails.send({

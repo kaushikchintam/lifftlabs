@@ -6,6 +6,8 @@ import { btnPrimary, btnSecondary } from "@/components/ui/lifft";
 import { PLUS_DISCOUNT_PERCENT, PLUS_MONTHLY_PENCE } from "@/features/journeys/config";
 import { formatPence } from "@/utils/format-date";
 
+const FEEDBACK_URL = "https://tally.so/r/Yj56P5";
+
 /** Top of every Plus tool: Subscribe (Stripe Checkout) or, for members, Manage (Billing Portal). */
 export function PlusBanner({ member }: { member: boolean }) {
   const pathname = usePathname();
@@ -33,6 +35,12 @@ export function PlusBanner({ member }: { member: boolean }) {
           : "Experience log, Portfolio, Reflection and Resources are part of the LIFFT Plus subscription."}
       </p>
       {!member && <span className="text-[15px] font-semibold">{formatPence(PLUS_MONTHLY_PENCE)} / month</span>}
+      {member && (
+        // ponytail: beta feedback form (refund on completion, done by hand in Stripe)
+        <a href={FEEDBACK_URL} target="_blank" rel="noopener noreferrer" className={btnSecondary}>
+          Give feedback
+        </a>
+      )}
       <button className={member ? btnSecondary : btnPrimary} disabled={busy} onClick={go}>
         {busy ? "Opening…" : member ? "Manage" : "Subscribe"}
       </button>

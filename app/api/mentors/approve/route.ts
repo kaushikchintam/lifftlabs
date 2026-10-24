@@ -51,8 +51,7 @@ export async function POST(request: NextRequest) {
       // New accounts are created with this name, so the session cookie has it from the first page.
       name: app.full_name,
       callbackURL: "/onboarding/mentor",
-      // Payouts are set up from the dashboard stepper after onboarding.
-      metadata: { fullName: app.full_name, stripeLink: `${process.env.BETTER_AUTH_URL}/dashboard`, isAdminApproval: true },
+      metadata: { fullName: app.full_name, isAdminApproval: true },
     },
     headers: request.headers,
   });
