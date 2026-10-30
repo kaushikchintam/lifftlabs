@@ -1,12 +1,12 @@
-import { GraduationCap, HeartPulse, Lightbulb, Coins, type LucideIcon } from "lucide-react";
+import { GraduationCap, HeartPulse, Lightbulb, Coins, BookOpen, type LucideIcon } from "lucide-react";
 
 /**
- * The four journeys. Questions → options → tags drive the intake form, the
+ * The journeys. Questions → options → tags drive the intake form, the
  * "We'll match you on" strip, the mentor application's topic chips, and
- * matching. Code, not DB: four journeys, no admin editing.
+ * matching. Code, not DB: a handful of journeys, no admin editing.
  */
 
-export type JourneySlug = "medical-school" | "wellbeing" | "specific-topic" | "finances";
+export type JourneySlug = "medical-school" | "starting-medical-school" | "wellbeing" | "specific-topic" | "finances";
 
 export interface Option {
   label: string;
@@ -75,9 +75,39 @@ export const JOURNEYS: Journey[] = [
     ],
   },
   {
+    slug: "starting-medical-school",
+    title: "Getting ready for medical school",
+    cardLabel: "I have got a place at medical school and want to get prepared",
+    heading: "Tell us a little about where you are",
+    icon: BookOpen,
+    accent: { light: "#FBE3D6", dark: "#B4472A" },
+    questions: [
+      {
+        id: "course",
+        label: "Your course",
+        options: [
+          { label: "Standard entry", tags: ["standard_entry"] },
+          { label: "Graduate entry", tags: ["graduate_entry"] },
+          { label: "Not sure yet", tags: [] },
+        ],
+      },
+      {
+        id: "help",
+        label: "What would help most?",
+        multi: true,
+        options: [
+          { label: "What first year is really like", tags: ["first_year_prep"] },
+          { label: "Study skills", tags: ["study_skills"] },
+          { label: "Funding and bursaries", tags: ["funding"] },
+          { label: "Moving and settling in", tags: ["moving_settling_in"] },
+        ],
+      },
+    ],
+  },
+  {
     slug: "wellbeing",
     title: "Wellbeing & burnout",
-    cardLabel: "I work in healthcare and feel burnt out",
+    cardLabel: "I am at medical school and feel stuck",
     heading: "Tell us a little about where you are",
     icon: HeartPulse,
     accent: { light: "#F0E1F6", dark: "#833BAC" },
@@ -116,7 +146,7 @@ export const JOURNEYS: Journey[] = [
   {
     slug: "specific-topic",
     title: "Help with a specific topic",
-    cardLabel: "I need help with a specific topic",
+    cardLabel: "I want to chat with someone, who has retrained",
     heading: "What do you need help with?",
     subheading: "Pick one topic.",
     icon: Lightbulb,
@@ -192,6 +222,10 @@ export const TAG_LABELS: Record<string, string> = {
   interviews: "interviews",
   choosing_schools: "choosing schools",
   funding: "funding",
+  standard_entry: "standard entry",
+  first_year_prep: "first year prep",
+  study_skills: "study skills",
+  moving_settling_in: "moving & settling in",
   doctors: "doctors",
   nurses_midwives: "nurses & midwives",
   allied_health: "allied health",

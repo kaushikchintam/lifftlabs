@@ -3,6 +3,7 @@ import { getServerSession } from "@/lib/auth/session";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { PageHeader } from "@/components/layout/page-header";
 import { ProfileForm } from "@/features/mentor/components/profile-form";
+import { PhotoPicker } from "@/features/mentor/components/photo-picker";
 
 export default async function ProfilePage() {
   const session = await getServerSession();
@@ -18,6 +19,7 @@ export default async function ProfilePage() {
   return (
     <>
       <PageHeader title="Your profile" subtitle="What learners see on the Mentors tab and your match card." />
+      <PhotoPicker name={session.user.name} id={session.user.id} image={session.user.image ?? null} />
       <ProfileForm
         initial={{
           headline: p.headline ?? "",

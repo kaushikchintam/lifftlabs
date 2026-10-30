@@ -16,6 +16,7 @@ export interface MatchCard extends Ranked {
   slotIds: string[];
   /** Payouts connected — until then the card shows "Booking opens soon". */
   bookable: boolean;
+  image: string | null;
 }
 
 interface MentorRow {
@@ -28,14 +29,14 @@ interface MentorRow {
   credentials: string | null;
   hourly_rate_pence: number | null;
   charges_enabled: boolean;
-  user: { name: string } | null;
+  user: { name: string; image: string | null } | null;
 }
 
 /** Live = approved profile, not paused. Payouts not required to be listed (booking checks them). Optional mentor filter for "Book again". */
 async function liveMentors(journey: Journey | null, mentorId?: string): Promise<MentorRow[]> {
   let q = supabaseAdmin
     .from("mentor_profiles")
-    .select("user_id, kind, tags, journeys, headline, bio, credentials, hourly_rate_pence, charges_enabled, user:user(name)")
+    .select("user_id, kind, tags, journeys, headline, bio, credentials, hourly_rate_pence, charges_enabled, user:user(name, image)")
     .eq("paused", false)
     .not("hourly_rate_pence", "is", null);
   if (journey && !journey.matchAcrossJourneys) q = q.contains("journeys", [journey.slug]);
@@ -115,6 +116,7 @@ export async function findMatches(
       journeys: m.journeys,
       pricePence: m.hourly_rate_pence ?? 0,
       bookable: m.charges_enabled,
+      image: m.user?.image ?? null,
     };
   });
 }
