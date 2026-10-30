@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Avatar, btnSecondary } from "@/components/ui/lifft";
 import { formatPence, formatSession } from "@/utils/format-date";
 import { SESSION_MINUTES, getJourney, sessionPricing, tagLabel } from "@/features/journeys/config";
@@ -22,6 +22,7 @@ export function MentorMatchCard({
   member?: boolean;
 }) {
   const [open, setOpen] = useState(false);
+  const photoRef = useRef<HTMLDialogElement>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const mine = new Set(learnerTags);
@@ -47,7 +48,24 @@ export function MentorMatchCard({
   return (
     <div className="flex flex-col rounded-2xl border border-lf-line bg-white p-7">
       <div className="mb-4 flex flex-wrap items-start gap-4">
-        <Avatar name={mentor.name} id={mentor.userId} src={mentor.image} size={64} />
+        {mentor.image ? (
+          <>
+            <button type="button" onClick={() => photoRef.current?.showModal()} className="flex-none cursor-zoom-in rounded-xl" aria-label={`View ${mentor.name}'s photo`}>
+              <Avatar name={mentor.name} id={mentor.userId} src={mentor.image} size={112} />
+            </button>
+            {/* Native dialog: Esc closes it, clicking the backdrop closes it. */}
+            <dialog
+              ref={photoRef}
+              onClick={(e) => e.target === e.currentTarget && photoRef.current?.close()}
+              className="m-auto rounded-2xl bg-transparent p-0 backdrop:bg-black/70"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element -- user upload on Supabase */}
+              <img src={mentor.image} alt={mentor.name} className="max-h-[80vh] max-w-[90vw] rounded-2xl object-contain" />
+            </dialog>
+          </>
+        ) : (
+          <Avatar name={mentor.name} id={mentor.userId} size={64} />
+        )}
         <div className="min-w-0 flex-1">
           <p className="text-2xl font-medium">{mentor.name}</p>
           {mentor.headline && <p className="text-[17px] text-lf-muted">{mentor.headline}</p>}
