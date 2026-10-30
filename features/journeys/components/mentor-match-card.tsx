@@ -47,7 +47,7 @@ export function MentorMatchCard({
   return (
     <div className="flex flex-col rounded-2xl border border-lf-line bg-white p-7">
       <div className="mb-4 flex flex-wrap items-start gap-4">
-        <Avatar name={mentor.name} id={mentor.userId} size={64} />
+        <Avatar name={mentor.name} id={mentor.userId} src={mentor.image} size={64} />
         <div className="min-w-0 flex-1">
           <p className="text-2xl font-medium">{mentor.name}</p>
           {mentor.headline && <p className="text-[17px] text-lf-muted">{mentor.headline}</p>}

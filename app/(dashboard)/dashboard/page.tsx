@@ -12,7 +12,7 @@ export default async function HomePage(props: PageProps<"/dashboard">) {
   const name = session.user.name || "there";
 
   return (await roleOf(session.user.id)) === "mentor" ? (
-    <MentorHome userId={session.user.id} name={name} />
+    <MentorHome userId={session.user.id} name={name} image={session.user.image} />
   ) : (
     <LearnerHome userId={session.user.id} firstName={name.split(" ")[0]} justBooked={booked === "1"} />
   );

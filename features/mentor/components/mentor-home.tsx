@@ -10,7 +10,7 @@ import { SessionsCompact } from "@/features/space/components/sessions-list";
 import { WeeklyHoursCard } from "./weekly-hours-card";
 import { ManagePayoutsLink, PauseButton } from "./mentor-actions";
 
-export async function MentorHome({ userId, name }: { userId: string; name: string }) {
+export async function MentorHome({ userId, name, image }: { userId: string; name: string; image?: string | null }) {
   const [{ data: profile }, { data: hours }, { count: bookable }, rows] = await Promise.all([
     supabaseAdmin
       .from("mentor_profiles")
@@ -54,7 +54,7 @@ export async function MentorHome({ userId, name }: { userId: string; name: strin
     <>
       <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-center gap-5">
-          <Avatar name={name} id={userId} size={80} />
+          <Avatar name={name} id={userId} src={image} size={80} />
           <div>
             <h1 className="text-3xl font-bold tracking-tight md:text-4xl">{name}</h1>
             <p className="text-[19px] text-lf-muted">{meta}</p>

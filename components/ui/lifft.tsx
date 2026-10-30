@@ -8,7 +8,11 @@ export function initialsOf(name: string): string {
   return name.split(/\s+/).filter(Boolean).map((w) => w[0]).join("").slice(0, 2).toUpperCase() || "?";
 }
 
-export function Avatar({ name, id, size = 48 }: { name: string; id: string; size?: number }) {
+export function Avatar({ name, id, size = 48, src }: { name: string; id: string; size?: number; src?: string | null }) {
+  if (src) {
+    // eslint-disable-next-line @next/next/no-img-element -- user upload on Supabase, no next/image domain config needed
+    return <img src={src} alt={name} width={size} height={size} className="flex-none rounded-xl object-cover" style={{ width: size, height: size }} />;
+  }
   const hash = [...id].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 0);
   return (
     <div
